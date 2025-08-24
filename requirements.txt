@@ -1,0 +1,31 @@
+# CLI framework
+typer>=0.9.0
+rich>=13.0.0
+
+# PDF processing
+PyMuPDF>=1.23.0
+PyPDF2>=3.0.0
+pdfplumber>=0.9.0
+
+# ArXiv integration
+arxiv>=1.4.0
+aiohttp>=3.8.0
+aiofiles>=23.0.0
+
+# Async support
+asyncio-tools>=0.1.2
+
+# Configuration
+python-dotenv>=1.0.0
+
+# Progress bars and UI
+tqdm>=4.65.0
+
+# File utilities
+pathlib2>=2.3.0
+
+# Database
+aiosqlite>=0.19.0
+
+# nano-graphrag (local installation)
+-e ./nano-graphrag
