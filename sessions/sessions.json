@@ -1,0 +1,6 @@
+{
+  "sessions": {
+    "test": "sessions\\test"
+  },
+  "current_session": "test"
+}

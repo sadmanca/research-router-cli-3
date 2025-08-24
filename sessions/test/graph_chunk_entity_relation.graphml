@@ -1,0 +1,373 @@
+<?xml version='1.0' encoding='utf-8'?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
+  <key id="d7" for="edge" attr.name="order" attr.type="long" />
+  <key id="d6" for="edge" attr.name="source_id" attr.type="string" />
+  <key id="d5" for="edge" attr.name="description" attr.type="string" />
+  <key id="d4" for="edge" attr.name="weight" attr.type="double" />
+  <key id="d3" for="node" attr.name="clusters" attr.type="string" />
+  <key id="d2" for="node" attr.name="source_id" attr.type="string" />
+  <key id="d1" for="node" attr.name="description" attr.type="string" />
+  <key id="d0" for="node" attr.name="entity_type" attr.type="string" />
+  <graph edgedefault="undirected">
+    <node id="&quot;YUKUN CAO&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Yukun Cao is a researcher from the University of Science and Technology of China and a co-author of the LEGO-GraphRAG paper, contributing equally to the work."</data>
+      <data key="d2">chunk-fa46ef3acf35b900d9b09945f5135ac3</data>
+      <data key="d3">[{"level": 0, "cluster": 5}]</data>
+    </node>
+    <node id="&quot;ZENGYI GAO&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Zengyi Gao is a researcher from the University of Science and Technology of China and a co-author of the LEGO-GraphRAG paper, contributing equally to the work."</data>
+      <data key="d2">chunk-fa46ef3acf35b900d9b09945f5135ac3</data>
+      <data key="d3">[{"level": 0, "cluster": 5}]</data>
+    </node>
+    <node id="&quot;ZHIYANG LI&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Zhiyang Li is a researcher from the University of Science and Technology of China and a co-author of the LEGO-GraphRAG paper."</data>
+      <data key="d2">chunk-fa46ef3acf35b900d9b09945f5135ac3</data>
+      <data key="d3">[{"level": 0, "cluster": 5}]</data>
+    </node>
+    <node id="&quot;XIKE XIE&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Xike Xie is a researcher from the University of Science and Technology of China and is identified as the corresponding author of the LEGO-GraphRAG paper."</data>
+      <data key="d2">chunk-fa46ef3acf35b900d9b09945f5135ac3</data>
+      <data key="d3">[{"level": 0, "cluster": 5}]</data>
+    </node>
+    <node id="&quot;S. KEVIN ZHOU&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"S. Kevin Zhou is a researcher from the University of Science and Technology of China and a co-author of the LEGO-GraphRAG paper."</data>
+      <data key="d2">chunk-fa46ef3acf35b900d9b09945f5135ac3</data>
+      <data key="d3">[{"level": 0, "cluster": 5}]</data>
+    </node>
+    <node id="&quot;JIANLIANG XU&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Jianliang Xu is a researcher from Hong Kong Baptist University and a co-author of the LEGO-GraphRAG paper."</data>
+      <data key="d2">chunk-fa46ef3acf35b900d9b09945f5135ac3</data>
+      <data key="d3">[{"level": 0, "cluster": 2}]</data>
+    </node>
+    <node id="&quot;UNIVERSITY OF SCIENCE AND TECHNOLOGY OF CHINA&quot;">
+      <data key="d0">"ORGANIZATION"</data>
+      <data key="d1">"The University of Science and Technology of China is an institution that employs several co-authors of the LEGO-GraphRAG paper, including Yukun Cao, Zengyi Gao, Zhiyang Li, Xike Xie, and S. Kevin Zhou."</data>
+      <data key="d2">chunk-fa46ef3acf35b900d9b09945f5135ac3</data>
+      <data key="d3">[{"level": 0, "cluster": 5}]</data>
+    </node>
+    <node id="&quot;HONG KONG BAPTIST UNIVERSITY&quot;">
+      <data key="d0">"ORGANIZATION"</data>
+      <data key="d1">"Hong Kong Baptist University is an institution that employs Jianliang Xu, a co-author of the LEGO-GraphRAG paper."</data>
+      <data key="d2">chunk-fa46ef3acf35b900d9b09945f5135ac3</data>
+      <data key="d3">[{"level": 0, "cluster": 2}]</data>
+    </node>
+    <node id="&quot;LEGO-GRAPHRAG&quot;">
+      <data key="d0">"EVENT"</data>
+      <data key="d1">"LEGO-GraphRAG is a proposed unified and modular framework for Graph-based Retrieval-Augmented Generation (GraphRAG), introduced in the paper to address modular workflow analysis, systematic solution frameworks, and empirical studies."</data>
+      <data key="d2">chunk-fa46ef3acf35b900d9b09945f5135ac3</data>
+      <data key="d3">[{"level": 0, "cluster": 0}]</data>
+    </node>
+    <node id="&quot;PVLDB&quot;">
+      <data key="d0">"ORGANIZATION"</data>
+      <data key="d1">"PVLDB (Proceedings of the VLDB Endowment) is the publication venue where the LEGO-GraphRAG paper is published."</data>
+      <data key="d2">chunk-fa46ef3acf35b900d9b09945f5135ac3</data>
+      <data key="d3">[{"level": 0, "cluster": 4}]</data>
+    </node>
+    <node id="&quot;VLDB ENDOWMENT&quot;">
+      <data key="d0">"ORGANIZATION"</data>
+      <data key="d1">"The VLDB Endowment holds the publication rights for PVLDB, the venue where the LEGO-GraphRAG paper is published."</data>
+      <data key="d2">chunk-fa46ef3acf35b900d9b09945f5135ac3</data>
+      <data key="d3">[{"level": 0, "cluster": 4}]</data>
+    </node>
+    <node id="&quot;MICROSOFT GRAPHRAG&quot;">
+      <data key="d0">"ORGANIZATION"</data>
+      <data key="d1">"Microsoft GraphRAG is an early initiative exploring graph-based retrieval, which served as a basis for evaluating compatibility with the LEGO-GraphRAG framework through an implemented instance (GRAG-M)."</data>
+      <data key="d2">chunk-fa46ef3acf35b900d9b09945f5135ac3</data>
+      <data key="d3">[{"level": 0, "cluster": 1}]</data>
+    </node>
+    <node id="&quot;GCR&quot;">
+      <data key="d0">"EVENT"</data>
+      <data key="d1">"GCR is a GraphRAG study (arXiv24 [72]) that combines LLMs and beam search to refine reasoning paths, and is listed as an existing instance in the LEGO-GraphRAG framework."</data>
+      <data key="d2">chunk-fa46ef3acf35b900d9b09945f5135ac3</data>
+      <data key="d3">[{"level": 0, "cluster": 0}]</data>
+    </node>
+    <node id="&quot;ROG&quot;">
+      <data key="d0">"EVENT"</data>
+      <data key="d1">"RoG is a GraphRAG study (ICLR24 [71]) that employs Personalized PageRank and LLMs for subgraph extraction, and is listed as an existing instance in the LEGO-GraphRAG framework."</data>
+      <data key="d2">chunk-fa46ef3acf35b900d9b09945f5135ac3</data>
+      <data key="d3">[{"level": 0, "cluster": 0}]</data>
+    </node>
+    <node id="&quot;GSR&quot;">
+      <data key="d0">"EVENT"</data>
+      <data key="d1">"GSR is a GraphRAG study (EMNLP24 [45]) that employs Personalized PageRank for subgraph retrieval, and is listed as an existing instance in the LEGO-GraphRAG framework."</data>
+      <data key="d2">chunk-fa46ef3acf35b900d9b09945f5135ac3</data>
+      <data key="d3">[{"level": 0, "cluster": 0}]</data>
+    </node>
+    <node id="&quot;KELP&quot;">
+      <data key="d0">"EVENT"</data>
+      <data key="d1">"KELP is a GraphRAG study (ACL24 [65]) that refines reasoning paths using fine-tuned models like BERT, and is listed as an existing instance and compared against in the LEGO-GraphRAG paper."</data>
+      <data key="d2">chunk-fa46ef3acf35b900d9b09945f5135ac3</data>
+      <data key="d3">[{"level": 0, "cluster": 0}]</data>
+    </node>
+    <node id="&quot;STRUCTGPT&quot;">
+      <data key="d0">"EVENT"</data>
+      <data key="d1">"StructGPT is a GraphRAG study (EMNLP23 [50]) listed as an existing instance within the LEGO-GraphRAG framework."</data>
+      <data key="d2">chunk-fa46ef3acf35b900d9b09945f5135ac3</data>
+      <data key="d3">[{"level": 0, "cluster": 0}]</data>
+    </node>
+    <node id="&quot;TOG&quot;">
+      <data key="d0">"EVENT"</data>
+      <data key="d1">"ToG is a GraphRAG study (ICLR24 [98]) that utilizes ISAR-LLMs, and is listed as an existing instance and compared against in the LEGO-GraphRAG paper."</data>
+      <data key="d2">chunk-fa46ef3acf35b900d9b09945f5135ac3</data>
+      <data key="d3">[{"level": 0, "cluster": 0}]</data>
+    </node>
+    <node id="&quot;DOG&quot;">
+      <data key="d0">"EVENT"</data>
+      <data key="d1">"DoG is a GraphRAG study (arXiv24 [74]) listed as an existing instance within the LEGO-GraphRAG framework."</data>
+      <data key="d2">chunk-fa46ef3acf35b900d9b09945f5135ac3</data>
+      <data key="d3">[{"level": 0, "cluster": 0}]</data>
+    </node>
+    <node id="&quot;FREEBASE&quot;">
+      <data key="d0">"ORGANIZATION"</data>
+      <data key="d1">"Freebase is a large-scale, multi-domain knowledge base widely used in GraphRAG research and as a primary dataset for the empirical studies in the LEGO-GraphRAG paper."</data>
+      <data key="d2">chunk-fa46ef3acf35b900d9b09945f5135ac3</data>
+      <data key="d3">[{"level": 0, "cluster": 0}]</data>
+    </node>
+    <node id="&quot;WEBQSP&quot;">
+      <data key="d0">"ORGANIZATION"</data>
+      <data key="d1">"WebQSP is an established query dataset used in the empirical studies of the LEGO-GraphRAG paper."</data>
+      <data key="d2">chunk-fa46ef3acf35b900d9b09945f5135ac3</data>
+      <data key="d3">[{"level": 0, "cluster": 0}]</data>
+    </node>
+    <node id="&quot;CWQ&quot;">
+      <data key="d0">"ORGANIZATION"</data>
+      <data key="d1">"CWQ is an established query dataset used in the empirical studies of the LEGO-GraphRAG paper."</data>
+      <data key="d2">chunk-fa46ef3acf35b900d9b09945f5135ac3</data>
+      <data key="d3">[{"level": 0, "cluster": 0}]</data>
+    </node>
+    <node id="&quot;GRAILQA&quot;">
+      <data key="d0">"ORGANIZATION"</data>
+      <data key="d1">"GrailQA is an established query dataset used in the empirical studies of the LEGO-GraphRAG paper."</data>
+      <data key="d2">chunk-fa46ef3acf35b900d9b09945f5135ac3</data>
+      <data key="d3">[{"level": 0, "cluster": 0}]</data>
+    </node>
+    <node id="&quot;WEBQUESTIONS&quot;">
+      <data key="d0">"ORGANIZATION"</data>
+      <data key="d1">"WebQuestions is an established query dataset used in the empirical studies of the LEGO-GraphRAG paper."</data>
+      <data key="d2">chunk-fa46ef3acf35b900d9b09945f5135ac3</data>
+      <data key="d3">[{"level": 0, "cluster": 0}]</data>
+    </node>
+    <node id="&quot;METAQA&quot;">
+      <data key="d0">"ORGANIZATION"</data>
+      <data key="d1">"MetaQA is a dataset built on Wiki-Movies, used in the empirical studies of the LEGO-GraphRAG paper to assess cross-base and cross-domain transferability."</data>
+      <data key="d2">chunk-fa46ef3acf35b900d9b09945f5135ac3</data>
+      <data key="d3">[{"level": 0, "cluster": 3}]</data>
+    </node>
+    <node id="&quot;WIKI-MOVIES&quot;">
+      <data key="d0">"ORGANIZATION"</data>
+      <data key="d1">"Wiki-Movies is a single-domain knowledge base focused on movies, serving as the foundation for the MetaQA dataset."</data>
+      <data key="d2">chunk-fa46ef3acf35b900d9b09945f5135ac3</data>
+      <data key="d3">[{"level": 0, "cluster": 3}]</data>
+    </node>
+    <node id="&quot;HUGGING FACE&quot;">
+      <data key="d0">"ORGANIZATION"</data>
+      <data key="d1">"Hugging Face is an AI community and platform where semantic models used in the LEGO-GraphRAG implementation are publicly available."</data>
+      <data key="d2">chunk-fa46ef3acf35b900d9b09945f5135ac3</data>
+      <data key="d3">[{"level": 0, "cluster": 0}]</data>
+    </node>
+    <node id="&quot;GRAG-M&quot;">
+      <data key="d0">"EVENT"</data>
+      <data key="d1">"GRAG-M is an instance implemented within the LEGO-GraphRAG framework to evaluate compatibility with Microsoft GraphRAG, following its workflows and using reasoning paths from Instance 12."</data>
+      <data key="d2">chunk-fa46ef3acf35b900d9b09945f5135ac3</data>
+      <data key="d3">[{"level": 0, "cluster": 1}]</data>
+    </node>
+    <edge source="&quot;YUKUN CAO&quot;" target="&quot;UNIVERSITY OF SCIENCE AND TECHNOLOGY OF CHINA&quot;">
+      <data key="d4">9.0</data>
+      <data key="d5">"Yukun Cao is a researcher affiliated with the University of Science and Technology of China."</data>
+      <data key="d6">chunk-fa46ef3acf35b900d9b09945f5135ac3</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;YUKUN CAO&quot;" target="&quot;LEGO-GRAPHRAG&quot;">
+      <data key="d4">10.0</data>
+      <data key="d5">"Yukun Cao is a co-author of the paper that introduces the LEGO-GraphRAG framework."</data>
+      <data key="d6">chunk-fa46ef3acf35b900d9b09945f5135ac3</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;ZENGYI GAO&quot;" target="&quot;UNIVERSITY OF SCIENCE AND TECHNOLOGY OF CHINA&quot;">
+      <data key="d4">9.0</data>
+      <data key="d5">"Zengyi Gao is a researcher affiliated with the University of Science and Technology of China."</data>
+      <data key="d6">chunk-fa46ef3acf35b900d9b09945f5135ac3</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;ZENGYI GAO&quot;" target="&quot;LEGO-GRAPHRAG&quot;">
+      <data key="d4">10.0</data>
+      <data key="d5">"Zengyi Gao is a co-author of the paper that introduces the LEGO-GraphRAG framework."</data>
+      <data key="d6">chunk-fa46ef3acf35b900d9b09945f5135ac3</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;ZHIYANG LI&quot;" target="&quot;UNIVERSITY OF SCIENCE AND TECHNOLOGY OF CHINA&quot;">
+      <data key="d4">9.0</data>
+      <data key="d5">"Zhiyang Li is a researcher affiliated with the University of Science and Technology of China."</data>
+      <data key="d6">chunk-fa46ef3acf35b900d9b09945f5135ac3</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;ZHIYANG LI&quot;" target="&quot;LEGO-GRAPHRAG&quot;">
+      <data key="d4">10.0</data>
+      <data key="d5">"Zhiyang Li is a co-author of the paper that introduces the LEGO-GraphRAG framework."</data>
+      <data key="d6">chunk-fa46ef3acf35b900d9b09945f5135ac3</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;XIKE XIE&quot;" target="&quot;UNIVERSITY OF SCIENCE AND TECHNOLOGY OF CHINA&quot;">
+      <data key="d4">9.0</data>
+      <data key="d5">"Xike Xie is a researcher affiliated with the University of Science and Technology of China and is the corresponding author of the paper."</data>
+      <data key="d6">chunk-fa46ef3acf35b900d9b09945f5135ac3</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;XIKE XIE&quot;" target="&quot;LEGO-GRAPHRAG&quot;">
+      <data key="d4">10.0</data>
+      <data key="d5">"Xike Xie is a co-author and the corresponding author of the paper that introduces the LEGO-GraphRAG framework."</data>
+      <data key="d6">chunk-fa46ef3acf35b900d9b09945f5135ac3</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;S. KEVIN ZHOU&quot;" target="&quot;UNIVERSITY OF SCIENCE AND TECHNOLOGY OF CHINA&quot;">
+      <data key="d4">9.0</data>
+      <data key="d5">"S. Kevin Zhou is a researcher affiliated with the University of Science and Technology of China."</data>
+      <data key="d6">chunk-fa46ef3acf35b900d9b09945f5135ac3</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;S. KEVIN ZHOU&quot;" target="&quot;LEGO-GRAPHRAG&quot;">
+      <data key="d4">10.0</data>
+      <data key="d5">"S. Kevin Zhou is a co-author of the paper that introduces the LEGO-GraphRAG framework."</data>
+      <data key="d6">chunk-fa46ef3acf35b900d9b09945f5135ac3</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;JIANLIANG XU&quot;" target="&quot;HONG KONG BAPTIST UNIVERSITY&quot;">
+      <data key="d4">9.0</data>
+      <data key="d5">"Jianliang Xu is a researcher affiliated with Hong Kong Baptist University."</data>
+      <data key="d6">chunk-fa46ef3acf35b900d9b09945f5135ac3</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;JIANLIANG XU&quot;" target="&quot;LEGO-GRAPHRAG&quot;">
+      <data key="d4">10.0</data>
+      <data key="d5">"Jianliang Xu is a co-author of the paper that introduces the LEGO-GraphRAG framework."</data>
+      <data key="d6">chunk-fa46ef3acf35b900d9b09945f5135ac3</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;LEGO-GRAPHRAG&quot;" target="&quot;PVLDB&quot;">
+      <data key="d4">9.0</data>
+      <data key="d5">"The LEGO-GraphRAG paper is published in PVLDB."</data>
+      <data key="d6">chunk-fa46ef3acf35b900d9b09945f5135ac3</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;LEGO-GRAPHRAG&quot;" target="&quot;FREEBASE&quot;">
+      <data key="d4">8.0</data>
+      <data key="d5">"The LEGO-GraphRAG framework is empirically studied and evaluated using the Freebase dataset."</data>
+      <data key="d6">chunk-fa46ef3acf35b900d9b09945f5135ac3</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;LEGO-GRAPHRAG&quot;" target="&quot;WEBQSP&quot;">
+      <data key="d4">8.0</data>
+      <data key="d5">"The LEGO-GraphRAG framework is empirically studied and evaluated using the WebQSP dataset."</data>
+      <data key="d6">chunk-fa46ef3acf35b900d9b09945f5135ac3</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;LEGO-GRAPHRAG&quot;" target="&quot;CWQ&quot;">
+      <data key="d4">8.0</data>
+      <data key="d5">"The LEGO-GraphRAG framework is empirically studied and evaluated using the CWQ dataset."</data>
+      <data key="d6">chunk-fa46ef3acf35b900d9b09945f5135ac3</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;LEGO-GRAPHRAG&quot;" target="&quot;GRAILQA&quot;">
+      <data key="d4">8.0</data>
+      <data key="d5">"The LEGO-GraphRAG framework is empirically studied and evaluated using the GrailQA dataset."</data>
+      <data key="d6">chunk-fa46ef3acf35b900d9b09945f5135ac3</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;LEGO-GRAPHRAG&quot;" target="&quot;WEBQUESTIONS&quot;">
+      <data key="d4">8.0</data>
+      <data key="d5">"The LEGO-GraphRAG framework is empirically studied and evaluated using the WebQuestions dataset."</data>
+      <data key="d6">chunk-fa46ef3acf35b900d9b09945f5135ac3</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;LEGO-GRAPHRAG&quot;" target="&quot;METAQA&quot;">
+      <data key="d4">8.0</data>
+      <data key="d5">"The LEGO-GraphRAG framework is empirically studied and evaluated using the MetaQA dataset to assess transferability."</data>
+      <data key="d6">chunk-fa46ef3acf35b900d9b09945f5135ac3</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;LEGO-GRAPHRAG&quot;" target="&quot;MICROSOFT GRAPHRAG&quot;">
+      <data key="d4">7.0</data>
+      <data key="d5">"The LEGO-GraphRAG framework evaluates compatibility with Microsoft GraphRAG's workflows through an implemented instance."</data>
+      <data key="d6">chunk-fa46ef3acf35b900d9b09945f5135ac3</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;LEGO-GRAPHRAG&quot;" target="&quot;GCR&quot;">
+      <data key="d4">6.0</data>
+      <data key="d5">"The LEGO-GraphRAG paper discusses and classifies GCR as an existing GraphRAG instance within its framework."</data>
+      <data key="d6">chunk-fa46ef3acf35b900d9b09945f5135ac3</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;LEGO-GRAPHRAG&quot;" target="&quot;ROG&quot;">
+      <data key="d4">7.0</data>
+      <data key="d5">"The LEGO-GraphRAG paper discusses and classifies RoG as an existing GraphRAG instance within its framework, and compares its performance."</data>
+      <data key="d6">chunk-fa46ef3acf35b900d9b09945f5135ac3</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;LEGO-GRAPHRAG&quot;" target="&quot;GSR&quot;">
+      <data key="d4">6.0</data>
+      <data key="d5">"The LEGO-GraphRAG paper discusses and classifies GSR as an existing GraphRAG instance within its framework."</data>
+      <data key="d6">chunk-fa46ef3acf35b900d9b09945f5135ac3</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;LEGO-GRAPHRAG&quot;" target="&quot;KELP&quot;">
+      <data key="d4">7.0</data>
+      <data key="d5">"The LEGO-GraphRAG paper discusses and classifies KELP as an existing GraphRAG instance within its framework, and reports improved performance for its LEGO-KELP instance."</data>
+      <data key="d6">chunk-fa46ef3acf35b900d9b09945f5135ac3</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;LEGO-GRAPHRAG&quot;" target="&quot;STRUCTGPT&quot;">
+      <data key="d4">6.0</data>
+      <data key="d5">"The LEGO-GraphRAG paper discusses and classifies StructGPT as an existing GraphRAG instance within its framework."</data>
+      <data key="d6">chunk-fa46ef3acf35b900d9b09945f5135ac3</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;LEGO-GRAPHRAG&quot;" target="&quot;TOG&quot;">
+      <data key="d4">7.0</data>
+      <data key="d5">"The LEGO-GraphRAG paper discusses and classifies ToG as an existing GraphRAG instance within its framework, and reports improved performance for its LEGO-ToG instance."</data>
+      <data key="d6">chunk-fa46ef3acf35b900d9b09945f5135ac3</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;LEGO-GRAPHRAG&quot;" target="&quot;DOG&quot;">
+      <data key="d4">6.0</data>
+      <data key="d5">"The LEGO-GraphRAG paper discusses and classifies DoG as an existing GraphRAG instance within its framework."</data>
+      <data key="d6">chunk-fa46ef3acf35b900d9b09945f5135ac3</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;LEGO-GRAPHRAG&quot;" target="&quot;HUGGING FACE&quot;">
+      <data key="d4">7.0</data>
+      <data key="d5">"The LEGO-GraphRAG implementation utilizes semantic models made publicly available on Hugging Face."</data>
+      <data key="d6">chunk-fa46ef3acf35b900d9b09945f5135ac3</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;LEGO-GRAPHRAG&quot;" target="&quot;GRAG-M&quot;">
+      <data key="d4">9.0</data>
+      <data key="d5">"GRAG-M is an instance developed and implemented within the LEGO-GraphRAG framework."</data>
+      <data key="d6">chunk-fa46ef3acf35b900d9b09945f5135ac3</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;PVLDB&quot;" target="&quot;VLDB ENDOWMENT&quot;">
+      <data key="d4">9.0</data>
+      <data key="d5">"The VLDB Endowment holds the publication rights for PVLDB, where the LEGO-GraphRAG paper is published."</data>
+      <data key="d6">chunk-fa46ef3acf35b900d9b09945f5135ac3</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;MICROSOFT GRAPHRAG&quot;" target="&quot;GRAG-M&quot;">
+      <data key="d4">8.0</data>
+      <data key="d5">"GRAG-M is an instance that follows the workflows of Microsoft GraphRAG to evaluate compatibility."</data>
+      <data key="d6">chunk-fa46ef3acf35b900d9b09945f5135ac3</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;METAQA&quot;" target="&quot;WIKI-MOVIES&quot;">
+      <data key="d4">9.0</data>
+      <data key="d5">"The MetaQA dataset is built upon the Wiki-Movies knowledge base."</data>
+      <data key="d6">chunk-fa46ef3acf35b900d9b09945f5135ac3</data>
+      <data key="d7">1</data>
+    </edge>
+  </graph>
+</graphml>
