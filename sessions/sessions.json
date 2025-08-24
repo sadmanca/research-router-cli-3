@@ -1,6 +1,11 @@
 {
   "sessions": {
-    "test": "sessions\\test"
+    "test": "sessions\\test",
+    "test1": "sessions\\test1",
+    "test2": "sessions\\test2",
+    "test3": "sessions\\test3",
+    "test4": "sessions\\test4",
+    "test6": "sessions\\test6"
   },
-  "current_session": "test"
+  "current_session": "test6"
 }

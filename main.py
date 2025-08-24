@@ -6,13 +6,15 @@ Research Router CLI - Interactive knowledge graph CLI using nano-graphrag
 import asyncio
 import sys
 import os
+import json
 from pathlib import Path
-from typing import Optional
+from typing import Optional, List
 
 import typer
 from rich.console import Console
-from rich.prompt import Prompt
 from rich.panel import Panel
+from rich.columns import Columns
+from rich.table import Table
 
 # Add current directory to path for imports
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -22,11 +24,17 @@ from research_router_cli.commands.insert import InsertCommand
 from research_router_cli.commands.query import QueryCommand
 from research_router_cli.commands.arxiv import ArxivCommand
 from research_router_cli.utils.config import Config
-from research_router_cli.utils.colors import console
+from research_router_cli.utils.colors import console, info_msg, warning_msg, error_msg, success_msg, highlight_msg
+from research_router_cli.utils.command_parser import EnhancedCommandParser, ParsedCommand
+from research_router_cli.utils.file_browser import FileBrowser
+from research_router_cli.utils.arxiv_enhanced import EnhancedArxivClient, create_search_wizard
 
 app = typer.Typer(name="research-router", help="Interactive knowledge graph CLI")
 
-class CLI:
+
+class ResearchRouterCLI:
+    """Main CLI application"""
+    
     def __init__(self):
         self.session_manager = SessionManager()
         self.insert_command = InsertCommand(self.session_manager)
@@ -34,203 +42,438 @@ class CLI:
         self.arxiv_command = ArxivCommand(self.session_manager)
         self.config = Config()
         
-    def show_welcome(self):
-        welcome_text = """
-Research Router CLI
-Interactive knowledge graph creation and querying with nano-graphrag
-
-Available commands:
-  session create <name>     - Create a new research session
-  session list             - List all sessions
-  session switch <name>    - Switch to a different session
-  session delete <name>    - Delete a session
-  
-  insert <pdf_path>        - Insert single PDF into knowledge graph
-  insert files <f1> <f2>   - Insert multiple files at once
-  insert folder <path>     - Insert all PDFs from folder
-  insert folder <path> -r  - Insert PDFs recursively
-  
-  arxiv search <query>     - Search ArXiv papers
-  arxiv download <id>      - Download specific ArXiv paper
-  arxiv history           - Show ArXiv download history
-  
-  query <question>         - Query the knowledge graph (global mode)
-  query --mode local <q>   - Local query mode
-  query --mode global <q>  - Global query mode
-  query --mode naive <q>   - Naive RAG mode
-  iquery                   - Interactive query mode
-  
-  history                  - Show file insertion history
-  duplicates               - Show duplicate files
-  config                   - Show configuration
-  status                   - Show current session status
-  help                     - Show this help
-  exit                     - Exit the CLI
-        """
-        console.print(Panel(welcome_text, title="Welcome", border_style="blue"))
+        # Command parsing
+        self.command_parser = EnhancedCommandParser()
         
-    async def interactive_loop(self):
+        # File browser
+        self.file_browser = FileBrowser()
+        
+        # First-time setup flag
+        self.first_run = not Path("./sessions").exists() or not any(Path("./sessions").iterdir())
+    
+    def show_welcome(self):
+        """Show welcome screen"""
+        console.print()
+        console.print(highlight_msg("🔬 Research Router CLI"))
+        console.print("[dim]Interactive knowledge graph CLI for research[/dim]")
+        console.print()
+        console.print(info_msg("Type 'help' for commands or start with 'session create <name>'"))
+        console.print()
+        
+        # Add specific research router information
+        if self.first_run:
+            console.print(info_msg("First time setup detected. Create a session to get started!"))
+    
+    def get_input(self, current_session: Optional[str] = None) -> str:
+        """Get basic input without autocomplete"""
+        session_indicator = f"[{current_session}]" if current_session else "[no session]"
+        console.print(f"[cyan]research-router[/cyan] [blue]{session_indicator}[/blue] [bold]>[/bold] ", end="")
+        return input().strip()
+    
+    def run_interactive_mode(self):
+        """Run the main interactive loop"""
         self.show_welcome()
+        
+        # Show first-time setup wizard if needed
+        if self.first_run:
+            self._show_setup_wizard()
         
         while True:
             try:
                 current_session = self.session_manager.current_session
-                prompt_text = f"research-router ({current_session or 'no session'})> "
-                command = Prompt.ask(prompt_text).strip()
+                has_knowledge_graph = False
                 
-                if not command:
+                if current_session:
+                    working_dir = self.session_manager.get_current_working_dir()
+                    has_knowledge_graph = self._has_knowledge_graph(working_dir)
+                
+                # Get basic input
+                command_input = self.get_input(current_session)
+                
+                if not command_input:
                     continue
-                    
-                parts = command.split()
-                cmd = parts[0].lower()
                 
-                if cmd == "exit":
-                    console.print("👋 Goodbye!")
+                # Parse command
+                parsed_cmd = self.command_parser.parse_command(command_input, current_session)
+                
+                # Handle suggestions and errors
+                if parsed_cmd.suggestions:
+                    for suggestion in parsed_cmd.suggestions:
+                        if suggestion.startswith("Did you mean"):
+                            console.print(warning_msg(suggestion))
+                        elif "requires" in suggestion or "Usage:" in suggestion:
+                            console.print(error_msg(suggestion))
+                        else:
+                            console.print(info_msg(suggestion))
+                    
+                    if not parsed_cmd.command or parsed_cmd.command not in self.command_parser.commands:
+                        continue
+                
+                # Execute command
+                should_continue = self._execute_command_sync(parsed_cmd)
+                if not should_continue:
                     break
-                elif cmd == "help":
-                    self.show_welcome()
-                elif cmd == "config":
-                    self.config.show_config()
-                elif cmd == "status":
-                    self._show_status()
-                elif cmd == "iquery":
-                    await self.query_command.interactive_query()
-                elif cmd == "history":
-                    await self._handle_history_command()
-                elif cmd == "duplicates":
-                    await self._handle_duplicates_command()
-                elif cmd == "session":
-                    await self._handle_session_command(parts[1:])
-                elif cmd == "insert":
-                    await self._handle_insert_command(parts[1:])
-                elif cmd == "arxiv":
-                    await self._handle_arxiv_command(parts[1:])
-                elif cmd == "query":
-                    await self._handle_query_command(parts[1:])
-                else:
-                    console.print(f"[red]Unknown command: {cmd}[/red]")
-                    console.print("Type 'help' for available commands.")
                     
             except KeyboardInterrupt:
                 console.print("\n👋 Goodbye!")
                 break
             except Exception as e:
-                console.print(f"[red]Error: {e}[/red]")
+                console.print(error_msg(f"Unexpected error: {e}"))
+                console.print(info_msg("Type 'help' for available commands."))
+    
+    def _execute_command_sync(self, parsed_cmd: ParsedCommand) -> bool:
+        """Execute a parsed command synchronously. Returns False to exit loop."""
+        cmd = parsed_cmd.command
+        
+        if cmd == "exit":
+            console.print(success_msg("👋 Goodbye!"))
+            return False
+        elif cmd == "help":
+            self._handle_help_command(parsed_cmd.args)
+        elif cmd == "config":
+            self.config.show_config()
+        elif cmd == "status":
+            self._show_status()
+        elif cmd in ["iquery", "history", "duplicates", "session", "insert", "arxiv", "query"]:
+            # Run async commands using asyncio.run
+            return asyncio.run(self._execute_async_command(parsed_cmd))
+        else:
+            console.print(error_msg(f"Unknown command: {cmd}"))
+            console.print(info_msg("Type 'help' for available commands."))
+        
+        return True
+    
+    async def _execute_async_command(self, parsed_cmd: ParsedCommand) -> bool:
+        """Execute async commands"""
+        cmd = parsed_cmd.command
+        
+        if cmd == "iquery":
+            await self.query_command.interactive_query()
+        elif cmd == "history":
+            await self._handle_history_command(parsed_cmd.args)
+        elif cmd == "duplicates":
+            await self._handle_duplicates_command()
+        elif cmd == "session":
+            await self._handle_session_command(parsed_cmd)
+        elif cmd == "insert":
+            await self._handle_insert_command(parsed_cmd)
+        elif cmd == "arxiv":
+            await self._handle_arxiv_command(parsed_cmd)
+        elif cmd == "query":
+            await self._handle_query_command(parsed_cmd)
+        
+        return True
+    
+    def _handle_help_command(self, args):
+        """Handle help command"""
+        if args and args[0] in self.command_parser.commands:
+            # Show help for specific command
+            command = args[0]
+            help_text = self.command_parser.get_contextual_help(command)
+            console.print(help_text)
+        else:
+            # Show general help
+            self._show_basic_help()
+    
+    def _show_basic_help(self):
+        """Show help screen"""
+        console.print(highlight_msg("📋 Available Commands"))
+        console.print()
+        
+        # Group commands by category
+        categories = {
+            "Session Management": ["session"],
+            "Content Management": ["insert", "query", "iquery"],
+            "ArXiv Integration": ["arxiv"],
+            "Information": ["history", "duplicates", "status", "config"],
+            "Utility": ["help", "exit"]
+        }
+        
+        for category, commands in categories.items():
+            console.print(f"[bold cyan]{category}:[/bold cyan]")
+            for cmd in commands:
+                if cmd in self.command_parser.commands:
+                    cmd_def = self.command_parser.commands[cmd]
+                    aliases = f" ({', '.join(cmd_def.aliases)})" if cmd_def.aliases else ""
+                    console.print(f"  [green]{cmd}[/green]{aliases} - {cmd_def.description}")
+            console.print()
+        
+        console.print("[dim]Use 'help <command>' for detailed information about a specific command[/dim]")
+    
+    def _show_setup_wizard(self):
+        """Show first-time setup wizard"""
+        console.print(Panel(
+            "[bold cyan]Welcome to Research Router CLI![/bold cyan]\n\n"
+            "This appears to be your first time using the CLI.\n"
+            "Let's get you started with a quick setup.",
+            title="First Time Setup",
+            border_style="green"
+        ))
+        
+        # Check API configuration
+        if not self.config.has_openai_config and not self.config.has_azure_openai_config:
+            console.print(warning_msg("No API configuration found."))
+            console.print(info_msg("Please set up your OpenAI API key in a .env file:"))
+            console.print("[dim]OPENAI_API_KEY=your-key-here[/dim]")
+            console.input("\nPress Enter when ready...")
+        
+        # Offer to create first session
+        if console.input("Would you like to create your first research session? (y/n): ").lower().startswith('y'):
+            session_name = console.input("Enter session name: ").strip()
+            if session_name:
+                self.session_manager.create_session(session_name)
                 
-    async def _handle_session_command(self, args):
-        if not args:
-            console.print("[red]Session command requires an action (create, list, switch, delete)[/red]")
+        console.print(success_msg("Setup complete! Type 'help' to see available commands."))
+    
+    def _show_status(self):
+        """Show status"""
+        # Main status table
+        table = Table(title="Research Router Status", show_header=False)
+        table.add_column("Setting", style="cyan", width=20)
+        table.add_column("Value", style="magenta")
+        
+        # Current session
+        current = self.session_manager.current_session or "None"
+        if current != "None":
+            table.add_row("Current Session", f"[green]{current}[/green]")
+        else:
+            table.add_row("Current Session", "[red]None (create one with 'session create <name>')[/red]")
+        
+        # Working directory and knowledge graph
+        if self.session_manager.current_session:
+            working_dir = self.session_manager.get_current_working_dir()
+            table.add_row("Working Directory", str(working_dir))
+            
+            if working_dir and self._has_knowledge_graph(working_dir):
+                table.add_row("Knowledge Graph", "[green]✓ Available[/green]")
+                # Add graph stats
+                stats = self._get_knowledge_graph_stats(working_dir)
+                if stats:
+                    table.add_row("Graph Statistics", stats)
+            else:
+                table.add_row("Knowledge Graph", "[yellow]✗ Not found (use 'insert' to add documents)[/yellow]")
+        
+        # API Configuration
+        if self.config.has_openai_config:
+            table.add_row("OpenAI API", "[green]✓ Configured[/green]")
+        elif self.config.has_azure_openai_config:
+            table.add_row("Azure OpenAI API", "[green]✓ Configured[/green]")
+        else:
+            table.add_row("API Configuration", "[red]✗ Not configured (set OPENAI_API_KEY)[/red]")
+        
+        # Session count
+        session_count = len(self.session_manager.sessions)
+        table.add_row("Total Sessions", str(session_count))
+        
+        console.print(table)
+        
+        # Smart suggestions based on current state
+        try:
+            suggestions = self.command_parser.get_smart_suggestions(
+                self.session_manager.current_session,
+                self._has_knowledge_graph(self.session_manager.get_current_working_dir()) if self.session_manager.current_session else False
+            )
+            
+            if suggestions:
+                console.print("\n" + info_msg("Suggestions:"))
+                for suggestion in suggestions[:3]:
+                    console.print(f"  {suggestion}")
+        except Exception as e:
+            pass
+    
+    def _get_knowledge_graph_stats(self, working_dir) -> Optional[str]:
+        """Get knowledge graph statistics"""
+        try:
+            stats = []
+            
+            # Count documents
+            docs_file = working_dir / "kv_store_full_docs.json"
+            if docs_file.exists():
+                with open(docs_file, 'r', encoding='utf-8') as f:
+                    docs = json.load(f)
+                    stats.append(f"{len(docs)} documents")
+            
+            # Count text chunks  
+            chunks_file = working_dir / "kv_store_text_chunks.json"
+            if chunks_file.exists():
+                with open(chunks_file, 'r', encoding='utf-8') as f:
+                    chunks = json.load(f)
+                    stats.append(f"{len(chunks)} chunks")
+            
+            return ", ".join(stats) if stats else None
+            
+        except Exception:
+            return None
+    
+    async def _handle_session_command(self, parsed_cmd: ParsedCommand):
+        """Handle session commands"""
+        if not parsed_cmd.subcommand:
+            console.print(error_msg("Session command requires an action (create, list, switch, delete)"))
             return
             
-        action = args[0].lower()
-        if action == "create" and len(args) > 1:
-            session_name = args[1]
+        action = parsed_cmd.subcommand
+        
+        if action == "create":
+            if parsed_cmd.args:
+                session_name = parsed_cmd.args[0]
+            else:
+                session_name = console.input("Enter session name: ").strip()
+                if not session_name:
+                    return
+                    
             self.session_manager.create_session(session_name)
             # Reset instances when switching sessions
             self.insert_command.reset_instance()
             self.query_command.reset_instance()
             self.arxiv_command.reset_instance()
+            
         elif action == "list":
             self.session_manager.list_sessions()
-        elif action == "switch" and len(args) > 1:
-            session_name = args[1]
+        elif action == "switch" and parsed_cmd.args:
+            session_name = parsed_cmd.args[0]
             if self.session_manager.switch_session(session_name):
                 # Reset instances when switching sessions
                 self.insert_command.reset_instance()
                 self.query_command.reset_instance()
                 self.arxiv_command.reset_instance()
-        elif action == "delete" and len(args) > 1:
-            session_name = args[1]
+        elif action == "delete" and parsed_cmd.args:
+            session_name = parsed_cmd.args[0]
             self.session_manager.delete_session(session_name)
             # Reset instances if we deleted the current session
             self.insert_command.reset_instance()
             self.query_command.reset_instance()
             self.arxiv_command.reset_instance()
         else:
-            console.print("[red]Invalid session command. Use: create <name>, list, switch <name>, or delete <name>[/red]")
-            
-    async def _handle_insert_command(self, args):
-        if not args:
-            console.print("[red]Insert command requires arguments[/red]")
-            console.print("Usage: insert <pdf_path> | insert files <f1> <f2> ... | insert folder <path> [-r]")
+            console.print(error_msg("Invalid session command. Use: create <name>, list, switch <name>, or delete <name>"))
+    
+    async def _handle_insert_command(self, parsed_cmd: ParsedCommand):
+        """Handle insert commands with file browser support"""
+        if not parsed_cmd.subcommand and not parsed_cmd.args:
+            console.print(error_msg("Insert command requires arguments"))
+            console.print(info_msg("Usage: insert <pdf_path> | insert files <f1> <f2> ... | insert folder <path> [-r] | insert browse"))
             return
             
-        action = args[0].lower()
-        
-        if action == "files":
-            # Insert multiple files: insert files file1.pdf file2.pdf ...
-            if len(args) < 2:
-                console.print("[red]insert files requires at least one file path[/red]")
-                return
-            file_paths = args[1:]
-            await self.insert_command.insert_multiple_files(file_paths)
+        if parsed_cmd.subcommand == "browse" or (parsed_cmd.args and parsed_cmd.args[0] == "browse"):
+            # Interactive file browser
+            console.print(info_msg("🗂️ Opening interactive file browser..."))
+            selected_files = self.file_browser.browse_for_files(
+                file_filter="*.pdf", 
+                multi_select=True
+            )
             
-        elif action == "folder":
-            # Insert folder: insert folder /path/to/folder [-r]
-            if len(args) < 2:
-                console.print("[red]insert folder requires a folder path[/red]")
+            if selected_files:
+                console.print(success_msg(f"Selected {len(selected_files)} files"))
+                file_paths = [str(f) for f in selected_files]
+                await self.insert_command.insert_multiple_files(file_paths)
+            else:
+                console.print(info_msg("No files selected"))
+            return
+            
+        elif parsed_cmd.subcommand == "files":
+            # Insert multiple files: insert files file1.pdf file2.pdf ...
+            if not parsed_cmd.args:
+                console.print(error_msg("insert files requires at least one file path"))
                 return
-            folder_path = args[1]
-            recursive = len(args) > 2 and args[2] == "-r"
+            await self.insert_command.insert_multiple_files(parsed_cmd.args)
+            
+        elif parsed_cmd.subcommand == "folder":
+            # Insert folder: insert folder /path/to/folder [-r]
+            if not parsed_cmd.args:
+                console.print(error_msg("insert folder requires a folder path"))
+                return
+            folder_path = parsed_cmd.args[0]
+            recursive = parsed_cmd.flags.get('r', False) or parsed_cmd.flags.get('recursive', False)
             await self.insert_command.insert_folder(folder_path, recursive)
             
         else:
             # Single file: insert file.pdf
-            pdf_path = args[0]
-            await self.insert_command.insert_pdf(pdf_path)
-        
-    async def _handle_query_command(self, args):
-        if not args:
-            console.print("[red]Query command requires a question[/red]")
+            if parsed_cmd.args:
+                pdf_path = parsed_cmd.args[0]
+                await self.insert_command.insert_pdf(pdf_path)
+            else:
+                console.print(error_msg("Please specify a file path or use 'insert browse'"))
+    
+    async def _handle_query_command(self, parsed_cmd: ParsedCommand):
+        """Handle query commands"""
+        if not parsed_cmd.args:
+            console.print(error_msg("Query command requires a question"))
             return
             
-        mode = "global"  # default
-        query_text = ""
-        
-        # Parse --mode flag
-        if len(args) >= 2 and args[0] == "--mode":
-            mode = args[1]
-            query_text = " ".join(args[2:])
-        else:
-            query_text = " ".join(args)
+        mode = parsed_cmd.flags.get('mode', 'global')
+        query_text = " ".join(parsed_cmd.args)
             
         await self.query_command.query(query_text, mode)
-        
-    async def _handle_arxiv_command(self, args):
-        if not args:
-            console.print("[red]ArXiv command requires an action[/red]")
-            console.print("Usage: arxiv search <query> | arxiv download <id> | arxiv history")
+    
+    async def _handle_arxiv_command(self, parsed_cmd: ParsedCommand):
+        """Handle ArXiv commands with wizard support"""
+        if not parsed_cmd.subcommand and not parsed_cmd.args:
+            console.print(error_msg("ArXiv command requires an action"))
+            console.print(info_msg("Usage: arxiv search <query> | arxiv wizard | arxiv download <id> | arxiv history"))
             return
             
-        action = args[0].lower()
+        action = parsed_cmd.subcommand or (parsed_cmd.args[0] if parsed_cmd.args else "")
         
-        if action == "search":
-            if len(args) < 2:
-                console.print("[red]arxiv search requires a search query[/red]")
-                return
-            query = " ".join(args[1:])
-            await self.arxiv_command.search_papers(query)
+        if action == "wizard":
+            # Interactive search wizard
+            console.print(info_msg("🧙 Starting ArXiv search wizard..."))
+            search_config = create_search_wizard()
             
-        elif action == "download":
-            if len(args) < 2:
-                console.print("[red]arxiv download requires an ArXiv ID[/red]")
+            if search_config and console.input("Execute this search? (y/n): ").lower().startswith('y'):
+                # Create enhanced client and perform search
+                working_dir = self.session_manager.get_current_working_dir()
+                if working_dir:
+                    downloads_dir = working_dir / "downloads"
+                    enhanced_arxiv = EnhancedArxivClient(downloads_dir)
+                    
+                    papers = await enhanced_arxiv.smart_search(search_config['query'])
+                    if papers:
+                        enhanced_arxiv.display_search_results(papers, show_details=True)
+                        
+                        # Offer interactive selection
+                        if console.input("Select papers for download? (y/n): ").lower().startswith('y'):
+                            selected = await enhanced_arxiv.interactive_selection(papers)
+                            if selected:
+                                downloaded = await enhanced_arxiv.bulk_download_with_progress(selected)
+                                enhanced_arxiv.show_download_summary(downloaded, len(selected))
+                                
+        elif action == "search":
+            if not parsed_cmd.args:
+                console.print(error_msg("arxiv search requires a search query"))
                 return
-            arxiv_id = args[1]
+            query = " ".join(parsed_cmd.args)
+            
+            # Use enhanced search - works even without a session
+            working_dir = self.session_manager.get_current_working_dir()
+            downloads_dir = working_dir / "downloads" if working_dir else Path("./temp_downloads")
+            
+            enhanced_arxiv = EnhancedArxivClient(downloads_dir)
+            
+            papers = await enhanced_arxiv.smart_search(query)
+            if papers:
+                enhanced_arxiv.display_search_results(papers)
+            else:
+                console.print(warning_msg("No papers found for your search query"))
+                    
+        elif action == "download":
+            if not parsed_cmd.args:
+                console.print(error_msg("arxiv download requires an ArXiv ID"))
+                return
+            arxiv_id = parsed_cmd.args[0]
             await self.arxiv_command.download_paper_by_id(arxiv_id)
             
         elif action == "history":
             limit = 20
-            if len(args) > 1:
+            if parsed_cmd.args:
                 try:
-                    limit = int(args[1])
+                    limit = int(parsed_cmd.args[0])
                 except ValueError:
-                    console.print("[yellow]Invalid limit, using default (20)[/yellow]")
+                    console.print(warning_msg("Invalid limit, using default (20)"))
             await self.arxiv_command.show_arxiv_history(limit)
             
         else:
-            console.print("[red]Invalid arxiv command. Use: search <query>, download <id>, or history[/red]")
-            
-    async def _handle_history_command(self):
+            console.print(error_msg("Invalid arxiv command. Use: search <query>, wizard, download <id>, or history"))
+    
+    async def _handle_history_command(self, args):
         """Show file insertion history"""
         if not self.session_manager.ensure_session():
             return
@@ -241,12 +484,15 @@ Available commands:
             file_tracker = FileTracker(working_dir)
             await file_tracker.init_database()
             
-            history = await file_tracker.get_insertion_history(50)
+            limit = 50
+            if args and args[0].isdigit():
+                limit = int(args[0])
+            
+            history = await file_tracker.get_insertion_history(limit)
             if not history:
-                console.print("[yellow]No file insertion history found[/yellow]")
+                console.print(warning_msg("No file insertion history found"))
                 return
                 
-            from rich.table import Table
             table = Table(title=f"File Insertion History (last {len(history)} files)")
             table.add_column("Filename", style="cyan")
             table.add_column("Status", style="green")
@@ -269,8 +515,8 @@ Available commands:
             console.print(table)
             
         except Exception as e:
-            console.print(f"[red]Error retrieving history: {e}[/red]")
-            
+            console.print(error_msg(f"Error retrieving history: {e}"))
+    
     async def _handle_duplicates_command(self):
         """Show duplicate files"""
         if not self.session_manager.ensure_session():
@@ -284,10 +530,9 @@ Available commands:
             
             duplicates = await file_tracker.find_duplicates()
             if not duplicates:
-                console.print("[green]No duplicate files found[/green]")
+                console.print(success_msg("No duplicate files found"))
                 return
                 
-            from rich.table import Table
             table = Table(title=f"Duplicate Files ({len(duplicates)} sets)")
             table.add_column("Files", style="cyan")
             table.add_column("Count", style="red", width=8)
@@ -299,47 +544,13 @@ Available commands:
             console.print(table)
             
         except Exception as e:
-            console.print(f"[red]Error retrieving duplicates: {e}[/red]")
-        
-    def _show_status(self):
-        """Show current session and system status"""
-        from rich.table import Table
-        
-        table = Table(title="Research Router Status")
-        table.add_column("Setting", style="cyan")
-        table.add_column("Value", style="magenta")
-        
-        # Current session
-        current = self.session_manager.current_session or "None"
-        table.add_row("Current Session", current)
-        
-        # Working directory
-        if self.session_manager.current_session:
-            working_dir = self.session_manager.get_current_working_dir()
-            table.add_row("Working Directory", str(working_dir))
-            
-            # Check for knowledge graph files
-            if working_dir and self._has_knowledge_graph(working_dir):
-                table.add_row("Knowledge Graph", "✓ Available")
-            else:
-                table.add_row("Knowledge Graph", "✗ Not found")
-        else:
-            table.add_row("Working Directory", "No session active")
-            
-        # API Configuration
-        if self.config.has_openai_config:
-            table.add_row("OpenAI API", "✓ Configured")
-        elif self.config.has_azure_openai_config:
-            table.add_row("Azure OpenAI API", "✓ Configured")
-        else:
-            table.add_row("API Configuration", "✗ Not configured")
-            
-        console.print(table)
-        
+            console.print(error_msg(f"Error retrieving duplicates: {e}"))
+    
     def _has_knowledge_graph(self, working_dir):
         """Check if a knowledge graph exists in the working directory"""
-        from pathlib import Path
-        
+        if not working_dir:
+            return False
+            
         graph_files = [
             "kv_store_full_docs.json",
             "kv_store_text_chunks.json", 
@@ -348,20 +559,22 @@ Available commands:
         
         return any((working_dir / filename).exists() for filename in graph_files)
 
+
 def main():
     """Main entry point for the CLI"""
     try:
-        cli = CLI()
-        asyncio.run(cli.interactive_loop())
+        cli = ResearchRouterCLI()
+        cli.run_interactive_mode()
     except KeyboardInterrupt:
         console.print("\nGoodbye!")
     except ImportError as e:
-        console.print(f"[red]Error: Missing dependencies: {e}[/red]")
-        console.print("Please run: uv pip install -r requirements.txt")
+        console.print(error_msg(f"Missing dependencies: {e}"))
+        console.print(info_msg("Please run: uv pip install -r requirements.txt"))
         sys.exit(1)
     except Exception as e:
-        console.print(f"[red]Unexpected error: {e}[/red]")
+        console.print(error_msg(f"Unexpected error: {e}"))
         sys.exit(1)
+
 
 if __name__ == "__main__":
     main()

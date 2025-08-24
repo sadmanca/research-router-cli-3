@@ -1,0 +1,75 @@
+{
+  "0": {
+    "report_string": "# Nankai University's GraphRAG-R1 Research Group\n\nThis community is centered around Nankai University and a group of its affiliated researchers: Chuanyue Yu, Kuo Zhao, Mingjian Feng, Xiangzhe Jiang, Yufei Sun, and Yuzhi Zhang. All these individuals are authors of the research paper 'GraphRAG-R1: Graph Retrieval-Augmented Generation with Process-Constrained Reinforcement Learning'. Yuzhi Zhang is also identified as a project co-leader. The community primarily represents an academic research collaboration focused on this specific paper.\n\n## Nankai University as the central institutional affiliation for researchers.\n\nNankai University is identified as an academic institution that serves as the primary affiliation for all listed individuals: Chuanyue Yu, Kuo Zhao, Mingjian Feng, Xiangzhe Jiang, Yufei Sun, and Yuzhi Zhang. These affiliations are explicitly stated as institutional connections for the authors of the 'GraphRAG-R1' paper, establishing Nankai University as the organizational hub for this research group.\n\n## The community's collective focus on the 'GraphRAG-R1' research paper.\n\nAll listed individuals—Chuanyue Yu, Kuo Zhao, Mingjian Feng, Xiangzhe Jiang, Yufei Sun, and Yuzhi Zhang—are authors of the research paper 'GraphRAG-R1: Graph Retrieval-Augmented Generation with Process-Constrained Reinforcement Learning'. This shared authorship and association with a singular academic output demonstrate that the community is a collaborative research group united by this specific project.\n\n## Specific leadership role identified for Yuzhi Zhang within the research project.\n\nBeyond being an author, Yuzhi Zhang is uniquely designated as a 'project co-leader' of the research paper 'GraphRAG-R1: Graph Retrieval-Augmented Generation with Process-Constrained Reinforcement Learning'. This indicates a more prominent or guiding role for Yuzhi Zhang in the direction and execution of this specific research endeavor compared to the other listed authors.\n\n## Availability of direct contact information for selected research group members.\n\nEmail addresses are provided for two key members of the research group: Chuanyue Yu (yuchuanyue@mail.nankai.edu.cn) and Yuzhi Zhang (zyz@nankai.edu.cn). The presence of these contact details could facilitate direct communication, collaboration, or inquiries regarding their work on the 'GraphRAG-R1' paper.\n\n## The research focuses on an advanced field of artificial intelligence and machine learning.\n\nThe full title of the collaborative work, 'GraphRAG-R1: Graph Retrieval-Augmented Generation with Process-Constrained Reinforcement Learning', indicates the specialized technical domain of the community's research. This area combines concepts from graph theory, information retrieval, augmented generation models, and reinforcement learning, placing the group's efforts within cutting-edge artificial intelligence and machine learning research.",
+    "report_json": {
+      "title": "Nankai University's GraphRAG-R1 Research Group",
+      "summary": "This community is centered around Nankai University and a group of its affiliated researchers: Chuanyue Yu, Kuo Zhao, Mingjian Feng, Xiangzhe Jiang, Yufei Sun, and Yuzhi Zhang. All these individuals are authors of the research paper 'GraphRAG-R1: Graph Retrieval-Augmented Generation with Process-Constrained Reinforcement Learning'. Yuzhi Zhang is also identified as a project co-leader. The community primarily represents an academic research collaboration focused on this specific paper.",
+      "rating": 2.0,
+      "rating_explanation": "The community's activities are centered on academic research and publication, posing a generally low immediate societal impact.",
+      "findings": [
+        {
+          "summary": "Nankai University as the central institutional affiliation for researchers.",
+          "explanation": "Nankai University is identified as an academic institution that serves as the primary affiliation for all listed individuals: Chuanyue Yu, Kuo Zhao, Mingjian Feng, Xiangzhe Jiang, Yufei Sun, and Yuzhi Zhang. These affiliations are explicitly stated as institutional connections for the authors of the 'GraphRAG-R1' paper, establishing Nankai University as the organizational hub for this research group."
+        },
+        {
+          "summary": "The community's collective focus on the 'GraphRAG-R1' research paper.",
+          "explanation": "All listed individuals—Chuanyue Yu, Kuo Zhao, Mingjian Feng, Xiangzhe Jiang, Yufei Sun, and Yuzhi Zhang—are authors of the research paper 'GraphRAG-R1: Graph Retrieval-Augmented Generation with Process-Constrained Reinforcement Learning'. This shared authorship and association with a singular academic output demonstrate that the community is a collaborative research group united by this specific project."
+        },
+        {
+          "summary": "Specific leadership role identified for Yuzhi Zhang within the research project.",
+          "explanation": "Beyond being an author, Yuzhi Zhang is uniquely designated as a 'project co-leader' of the research paper 'GraphRAG-R1: Graph Retrieval-Augmented Generation with Process-Constrained Reinforcement Learning'. This indicates a more prominent or guiding role for Yuzhi Zhang in the direction and execution of this specific research endeavor compared to the other listed authors."
+        },
+        {
+          "summary": "Availability of direct contact information for selected research group members.",
+          "explanation": "Email addresses are provided for two key members of the research group: Chuanyue Yu (yuchuanyue@mail.nankai.edu.cn) and Yuzhi Zhang (zyz@nankai.edu.cn). The presence of these contact details could facilitate direct communication, collaboration, or inquiries regarding their work on the 'GraphRAG-R1' paper."
+        },
+        {
+          "summary": "The research focuses on an advanced field of artificial intelligence and machine learning.",
+          "explanation": "The full title of the collaborative work, 'GraphRAG-R1: Graph Retrieval-Augmented Generation with Process-Constrained Reinforcement Learning', indicates the specialized technical domain of the community's research. This area combines concepts from graph theory, information retrieval, augmented generation models, and reinforcement learning, placing the group's efforts within cutting-edge artificial intelligence and machine learning research."
+        }
+      ]
+    },
+    "level": 0,
+    "title": "Cluster 0",
+    "edges": [
+      [
+        "\"NANKAI UNIVERSITY\"",
+        "\"YUFEI SUN\""
+      ],
+      [
+        "\"CHUANYUE YU\"",
+        "\"NANKAI UNIVERSITY\""
+      ],
+      [
+        "\"MINGJIAN FENG\"",
+        "\"NANKAI UNIVERSITY\""
+      ],
+      [
+        "\"NANKAI UNIVERSITY\"",
+        "\"XIANGZHE JIANG\""
+      ],
+      [
+        "\"KUO ZHAO\"",
+        "\"NANKAI UNIVERSITY\""
+      ],
+      [
+        "\"NANKAI UNIVERSITY\"",
+        "\"YUZHI ZHANG\""
+      ]
+    ],
+    "nodes": [
+      "\"YUZHI ZHANG\"",
+      "\"MINGJIAN FENG\"",
+      "\"KUO ZHAO\"",
+      "\"YUFEI SUN\"",
+      "\"CHUANYUE YU\"",
+      "\"NANKAI UNIVERSITY\"",
+      "\"XIANGZHE JIANG\""
+    ],
+    "chunk_ids": [
+      "chunk-e0b88d32f06db02af102ff4143604dd2"
+    ],
+    "occurrence": 1.0,
+    "sub_communities": []
+  }
+}

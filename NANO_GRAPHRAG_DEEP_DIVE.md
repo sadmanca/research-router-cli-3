@@ -146,6 +146,268 @@ The system can answer questions using three fundamentally different approaches:
 
 **The key insight**: Instead of trying to solve NER as a classification problem, treat it as a text understanding and structured generation problem. Modern LLMs excel at this kind of task.
 
+### Advanced Entity Extraction Techniques
+
+#### The Gleaning Process: Iterative Refinement
+
+**What is "gleaning"?** Named after the agricultural practice of collecting leftover crops after the main harvest, gleaning in nano-graphrag means making multiple passes over the same text to extract entities that might have been missed.
+
+**The gleaning algorithm** (controlled by `entity_extract_max_gleaning` parameter):
+
+1. **First Pass**: Extract entities using the standard prompt
+2. **Analysis**: Compare the number of entities found vs. expected (based on text length heuristics)
+3. **Second Pass**: If entities seem sparse, run a follow-up extraction with a modified prompt: "MANY entities were missed in the last extraction. Add them below using the same format:"
+4. **Validation**: Check if new entities were found; if yes, potentially do a third pass
+
+**Why gleaning works**:
+- **LLM Attention**: Different prompts can cause the LLM to focus on different aspects of the text
+- **Context Sensitivity**: Later passes can catch entities that were overshadowed by more prominent ones
+- **Completeness**: Ensures comprehensive extraction for dense, information-rich texts
+
+**Gleaning example**:
+```python
+# First extraction finds: ["APPLE INC", "IPHONE", "TIM COOK"]
+# Gleaning prompt: "MANY entities were missed. Add them below..."
+# Second extraction adds: ["CUPERTINO", "CALIFORNIA", "STEVE JOBS", "IPAD", "MAC"]
+```
+
+#### Advanced Prompt Engineering Strategies
+
+**The Multi-Layer Prompting Approach**:
+
+**Layer 1 - Goal Setting**: Clear, unambiguous instructions about what to extract
+```text
+-Goal-
+Given a text document that is potentially relevant to this activity and a list of entity types, 
+identify all entities of those types from the text and all relationships among the identified entities.
+```
+
+**Layer 2 - Format Specification**: Exact output format with delimiters
+```text
+Format each entity as ("entity"{tuple_delimiter}<entity_name>{tuple_delimiter}<entity_type>{tuple_delimiter}<entity_description>)
+```
+
+**Layer 3 - Examples**: Multiple concrete examples showing the desired behavior
+```text
+Example 1: [Simple technology example]
+Example 2: [Complex multi-entity example]  
+Example 3: [Edge case with concepts and events]
+```
+
+**Layer 4 - Real Data**: The actual text to process
+```text
+-Real Data-
+Entity_types: {entity_types}
+Text: {input_text}
+```
+
+**Why this structure works**:
+- **Cognitive Priming**: Each layer prepares the LLM for the next level of complexity
+- **Format Reinforcement**: Multiple examples ensure consistent output formatting
+- **Error Reduction**: Clear specifications reduce ambiguous interpretations
+
+#### Sophisticated Response Parsing
+
+**The parsing challenge**: LLMs don't always follow format specifications perfectly. Nano-graphrag handles multiple types of format variations:
+
+**1. Delimiter Variations**:
+```python
+# Expected: ("entity"|"APPLE INC"|"organization"|"Technology company")
+# Actual LLM outputs handled:
+# - ("entity", "APPLE INC", "organization", "Technology company")
+# - ("entity" | "APPLE INC" | "organization" | "Technology company")
+# - entity|APPLE INC|organization|Technology company
+```
+
+**2. Incomplete Records**:
+```python
+# Missing fields are handled gracefully:
+# ("entity"|"APPLE INC"|"organization")  # Missing description - gets "UNKNOWN"
+# ("entity"|"APPLE INC")  # Missing type and description - gets defaults
+```
+
+**3. Malformed Delimiters**:
+```python
+# The parser handles various completion indicators:
+# <|COMPLETE|>, COMPLETE, [COMPLETE], ###COMPLETE###
+```
+
+**4. Nested Content**:
+```python
+# Entities with complex descriptions:
+# ("entity"|"APPLE INC"|"organization"|"Technology company that makes smartphones, tablets, and computers; founded in 1976")
+```
+
+**The robust parsing algorithm** (implemented in `_op.py:170-249`):
+
+```python
+def parse_llm_response(response_text, chunk_key):
+    # Step 1: Clean and normalize the response
+    cleaned = response_text.strip()
+    
+    # Step 2: Split on record delimiters with fallbacks
+    records = split_with_multiple_delimiters(cleaned, ["##", "\n\n", "|||"])
+    
+    # Step 3: Process each record with error recovery
+    entities, relationships = [], []
+    for record in records:
+        try:
+            # Try primary parsing approach
+            parsed = parse_single_record(record, chunk_key)
+            if parsed['type'] == 'entity':
+                entities.append(parsed)
+            elif parsed['type'] == 'relationship':
+                relationships.append(parsed)
+        except ParsingError:
+            # Try secondary parsing approaches
+            try:
+                parsed = fallback_parse(record, chunk_key)
+                # ... handle fallback result
+            except:
+                logger.warning(f"Failed to parse record: {record[:100]}...")
+                continue
+    
+    return entities, relationships
+```
+
+#### Entity Validation and Quality Control
+
+**Validation layers** ensure extracted entities are meaningful:
+
+**1. Name Validation**:
+```python
+def validate_entity_name(name):
+    # Reject names that are too short, too long, or nonsensical
+    if len(name) < 2 or len(name) > 100:
+        return False
+    if name.count(' ') > 10:  # Probably malformed
+        return False
+    if is_generic_term(name):  # "thing", "item", "stuff"
+        return False
+    return True
+```
+
+**2. Type Consistency**:
+```python
+def validate_entity_type(entity_type, description):
+    # Check if type makes sense given the description
+    if entity_type == "person" and "company" in description.lower():
+        return "organization"  # Auto-correct obvious mistakes
+    return entity_type
+```
+
+**3. Relationship Coherence**:
+```python
+def validate_relationship(source, target, description, weight):
+    # Ensure relationships make logical sense
+    if source == target:  # Self-relationships are suspicious
+        return None
+    if weight < 0 or weight > 10:  # Weight out of expected range
+        weight = max(1, min(10, weight))
+    return {"source": source, "target": target, "description": description, "weight": weight}
+```
+
+#### Performance Optimizations for Entity Extraction
+
+**1. Batch Processing Strategy**:
+Instead of processing chunks one by one, nano-graphrag processes them in batches:
+
+```python
+async def extract_entities_batch(chunks, batch_size=8):
+    # Process multiple chunks simultaneously
+    chunk_batches = [chunks[i:i+batch_size] for i in range(0, len(chunks), batch_size)]
+    
+    all_results = []
+    for batch in chunk_batches:
+        # Process batch in parallel
+        batch_tasks = [extract_entities_single(chunk) for chunk in batch]
+        batch_results = await asyncio.gather(*batch_tasks, return_exceptions=True)
+        all_results.extend(batch_results)
+    
+    return all_results
+```
+
+**2. Token Management**:
+```python
+def optimize_chunk_for_extraction(chunk_content, max_tokens):
+    # Smart truncation that preserves entity contexts
+    if count_tokens(chunk_content) <= max_tokens:
+        return chunk_content
+    
+    # Try to truncate at sentence boundaries
+    sentences = split_into_sentences(chunk_content)
+    truncated = ""
+    for sentence in sentences:
+        if count_tokens(truncated + sentence) > max_tokens:
+            break
+        truncated += sentence + " "
+    
+    return truncated.strip()
+```
+
+**3. Caching Strategy**:
+```python
+# LLM responses are cached by content hash
+cache_key = compute_hash(chunk_content + extraction_prompt)
+if cache_key in llm_response_cache:
+    return cached_response
+else:
+    response = await call_llm(prompt)
+    llm_response_cache[cache_key] = response
+    return response
+```
+
+#### Error Recovery and Fallback Mechanisms
+
+**When entity extraction fails**, nano-graphrag has multiple recovery strategies:
+
+**1. Partial Success Handling**:
+```python
+if len(extracted_entities) == 0 and len(text) > 1000:
+    # Text is substantial but no entities found - retry with simplified prompt
+    simplified_prompt = create_simple_extraction_prompt(text)
+    retry_result = await llm_call(simplified_prompt)
+    return parse_with_lower_standards(retry_result)
+```
+
+**2. Format Recovery**:
+```python
+def recover_from_format_errors(malformed_response):
+    # Try to extract entities even from poorly formatted responses
+    patterns = [
+        r'entity[:\s]*([^|]+)[|]+([^|]+)[|]+([^|]+)',  # Basic pattern
+        r'([A-Z][A-Z\s]+).*?(?:organization|person|geo|event)',  # Name + type
+        r'"([^"]+)"\s*(?:is|was|are)\s*(?:a|an)\s*([^.]+)',  # "Apple Inc" is a technology company
+    ]
+    
+    recovered_entities = []
+    for pattern in patterns:
+        matches = re.findall(pattern, malformed_response, re.IGNORECASE)
+        for match in matches:
+            entity = create_entity_from_match(match)
+            recovered_entities.append(entity)
+    
+    return recovered_entities
+```
+
+**3. Minimum Viable Extraction**:
+```python
+def ensure_minimum_entities(text, extracted_entities):
+    # If very few entities found, extract at least proper nouns
+    if len(extracted_entities) < 3 and len(text) > 500:
+        proper_nouns = extract_proper_nouns_nltk(text)
+        for noun in proper_nouns:
+            if noun not in [e['name'] for e in extracted_entities]:
+                extracted_entities.append({
+                    'name': noun.upper(),
+                    'type': 'UNKNOWN',
+                    'description': f'Proper noun found in text: {noun}',
+                    'source': 'fallback_extraction'
+                })
+    
+    return extracted_entities
+```
+
 ---
 
 ## How Knowledge Graph Construction Works
@@ -253,6 +515,346 @@ The system can answer questions using three fundamentally different approaches:
 3. **New relationships**: Add or strengthen existing connections
 4. **Community updates**: Recompute communities (currently rebuilds all, but could be optimized)
 
+### Advanced Graph Construction Algorithms
+
+#### The Entity Similarity Calculation
+
+**Beyond simple name matching**, nano-graphrag uses sophisticated similarity metrics to determine if entities should be merged:
+
+**1. String Similarity Metrics**:
+```python
+def calculate_entity_similarity(entity1, entity2):
+    name_sim = levenshtein_similarity(entity1['name'], entity2['name'])
+    desc_sim = cosine_similarity(entity1['description'], entity2['description'])
+    type_match = 1.0 if entity1['type'] == entity2['type'] else 0.5
+    
+    # Weighted combination
+    total_sim = (name_sim * 0.6) + (desc_sim * 0.3) + (type_match * 0.1)
+    return total_sim
+
+def should_merge_entities(entity1, entity2, threshold=0.85):
+    return calculate_entity_similarity(entity1, entity2) > threshold
+```
+
+**2. Context-Aware Matching**:
+```python
+def context_aware_entity_match(entity1, entity2):
+    # Check if entities appear in similar contexts
+    shared_chunks = set(entity1['source_chunks']) & set(entity2['source_chunks'])
+    if len(shared_chunks) > 0:
+        return True  # Entities from same chunks are likely the same
+    
+    # Check if entities have relationships to same other entities
+    entity1_neighbors = get_entity_neighbors(entity1['name'])
+    entity2_neighbors = get_entity_neighbors(entity2['name'])
+    
+    neighbor_overlap = len(entity1_neighbors & entity2_neighbors)
+    if neighbor_overlap > 2:  # Share multiple neighbors
+        return True
+    
+    return False
+```
+
+#### The Graph Merging State Machine
+
+**Nano-graphrag maintains graph consistency** through a sophisticated state machine that manages entity and relationship merging:
+
+**State 1: Collection Phase**
+```python
+class GraphMerger:
+    def __init__(self):
+        self.pending_entities = {}  # Entities waiting to be merged
+        self.pending_relationships = {}  # Relationships waiting to be processed
+        self.conflict_queue = []  # Entities with merge conflicts
+        
+    def collect_extractions(self, chunk_extractions):
+        for chunk_id, (entities, relationships) in chunk_extractions.items():
+            for entity in entities:
+                entity_key = self.normalize_entity_name(entity['name'])
+                
+                if entity_key not in self.pending_entities:
+                    self.pending_entities[entity_key] = []
+                self.pending_entities[entity_key].append(entity)
+            
+            for relationship in relationships:
+                rel_key = (relationship['source'], relationship['target'])
+                if rel_key not in self.pending_relationships:
+                    self.pending_relationships[rel_key] = []
+                self.pending_relationships[rel_key].append(relationship)
+```
+
+**State 2: Conflict Resolution Phase**
+```python
+    def resolve_entity_conflicts(self):
+        for entity_key, entity_versions in self.pending_entities.items():
+            if len(entity_versions) == 1:
+                continue  # No conflict
+            
+            # Multiple versions of the same entity - need to merge
+            merged_entity = self.merge_entity_versions(entity_versions)
+            
+            if merged_entity is None:
+                # Merge failed - add to conflict queue for manual resolution
+                self.conflict_queue.append((entity_key, entity_versions))
+            else:
+                self.pending_entities[entity_key] = [merged_entity]
+    
+    def merge_entity_versions(self, entity_versions):
+        # Sophisticated merging algorithm
+        try:
+            # Step 1: Choose the most common type
+            type_counts = Counter([e['type'] for e in entity_versions])
+            merged_type = type_counts.most_common(1)[0][0]
+            
+            # Step 2: Merge descriptions intelligently
+            descriptions = [e['description'] for e in entity_versions]
+            merged_description = self.smart_description_merge(descriptions)
+            
+            # Step 3: Aggregate source information
+            sources = []
+            for entity in entity_versions:
+                sources.extend(entity.get('source_chunks', []))
+            merged_sources = list(set(sources))
+            
+            return {
+                'name': entity_versions[0]['name'],  # Use first canonical name
+                'type': merged_type,
+                'description': merged_description,
+                'source_chunks': merged_sources,
+                'confidence': self.calculate_merge_confidence(entity_versions)
+            }
+        except Exception as e:
+            logger.error(f"Entity merge failed: {e}")
+            return None
+```
+
+#### Intelligent Description Merging
+
+**The description merging algorithm** goes beyond simple concatenation:
+
+```python
+def smart_description_merge(self, descriptions):
+    # Step 1: Remove duplicates and near-duplicates
+    unique_descriptions = self.deduplicate_descriptions(descriptions)
+    
+    # Step 2: Rank descriptions by information content
+    ranked_descriptions = self.rank_descriptions_by_content(unique_descriptions)
+    
+    # Step 3: Merge complementary information
+    merged = self.merge_complementary_info(ranked_descriptions)
+    
+    # Step 4: Ensure the result isn't too long
+    if len(merged) > 500:  # Token limit for descriptions
+        merged = self.summarize_description(merged)
+    
+    return merged
+
+def deduplicate_descriptions(self, descriptions):
+    unique = []
+    for desc in descriptions:
+        # Check if this description is substantially different from existing ones
+        is_unique = True
+        for existing in unique:
+            if self.description_similarity(desc, existing) > 0.8:
+                is_unique = False
+                break
+        
+        if is_unique:
+            unique.append(desc)
+    
+    return unique
+
+def merge_complementary_info(self, descriptions):
+    # Look for complementary rather than overlapping information
+    aspects = {
+        'definition': [],
+        'history': [],
+        'products': [],
+        'location': [],
+        'people': [],
+        'other': []
+    }
+    
+    # Classify each description by aspect
+    for desc in descriptions:
+        aspect = self.classify_description_aspect(desc)
+        aspects[aspect].append(desc)
+    
+    # Merge within each aspect, then combine
+    merged_aspects = []
+    for aspect, desc_list in aspects.items():
+        if desc_list:
+            merged_aspect = self.merge_within_aspect(desc_list)
+            merged_aspects.append(merged_aspect)
+    
+    return "<SEP>".join(merged_aspects)
+```
+
+#### Graph Consistency Validation
+
+**After merging**, nano-graphrag validates graph consistency:
+
+```python
+class GraphConsistencyValidator:
+    def validate_graph_state(self, graph):
+        issues = []
+        
+        # Check 1: Orphaned relationships
+        for edge in graph.edges():
+            if not graph.has_node(edge[0]) or not graph.has_node(edge[1]):
+                issues.append(f"Orphaned relationship: {edge[0]} -> {edge[1]}")
+        
+        # Check 2: Suspicious entity types
+        for node in graph.nodes():
+            node_data = graph.nodes[node]
+            if self.is_suspicious_entity(node_data):
+                issues.append(f"Suspicious entity: {node}")
+        
+        # Check 3: Relationship weight distribution
+        weights = [graph.edges[edge]['weight'] for edge in graph.edges()]
+        if self.is_suspicious_weight_distribution(weights):
+            issues.append("Suspicious relationship weight distribution")
+        
+        # Check 4: Graph connectivity
+        if not self.is_reasonably_connected(graph):
+            issues.append("Graph appears to be overly fragmented")
+        
+        return issues
+    
+    def is_suspicious_entity(self, entity_data):
+        # Entities that might be extraction errors
+        name = entity_data['entity_name']
+        description = entity_data.get('description', '')
+        
+        # Too generic
+        if name.lower() in ['item', 'thing', 'object', 'entity']:
+            return True
+        
+        # Too long (probably malformed)
+        if len(name) > 100:
+            return True
+        
+        # Inconsistent with description
+        if 'organization' in entity_data.get('entity_type', '').lower():
+            if 'person' in description.lower() and 'company' not in description.lower():
+                return True
+        
+        return False
+```
+
+#### Memory-Efficient Graph Operations
+
+**For large graphs**, nano-graphrag uses memory-efficient operations:
+
+```python
+class MemoryEfficientGraphOperations:
+    def __init__(self, graph):
+        self.graph = graph
+        self.node_cache = {}  # LRU cache for frequently accessed nodes
+        
+    def batch_node_updates(self, updates, batch_size=1000):
+        """Update many nodes efficiently"""
+        for i in range(0, len(updates), batch_size):
+            batch = updates[i:i+batch_size]
+            
+            # Prepare batch update
+            with self.graph.batch_update():
+                for node_id, node_data in batch:
+                    self.graph.add_node(node_id, **node_data)
+    
+    def streaming_edge_addition(self, edge_stream):
+        """Add edges from a stream without loading all into memory"""
+        edge_buffer = []
+        buffer_size = 5000
+        
+        for edge_data in edge_stream:
+            edge_buffer.append(edge_data)
+            
+            if len(edge_buffer) >= buffer_size:
+                self.flush_edge_buffer(edge_buffer)
+                edge_buffer = []
+        
+        # Flush remaining edges
+        if edge_buffer:
+            self.flush_edge_buffer(edge_buffer)
+    
+    def flush_edge_buffer(self, edges):
+        """Efficiently add a batch of edges"""
+        # Sort edges to improve cache locality
+        edges.sort(key=lambda x: (x['source'], x['target']))
+        
+        for edge in edges:
+            self.graph.add_edge(
+                edge['source'], 
+                edge['target'],
+                **edge['attributes']
+            )
+```
+
+#### Advanced Relationship Processing
+
+**Relationship processing** goes beyond simple addition:
+
+```python
+class RelationshipProcessor:
+    def __init__(self):
+        self.relationship_patterns = self.load_relationship_patterns()
+    
+    def process_relationship_batch(self, relationships):
+        processed = []
+        
+        for rel in relationships:
+            # Step 1: Normalize relationship description
+            normalized_desc = self.normalize_relationship_description(rel['description'])
+            
+            # Step 2: Infer relationship type
+            rel_type = self.infer_relationship_type(normalized_desc)
+            
+            # Step 3: Validate relationship makes sense
+            if self.validate_relationship_logic(rel, rel_type):
+                processed.append({
+                    **rel,
+                    'normalized_description': normalized_desc,
+                    'inferred_type': rel_type,
+                    'confidence': self.calculate_relationship_confidence(rel)
+                })
+        
+        return processed
+    
+    def normalize_relationship_description(self, description):
+        # Convert various expressions to canonical forms
+        normalizations = {
+            r'(?:is|was|are|were)\s+(?:the\s+)?(?:ceo|chief executive officer)': 'IS_CEO_OF',
+            r'(?:founded|established|created|started)': 'FOUNDED',
+            r'(?:manufactures|produces|makes)': 'MANUFACTURES',
+            r'(?:located|situated|based)\s+(?:in|at)': 'LOCATED_IN',
+            r'(?:owns|controls|possesses)': 'OWNS',
+        }
+        
+        normalized = description.lower()
+        for pattern, replacement in normalizations.items():
+            normalized = re.sub(pattern, replacement, normalized)
+        
+        return normalized
+    
+    def infer_relationship_type(self, description):
+        # Use pattern matching to infer relationship types
+        type_patterns = {
+            'LEADERSHIP': ['IS_CEO_OF', 'IS_PRESIDENT_OF', 'LEADS', 'MANAGES'],
+            'OWNERSHIP': ['OWNS', 'CONTROLS', 'POSSESSES'],
+            'CREATION': ['FOUNDED', 'ESTABLISHED', 'CREATED'],
+            'PRODUCTION': ['MANUFACTURES', 'PRODUCES', 'MAKES'],
+            'LOCATION': ['LOCATED_IN', 'BASED_IN', 'SITUATED_IN'],
+            'ASSOCIATION': ['WORKS_FOR', 'EMPLOYED_BY', 'MEMBER_OF']
+        }
+        
+        for rel_type, patterns in type_patterns.items():
+            if any(pattern in description.upper() for pattern in patterns):
+                return rel_type
+        
+        return 'GENERIC_RELATION'
+```
+
 ### Why This Graph Construction Works
 
 **Traditional knowledge graph problems**:
@@ -267,6 +869,9 @@ The system can answer questions using three fundamentally different approaches:
 - **Source Preservation**: Always traceable back to original text
 - **Incremental Growth**: Can efficiently add new information without rebuilding
 - **Dual Representation**: Combines symbolic reasoning with semantic similarity
+- **Quality Control**: Multiple validation layers ensure graph coherence
+- **Memory Efficiency**: Optimized for processing large document collections
+- **Error Recovery**: Graceful handling of extraction and merging failures
 
 ---
 
@@ -392,6 +997,537 @@ The LLM generates a JSON report with:
 - **Step 2**: Analyze each community's report for AI trends
 - **Step 3**: Synthesize findings across communities to identify overarching trends
 
+### Advanced Community Detection Algorithms
+
+#### The Mathematics Behind Modularity
+
+**Modularity** is the key metric that determines community quality. Here's how it works mathematically:
+
+**The modularity formula**:
+```
+Q = (1/2m) * Σ[Aij - (ki*kj)/(2m)] * δ(ci, cj)
+```
+
+Where:
+- `m` = total number of edges in the graph
+- `Aij` = adjacency matrix element (1 if edge exists, 0 otherwise)  
+- `ki`, `kj` = degrees of nodes i and j
+- `ci`, `cj` = community assignments of nodes i and j
+- `δ(ci, cj)` = 1 if nodes are in same community, 0 otherwise
+
+**What this means conceptually**:
+- `Aij` counts actual edges within communities
+- `(ki*kj)/(2m)` is the expected number of edges in a random graph
+- We want actual edges within communities to exceed random expectations
+
+**Implementation in nano-graphrag**:
+```python
+class ModularityCalculator:
+    def __init__(self, graph):
+        self.graph = graph
+        self.total_edges = graph.number_of_edges()
+        self.node_degrees = dict(graph.degree())
+    
+    def calculate_modularity(self, communities):
+        """Calculate modularity Q for a given community assignment"""
+        modularity = 0.0
+        
+        for community in communities:
+            community_nodes = list(community)
+            
+            # Calculate internal edges
+            internal_edges = 0
+            for i, node_i in enumerate(community_nodes):
+                for j, node_j in enumerate(community_nodes):
+                    if i < j and self.graph.has_edge(node_i, node_j):
+                        internal_edges += 1
+            
+            # Calculate expected internal edges
+            community_degree_sum = sum(self.node_degrees[node] for node in community_nodes)
+            expected_internal = (community_degree_sum ** 2) / (4 * self.total_edges)
+            
+            # Add to modularity
+            modularity += (internal_edges - expected_internal) / self.total_edges
+        
+        return modularity
+    
+    def delta_modularity(self, node, from_community, to_community):
+        """Calculate change in modularity if node moves between communities"""
+        # This is used during optimization to decide whether to move nodes
+        current_connections_from = self.count_connections(node, from_community)
+        current_connections_to = self.count_connections(node, to_community)
+        
+        degree_node = self.node_degrees[node]
+        sum_from = sum(self.node_degrees[n] for n in from_community if n != node)
+        sum_to = sum(self.node_degrees[n] for n in to_community)
+        
+        delta_q = (current_connections_to - current_connections_from) / self.total_edges
+        delta_q += (degree_node * (sum_from - sum_to)) / (2 * self.total_edges ** 2)
+        
+        return delta_q
+```
+
+#### The Leiden Algorithm Implementation
+
+**Nano-graphrag uses the Leiden algorithm**, which improves upon the Louvain algorithm:
+
+```python
+class LeidenCommunityDetector:
+    def __init__(self, graph, resolution=1.0, random_seed=42):
+        self.graph = graph
+        self.resolution = resolution
+        self.random = random.Random(random_seed)
+        
+    def detect_communities(self):
+        """Main Leiden algorithm implementation"""
+        communities = self.initialize_communities()
+        
+        while True:
+            # Phase 1: Local moving
+            communities = self.local_moving_phase(communities)
+            
+            # Phase 2: Refinement
+            communities = self.refinement_phase(communities)
+            
+            # Phase 3: Aggregation
+            new_graph, community_mapping = self.aggregate_graph(communities)
+            
+            # Check convergence
+            if self.has_converged(communities, new_graph):
+                break
+            
+            # Update for next iteration
+            self.graph = new_graph
+            communities = self.map_communities(communities, community_mapping)
+        
+        return self.finalize_communities(communities)
+    
+    def local_moving_phase(self, communities):
+        """Move nodes to communities that increase modularity most"""
+        improved = True
+        iteration = 0
+        
+        while improved and iteration < 100:  # Prevent infinite loops
+            improved = False
+            iteration += 1
+            
+            # Process nodes in random order
+            nodes = list(self.graph.nodes())
+            self.random.shuffle(nodes)
+            
+            for node in nodes:
+                current_community = self.find_node_community(node, communities)
+                best_community = self.find_best_community(node, communities)
+                
+                if best_community != current_community:
+                    # Move node to better community
+                    communities = self.move_node(node, current_community, best_community, communities)
+                    improved = True
+        
+        return communities
+    
+    def find_best_community(self, node, communities):
+        """Find the community that maximizes modularity gain for this node"""
+        current_community = self.find_node_community(node, communities)
+        best_community = current_community
+        best_gain = 0.0
+        
+        # Consider neighboring communities
+        neighbor_communities = set()
+        for neighbor in self.graph.neighbors(node):
+            neighbor_communities.add(self.find_node_community(neighbor, communities))
+        
+        # Also consider staying in current community
+        neighbor_communities.add(current_community)
+        
+        for candidate_community in neighbor_communities:
+            if candidate_community == current_community:
+                continue
+            
+            gain = self.calculate_modularity_gain(node, current_community, candidate_community)
+            if gain > best_gain:
+                best_gain = gain
+                best_community = candidate_community
+        
+        return best_community
+    
+    def refinement_phase(self, communities):
+        """Refinement phase to improve community quality"""
+        refined_communities = []
+        
+        for community in communities:
+            if len(community) < 3:  # Small communities don't need refinement
+                refined_communities.append(community)
+                continue
+            
+            # Create subgraph for this community
+            subgraph = self.graph.subgraph(community)
+            
+            # Find well-connected subsets within the community
+            subcommunities = self.find_well_connected_subsets(subgraph)
+            
+            # Only split if it improves modularity
+            if self.splitting_improves_modularity(community, subcommunities):
+                refined_communities.extend(subcommunities)
+            else:
+                refined_communities.append(community)
+        
+        return refined_communities
+    
+    def find_well_connected_subsets(self, subgraph):
+        """Find subsets that are more connected internally than externally"""
+        if subgraph.number_of_nodes() < 3:
+            return [list(subgraph.nodes())]
+        
+        # Use spectral clustering on the subgraph
+        adjacency = nx.adjacency_matrix(subgraph)
+        
+        try:
+            # Compute Laplacian eigenvectors
+            laplacian = nx.laplacian_matrix(subgraph, normalized=True)
+            eigenvals, eigenvecs = scipy.sparse.linalg.eigsh(laplacian, k=2, which='SM')
+            
+            # Use second eigenvector (Fiedler vector) for bipartition
+            fiedler_vector = eigenvecs[:, 1]
+            
+            # Split based on sign of Fiedler vector
+            nodes = list(subgraph.nodes())
+            subset1 = [nodes[i] for i in range(len(nodes)) if fiedler_vector[i] >= 0]
+            subset2 = [nodes[i] for i in range(len(nodes)) if fiedler_vector[i] < 0]
+            
+            return [subset1, subset2] if len(subset1) > 0 and len(subset2) > 0 else [nodes]
+            
+        except:
+            # Fallback: return original community
+            return [list(subgraph.nodes())]
+```
+
+#### Hierarchical Community Structure Generation
+
+**Creating the hierarchy** involves multiple rounds of community detection:
+
+```python
+class HierarchicalCommunityBuilder:
+    def __init__(self, graph, max_levels=5):
+        self.original_graph = graph.copy()
+        self.max_levels = max_levels
+        
+    def build_hierarchy(self):
+        """Build complete hierarchical community structure"""
+        hierarchy = {}
+        current_graph = self.original_graph.copy()
+        level = 0
+        
+        while level < self.max_levels:
+            # Detect communities at current level
+            detector = LeidenCommunityDetector(current_graph)
+            communities = detector.detect_communities()
+            
+            # Store communities for this level
+            hierarchy[level] = self.process_communities(communities, level)
+            
+            # Check if we should continue (enough communities to merge)
+            if len(communities) < 3:
+                break
+            
+            # Create aggregated graph for next level
+            current_graph = self.create_aggregated_graph(current_graph, communities)
+            level += 1
+        
+        return self.finalize_hierarchy(hierarchy)
+    
+    def process_communities(self, communities, level):
+        """Process raw communities into structured format"""
+        processed = {}
+        
+        for i, community in enumerate(communities):
+            community_id = f"community-{level}-{i}"
+            
+            processed[community_id] = {
+                'id': community_id,
+                'level': level,
+                'nodes': list(community),
+                'size': len(community),
+                'internal_edges': self.count_internal_edges(community),
+                'external_edges': self.count_external_edges(community),
+                'modularity_contribution': self.calculate_community_modularity(community),
+                'density': self.calculate_community_density(community)
+            }
+        
+        return processed
+    
+    def create_aggregated_graph(self, graph, communities):
+        """Create super-graph where communities become nodes"""
+        aggregated = nx.Graph()
+        
+        # Create mapping from nodes to communities
+        node_to_community = {}
+        for i, community in enumerate(communities):
+            community_id = f"super_node_{i}"
+            aggregated.add_node(community_id, 
+                               size=len(community),
+                               internal_weight=self.calculate_internal_weight(community))
+            
+            for node in community:
+                node_to_community[node] = community_id
+        
+        # Add edges between communities
+        community_connections = defaultdict(int)
+        
+        for edge in graph.edges():
+            source_community = node_to_community[edge[0]]
+            target_community = node_to_community[edge[1]]
+            
+            if source_community != target_community:
+                # Edge between different communities
+                edge_key = tuple(sorted([source_community, target_community]))
+                edge_weight = graph.edges[edge].get('weight', 1)
+                community_connections[edge_key] += edge_weight
+        
+        # Add aggregated edges
+        for (comm1, comm2), weight in community_connections.items():
+            aggregated.add_edge(comm1, comm2, weight=weight)
+        
+        return aggregated
+    
+    def calculate_community_quality_metrics(self, community):
+        """Calculate various quality metrics for a community"""
+        subgraph = self.original_graph.subgraph(community)
+        
+        metrics = {
+            'conductance': self.calculate_conductance(community),
+            'modularity': self.calculate_community_modularity(community),
+            'clustering_coefficient': nx.average_clustering(subgraph),
+            'density': nx.density(subgraph),
+            'diameter': self.safe_diameter(subgraph),
+            'cohesion': self.calculate_cohesion(community)
+        }
+        
+        return metrics
+    
+    def calculate_conductance(self, community):
+        """Calculate conductance (cut ratio) for community"""
+        internal_edges = 0
+        external_edges = 0
+        
+        for node in community:
+            for neighbor in self.original_graph.neighbors(node):
+                if neighbor in community:
+                    internal_edges += 1
+                else:
+                    external_edges += 1
+        
+        internal_edges //= 2  # Each internal edge counted twice
+        total_degree = internal_edges * 2 + external_edges
+        
+        if total_degree == 0:
+            return 0.0
+        
+        return external_edges / total_degree
+    
+    def calculate_cohesion(self, community):
+        """Calculate how tightly connected the community is"""
+        if len(community) < 2:
+            return 1.0
+        
+        subgraph = self.original_graph.subgraph(community)
+        actual_edges = subgraph.number_of_edges()
+        possible_edges = len(community) * (len(community) - 1) / 2
+        
+        return actual_edges / possible_edges if possible_edges > 0 else 0.0
+```
+
+#### Advanced Community Report Generation
+
+**The community report generation** is more sophisticated than simple LLM calls:
+
+```python
+class AdvancedCommunityReportGenerator:
+    def __init__(self, graph, llm_function):
+        self.graph = graph
+        self.llm_function = llm_function
+        self.report_templates = self.load_report_templates()
+    
+    async def generate_detailed_report(self, community, context_communities=None):
+        """Generate comprehensive community report with multiple analysis angles"""
+        
+        # Step 1: Gather comprehensive community data
+        community_data = await self.gather_community_data(community)
+        
+        # Step 2: Perform structural analysis
+        structural_analysis = self.analyze_community_structure(community)
+        
+        # Step 3: Content analysis
+        content_analysis = await self.analyze_community_content(community)
+        
+        # Step 4: Relationship analysis
+        relationship_analysis = self.analyze_community_relationships(community, context_communities)
+        
+        # Step 5: Generate multi-perspective report
+        report = await self.synthesize_community_report(
+            community_data, structural_analysis, content_analysis, relationship_analysis
+        )
+        
+        return report
+    
+    async def gather_community_data(self, community):
+        """Gather all available data about community members"""
+        community_data = {
+            'entities': [],
+            'relationships': [],
+            'entity_types': defaultdict(int),
+            'relationship_types': defaultdict(int),
+            'source_chunks': set(),
+            'time_references': [],
+            'geographical_references': []
+        }
+        
+        # Collect entity data
+        for entity_id in community:
+            entity_data = self.graph.nodes[entity_id]
+            community_data['entities'].append({
+                'id': entity_id,
+                'type': entity_data.get('entity_type', 'unknown'),
+                'description': entity_data.get('description', ''),
+                'sources': entity_data.get('source_id', '').split('<SEP>')
+            })
+            
+            community_data['entity_types'][entity_data.get('entity_type', 'unknown')] += 1
+            community_data['source_chunks'].update(entity_data.get('source_id', '').split('<SEP>'))
+        
+        # Collect relationship data
+        for source in community:
+            for target in community:
+                if self.graph.has_edge(source, target):
+                    edge_data = self.graph.edges[source, target]
+                    relationship = {
+                        'source': source,
+                        'target': target,
+                        'description': edge_data.get('description', ''),
+                        'weight': edge_data.get('weight', 1),
+                        'type': self.infer_relationship_type(edge_data.get('description', ''))
+                    }
+                    community_data['relationships'].append(relationship)
+                    community_data['relationship_types'][relationship['type']] += 1
+        
+        return community_data
+    
+    def analyze_community_structure(self, community):
+        """Analyze the structural properties of the community"""
+        subgraph = self.graph.subgraph(community)
+        
+        analysis = {
+            'size': len(community),
+            'edge_count': subgraph.number_of_edges(),
+            'density': nx.density(subgraph),
+            'average_degree': sum(dict(subgraph.degree()).values()) / len(community) if len(community) > 0 else 0,
+            'clustering_coefficient': nx.average_clustering(subgraph),
+            'connectivity': nx.is_connected(subgraph),
+            'diameter': self.safe_diameter(subgraph),
+            'centrality_analysis': self.analyze_centrality(subgraph),
+            'structural_roles': self.identify_structural_roles(subgraph)
+        }
+        
+        return analysis
+    
+    def analyze_centrality(self, subgraph):
+        """Analyze different centrality measures"""
+        if len(subgraph.nodes()) == 0:
+            return {}
+        
+        centrality_measures = {}
+        
+        try:
+            # Degree centrality
+            degree_cent = nx.degree_centrality(subgraph)
+            centrality_measures['degree'] = {
+                'values': degree_cent,
+                'top_nodes': sorted(degree_cent.items(), key=lambda x: x[1], reverse=True)[:3]
+            }
+            
+            # Betweenness centrality
+            if subgraph.number_of_edges() > 0:
+                between_cent = nx.betweenness_centrality(subgraph)
+                centrality_measures['betweenness'] = {
+                    'values': between_cent,
+                    'top_nodes': sorted(between_cent.items(), key=lambda x: x[1], reverse=True)[:3]
+                }
+            
+            # PageRank
+            pagerank = nx.pagerank(subgraph)
+            centrality_measures['pagerank'] = {
+                'values': pagerank,
+                'top_nodes': sorted(pagerank.items(), key=lambda x: x[1], reverse=True)[:3]
+            }
+            
+        except Exception as e:
+            logger.warning(f"Centrality analysis failed: {e}")
+        
+        return centrality_measures
+    
+    def identify_structural_roles(self, subgraph):
+        """Identify structural roles of nodes in the community"""
+        roles = {
+            'hubs': [],        # Nodes with high degree
+            'bridges': [],     # Nodes with high betweenness
+            'authorities': [], # Nodes with high PageRank
+            'periphery': []    # Nodes with low connectivity
+        }
+        
+        if len(subgraph.nodes()) < 2:
+            return roles
+        
+        # Calculate metrics
+        degree_cent = nx.degree_centrality(subgraph)
+        
+        # Identify roles based on thresholds
+        degree_threshold = np.percentile(list(degree_cent.values()), 75)
+        
+        for node, degree in degree_cent.items():
+            if degree >= degree_threshold:
+                roles['hubs'].append(node)
+            elif degree <= np.percentile(list(degree_cent.values()), 25):
+                roles['periphery'].append(node)
+        
+        return roles
+    
+    async def synthesize_community_report(self, community_data, structural_analysis, 
+                                         content_analysis, relationship_analysis):
+        """Synthesize all analyses into a comprehensive report"""
+        
+        # Build context for LLM
+        context = self.build_report_context(
+            community_data, structural_analysis, content_analysis, relationship_analysis
+        )
+        
+        # Generate report with specialized prompt
+        report_prompt = self.create_community_analysis_prompt(context)
+        
+        try:
+            raw_report = await self.llm_function(
+                report_prompt,
+                max_tokens=2000,
+                response_format={"type": "json_object"}
+            )
+            
+            # Parse and validate report
+            report = self.parse_and_validate_report(raw_report)
+            
+            # Add metadata
+            report['metadata'] = {
+                'generation_time': datetime.now().isoformat(),
+                'community_size': len(community_data['entities']),
+                'analysis_confidence': self.calculate_analysis_confidence(context),
+                'structural_metrics': structural_analysis
+            }
+            
+            return report
+            
+        except Exception as e:
+            logger.error(f"Community report generation failed: {e}")
+            return self.generate_fallback_report(community_data)
+```
+
 ### Why This Community Approach Works
 
 **Traditional topic modeling problems**:
@@ -399,13 +1535,19 @@ The LLM generates a JSON report with:
 - **Static Structure**: Topics don't adapt as new documents are added
 - **No Hierarchical Understanding**: Can't zoom in/out on topic granularity
 - **Weak Entity Relationships**: Don't capture how specific entities relate within topics
+- **No Quality Metrics**: Difficult to assess if topics are meaningful
+- **Limited Interpretability**: Topics are just word distributions
 
 **Nano-graphrag's community advantages**:
-- **Dynamic Topic Discovery**: Communities emerge naturally from the data
-- **Hierarchical Flexibility**: Can query at different levels of granularity
+- **Dynamic Topic Discovery**: Communities emerge naturally from the data structure
+- **Hierarchical Flexibility**: Can query at different levels of granularity (0, 1, 2)
 - **Rich Relationship Modeling**: Understands how entities connect within communities
 - **Incremental Updates**: Can evolve communities as new information is added
 - **AI-Enhanced Interpretation**: LLM-generated reports provide human-understandable context
+- **Quality Assurance**: Mathematical modularity ensures communities are meaningful
+- **Structural Analysis**: Graph metrics reveal community roles and importance
+- **Multi-Perspective Reports**: Communities analyzed from structural, content, and relational angles
+- **Validation Mechanisms**: Multiple checks ensure community coherence and usefulness
 
 ---
 
@@ -597,6 +1739,641 @@ For each relevant community:
 - Start with local query to understand specific entities
 - Follow up with global query to understand broader themes
 - Use naive query for quick fact-checking
+
+**This flexibility makes nano-graphrag more versatile** than traditional RAG systems that only do similarity search or knowledge graphs that only do structured queries.
+
+### Advanced Query Processing Algorithms
+
+#### Vector Search and Similarity Ranking
+
+**The vector search process** is more sophisticated than simple cosine similarity:
+
+```python
+class AdvancedVectorSearch:
+    def __init__(self, vector_db, embedding_function):
+        self.vector_db = vector_db
+        self.embedding_function = embedding_function
+        self.query_cache = {}  # Cache for repeated queries
+        
+    async def advanced_similarity_search(self, query, top_k=20, filters=None):
+        """Perform sophisticated similarity search with multiple ranking factors"""
+        
+        # Step 1: Generate query embedding
+        query_embedding = await self.get_query_embedding(query)
+        
+        # Step 2: Initial similarity search
+        candidates = await self.vector_db.similarity_search(
+            query_embedding, 
+            top_k=top_k * 3  # Get more candidates for reranking
+        )
+        
+        # Step 3: Apply filters if provided
+        if filters:
+            candidates = self.apply_filters(candidates, filters)
+        
+        # Step 4: Advanced reranking
+        reranked_results = await self.rerank_results(query, candidates, top_k)
+        
+        return reranked_results
+    
+    async def get_query_embedding(self, query):
+        """Get query embedding with caching and preprocessing"""
+        
+        # Check cache first
+        cache_key = hash(query)
+        if cache_key in self.query_cache:
+            return self.query_cache[cache_key]
+        
+        # Preprocess query
+        processed_query = self.preprocess_query(query)
+        
+        # Generate embedding
+        embedding = await self.embedding_function(processed_query)
+        
+        # Cache the result
+        self.query_cache[cache_key] = embedding
+        
+        return embedding
+    
+    def preprocess_query(self, query):
+        """Preprocess query for better embeddings"""
+        
+        # Step 1: Normalize whitespace
+        processed = re.sub(r'\s+', ' ', query.strip())
+        
+        # Step 2: Expand contractions
+        processed = self.expand_contractions(processed)
+        
+        # Step 3: Add context markers for better embeddings
+        if '?' in processed:
+            processed = f"Question: {processed}"
+        elif any(word in processed.lower() for word in ['what', 'how', 'why', 'when', 'where', 'who']):
+            processed = f"Question: {processed}"
+        else:
+            processed = f"Query: {processed}"
+        
+        return processed
+    
+    async def rerank_results(self, query, candidates, top_k):
+        """Sophisticated reranking using multiple signals"""
+        
+        scored_candidates = []
+        
+        for candidate in candidates:
+            # Base similarity score
+            base_score = candidate['similarity']
+            
+            # Factor 1: Entity type relevance
+            type_score = self.calculate_type_relevance(query, candidate)
+            
+            # Factor 2: Description quality
+            quality_score = self.calculate_description_quality(candidate)
+            
+            # Factor 3: Source diversity
+            source_score = self.calculate_source_diversity(candidate)
+            
+            # Factor 4: Recency (if temporal information available)
+            recency_score = self.calculate_recency_score(candidate)
+            
+            # Combine scores with learned weights
+            final_score = (
+                base_score * 0.4 +
+                type_score * 0.2 +
+                quality_score * 0.2 +
+                source_score * 0.1 +
+                recency_score * 0.1
+            )
+            
+            scored_candidates.append({
+                **candidate,
+                'rerank_score': final_score,
+                'score_components': {
+                    'base': base_score,
+                    'type': type_score,
+                    'quality': quality_score,
+                    'source': source_score,
+                    'recency': recency_score
+                }
+            })
+        
+        # Sort by final score and return top_k
+        scored_candidates.sort(key=lambda x: x['rerank_score'], reverse=True)
+        return scored_candidates[:top_k]
+    
+    def calculate_type_relevance(self, query, candidate):
+        """Calculate how relevant the entity type is to the query"""
+        entity_type = candidate.get('metadata', {}).get('entity_type', 'unknown')
+        
+        # Query type hints
+        type_keywords = {
+            'organization': ['company', 'corporation', 'firm', 'business', 'organization'],
+            'person': ['person', 'people', 'individual', 'ceo', 'founder', 'president'],
+            'geo': ['location', 'place', 'city', 'country', 'where', 'geography'],
+            'event': ['event', 'happened', 'occurred', 'when', 'meeting', 'conference']
+        }
+        
+        query_lower = query.lower()
+        for entity_type_key, keywords in type_keywords.items():
+            if entity_type.lower() == entity_type_key:
+                if any(keyword in query_lower for keyword in keywords):
+                    return 1.0
+                else:
+                    return 0.5
+        
+        return 0.5  # Default neutral score
+    
+    def calculate_description_quality(self, candidate):
+        """Score based on description richness and informativeness"""
+        description = candidate.get('metadata', {}).get('description', '')
+        
+        # Factors that indicate quality
+        length_score = min(len(description) / 200.0, 1.0)  # Longer descriptions up to a point
+        
+        # Information density (number of meaningful terms)
+        meaningful_terms = len([word for word in description.split() 
+                              if len(word) > 3 and word.isalpha()])
+        density_score = min(meaningful_terms / 20.0, 1.0)
+        
+        # Specificity (presence of numbers, dates, proper nouns)
+        specificity_score = 0.0
+        if re.search(r'\d{4}', description):  # Years
+            specificity_score += 0.3
+        if re.search(r'\$[\d,]+', description):  # Money amounts
+            specificity_score += 0.2
+        if re.search(r'[A-Z][a-z]+ [A-Z][a-z]+', description):  # Proper nouns
+            specificity_score += 0.3
+        
+        return (length_score * 0.4 + density_score * 0.4 + specificity_score * 0.2)
+```
+
+#### Advanced Context Assembly Strategies
+
+**Context assembly** goes beyond simple concatenation:
+
+```python
+class ContextAssembler:
+    def __init__(self, max_tokens=8000):
+        self.max_tokens = max_tokens
+        self.tokenizer = tiktoken.get_encoding("cl100k_base")
+    
+    async def assemble_local_context(self, entities, relationships, communities, text_units):
+        """Intelligently assemble context for local queries"""
+        
+        # Step 1: Rank all components by relevance
+        ranked_entities = self.rank_entities_by_importance(entities)
+        ranked_relationships = self.rank_relationships_by_importance(relationships)
+        ranked_communities = self.rank_communities_by_relevance(communities)
+        ranked_text_units = self.rank_text_units_by_relevance(text_units)
+        
+        # Step 2: Build context incrementally with token tracking
+        context_builder = IncrementalContextBuilder(self.max_tokens)
+        
+        # Always include top entities (they drove the search)
+        context_builder.add_section("Entities", self.format_entities(ranked_entities[:10]))
+        
+        # Add relationships that connect included entities
+        relevant_relationships = self.filter_relationships_by_entities(
+            ranked_relationships, ranked_entities[:10]
+        )
+        context_builder.add_section("Relationships", self.format_relationships(relevant_relationships))
+        
+        # Add most relevant community information
+        if ranked_communities:
+            context_builder.add_section("Communities", 
+                                      self.format_communities(ranked_communities[:2]))
+        
+        # Fill remaining space with text units
+        remaining_tokens = context_builder.remaining_tokens()
+        selected_text_units = self.select_text_units_within_budget(
+            ranked_text_units, remaining_tokens
+        )
+        context_builder.add_section("Sources", self.format_text_units(selected_text_units))
+        
+        return context_builder.finalize()
+    
+    def rank_entities_by_importance(self, entities):
+        """Rank entities by multiple importance factors"""
+        
+        scored_entities = []
+        for entity in entities:
+            score = 0.0
+            
+            # Factor 1: Similarity rank (lower rank = higher score)
+            similarity_score = 1.0 / (entity.get('rank', 1000) / 100.0)
+            score += similarity_score * 0.4
+            
+            # Factor 2: Description richness
+            description = entity.get('description', '')
+            richness_score = min(len(description.split()) / 20.0, 1.0)
+            score += richness_score * 0.2
+            
+            # Factor 3: Connectivity (how many relationships this entity has)
+            connectivity_score = min(entity.get('relationship_count', 0) / 10.0, 1.0)
+            score += connectivity_score * 0.2
+            
+            # Factor 4: Entity type importance (some types more central)
+            type_importance = {
+                'organization': 0.9,
+                'person': 0.8,
+                'event': 0.7,
+                'geo': 0.6,
+                'product': 0.7
+            }
+            entity_type = entity.get('entity_type', 'unknown').lower()
+            type_score = type_importance.get(entity_type, 0.5)
+            score += type_score * 0.2
+            
+            scored_entities.append({**entity, 'importance_score': score})
+        
+        return sorted(scored_entities, key=lambda x: x['importance_score'], reverse=True)
+    
+    def filter_relationships_by_entities(self, relationships, selected_entities):
+        """Include only relationships between selected entities"""
+        selected_entity_ids = {e['entity_name'] for e in selected_entities}
+        
+        relevant_relationships = []
+        for rel in relationships:
+            if (rel.get('src_id') in selected_entity_ids and 
+                rel.get('tgt_id') in selected_entity_ids):
+                relevant_relationships.append(rel)
+        
+        return relevant_relationships
+    
+    def select_text_units_within_budget(self, text_units, token_budget):
+        """Select text units that fit within token budget"""
+        
+        selected = []
+        remaining_budget = token_budget
+        
+        for unit in text_units:
+            content = unit.get('content', '')
+            unit_tokens = len(self.tokenizer.encode(content))
+            
+            if unit_tokens <= remaining_budget:
+                selected.append(unit)
+                remaining_budget -= unit_tokens
+            elif remaining_budget > 100:  # If some budget left, try to truncate
+                truncated_content = self.truncate_to_budget(content, remaining_budget)
+                if len(truncated_content) > 50:  # Only include if meaningful after truncation
+                    selected.append({**unit, 'content': truncated_content})
+                break
+        
+        return selected
+
+class IncrementalContextBuilder:
+    def __init__(self, max_tokens):
+        self.max_tokens = max_tokens
+        self.sections = []
+        self.current_tokens = 0
+        self.tokenizer = tiktoken.get_encoding("cl100k_base")
+    
+    def add_section(self, section_name, content):
+        """Add a section if it fits within token budget"""
+        section_text = f"-----{section_name}-----\n{content}\n"
+        section_tokens = len(self.tokenizer.encode(section_text))
+        
+        if self.current_tokens + section_tokens <= self.max_tokens:
+            self.sections.append(section_text)
+            self.current_tokens += section_tokens
+            return True
+        else:
+            # Try to truncate the content to fit
+            available_tokens = self.max_tokens - self.current_tokens - 50  # Reserve some buffer
+            if available_tokens > 100:  # Only if meaningful space left
+                truncated_content = self.truncate_content_to_tokens(content, available_tokens)
+                if len(truncated_content) > 20:
+                    truncated_section = f"-----{section_name}-----\n{truncated_content}\n"
+                    self.sections.append(truncated_section)
+                    self.current_tokens = self.max_tokens  # Mark as full
+                    return True
+        
+        return False
+    
+    def remaining_tokens(self):
+        return self.max_tokens - self.current_tokens
+    
+    def truncate_content_to_tokens(self, content, max_tokens):
+        """Intelligently truncate content to fit token budget"""
+        tokens = self.tokenizer.encode(content)
+        
+        if len(tokens) <= max_tokens:
+            return content
+        
+        # Truncate to max_tokens but try to end at sentence boundary
+        truncated_tokens = tokens[:max_tokens]
+        truncated_text = self.tokenizer.decode(truncated_tokens)
+        
+        # Try to end at a sentence boundary
+        sentences = truncated_text.split('.')
+        if len(sentences) > 1:
+            # Remove the last incomplete sentence
+            return '.'.join(sentences[:-1]) + '.'
+        
+        return truncated_text + '...'
+    
+    def finalize(self):
+        return ''.join(self.sections)
+```
+
+#### Global Query Processing Deep Dive
+
+**Global queries use sophisticated community analysis**:
+
+```python
+class GlobalQueryProcessor:
+    def __init__(self, community_reports, llm_function):
+        self.community_reports = community_reports
+        self.llm_function = llm_function
+        
+    async def process_global_query(self, query, query_params):
+        """Process global query with advanced community analysis"""
+        
+        # Step 1: Community selection with multiple criteria
+        relevant_communities = await self.select_communities_multi_criteria(
+            query, query_params
+        )
+        
+        # Step 2: Parallel community analysis with different perspectives
+        community_analyses = await self.analyze_communities_parallel(
+            query, relevant_communities
+        )
+        
+        # Step 3: Cross-community insight synthesis
+        synthesized_insights = await self.synthesize_cross_community_insights(
+            community_analyses, query
+        )
+        
+        # Step 4: Hierarchical answer construction
+        final_answer = await self.construct_hierarchical_answer(
+            synthesized_insights, query_params.response_type
+        )
+        
+        return final_answer
+    
+    async def select_communities_multi_criteria(self, query, query_params):
+        """Select communities using multiple selection criteria"""
+        
+        # Get all communities
+        all_communities = await self.community_reports.get_all()
+        
+        # Filter by level
+        level_filtered = [
+            c for c in all_communities 
+            if c.get('level', 0) <= query_params.level
+        ]
+        
+        # Score communities by relevance to query
+        scored_communities = []
+        for community in level_filtered:
+            relevance_score = await self.calculate_community_relevance(query, community)
+            
+            if relevance_score > 0.1:  # Minimum relevance threshold
+                scored_communities.append({
+                    **community,
+                    'relevance_score': relevance_score
+                })
+        
+        # Sort by composite score (relevance + importance + size)
+        scored_communities.sort(
+            key=lambda c: (
+                c['relevance_score'] * 0.6 +
+                c.get('rating', 5.0) / 10.0 * 0.3 +
+                min(c.get('occurrence', 1) / 50.0, 1.0) * 0.1
+            ),
+            reverse=True
+        )
+        
+        # Select top communities with diversity
+        selected = self.diversify_community_selection(
+            scored_communities, 
+            max_communities=query_params.global_max_consider_community
+        )
+        
+        return selected
+    
+    async def calculate_community_relevance(self, query, community):
+        """Calculate how relevant a community is to the query"""
+        
+        community_text = community.get('report_string', '')
+        
+        # Method 1: Keyword overlap
+        query_keywords = self.extract_keywords(query)
+        community_keywords = self.extract_keywords(community_text)
+        keyword_overlap = len(set(query_keywords) & set(community_keywords))
+        keyword_score = min(keyword_overlap / max(len(query_keywords), 1), 1.0)
+        
+        # Method 2: Semantic similarity (if embeddings available)
+        semantic_score = 0.0
+        if hasattr(self, 'embedding_function'):
+            try:
+                query_embedding = await self.embedding_function(query)
+                community_embedding = await self.embedding_function(community_text[:1000])
+                semantic_score = self.cosine_similarity(query_embedding, community_embedding)
+            except:
+                pass
+        
+        # Method 3: Entity type alignment
+        query_entities = self.extract_entity_hints(query)
+        community_entity_types = self.extract_community_entity_types(community)
+        type_alignment = self.calculate_type_alignment(query_entities, community_entity_types)
+        
+        # Combine scores
+        relevance = (keyword_score * 0.4 + semantic_score * 0.4 + type_alignment * 0.2)
+        
+        return relevance
+    
+    def diversify_community_selection(self, scored_communities, max_communities):
+        """Select communities with diversity to avoid redundancy"""
+        
+        selected = []
+        remaining = scored_communities.copy()
+        
+        while len(selected) < max_communities and remaining:
+            if not selected:
+                # First selection: highest scoring
+                selected.append(remaining.pop(0))
+            else:
+                # Subsequent selections: balance score with diversity
+                best_candidate = None
+                best_score = -1
+                
+                for i, candidate in enumerate(remaining):
+                    # Diversity score: how different is this from selected communities
+                    diversity_score = self.calculate_community_diversity(candidate, selected)
+                    
+                    # Combined score
+                    combined_score = candidate['relevance_score'] * 0.7 + diversity_score * 0.3
+                    
+                    if combined_score > best_score:
+                        best_score = combined_score
+                        best_candidate = i
+                
+                if best_candidate is not None:
+                    selected.append(remaining.pop(best_candidate))
+                else:
+                    break
+        
+        return selected
+    
+    async def analyze_communities_parallel(self, query, communities):
+        """Analyze multiple communities in parallel with different perspectives"""
+        
+        analysis_tasks = []
+        
+        for community in communities:
+            # Create analysis task with specific perspective
+            task = self.analyze_single_community_perspective(query, community)
+            analysis_tasks.append(task)
+        
+        # Execute all analyses in parallel
+        analyses = await asyncio.gather(*analysis_tasks, return_exceptions=True)
+        
+        # Filter out failed analyses
+        successful_analyses = [
+            analysis for analysis in analyses 
+            if not isinstance(analysis, Exception)
+        ]
+        
+        return successful_analyses
+    
+    async def analyze_single_community_perspective(self, query, community):
+        """Analyze a single community from a specific perspective"""
+        
+        community_report = community.get('report_string', '')
+        
+        # Create perspective-specific prompt
+        perspective_prompt = f"""
+        Analyze the following community report in the context of this query: "{query}"
+        
+        Community Report:
+        {community_report}
+        
+        Provide analysis in the following JSON format:
+        {{
+            "key_insights": ["insight1", "insight2", ...],
+            "relevance_explanation": "why this community is relevant to the query",
+            "evidence": ["supporting evidence from the community"],
+            "confidence_score": 0.0-1.0,
+            "perspective": "what unique angle this community provides"
+        }}
+        """
+        
+        try:
+            response = await self.llm_function(
+                perspective_prompt,
+                max_tokens=1000,
+                response_format={"type": "json_object"}
+            )
+            
+            parsed_analysis = json.loads(response)
+            parsed_analysis['community_id'] = community.get('id', 'unknown')
+            
+            return parsed_analysis
+            
+        except Exception as e:
+            logger.warning(f"Community analysis failed: {e}")
+            return None
+    
+    async def synthesize_cross_community_insights(self, community_analyses, query):
+        """Synthesize insights across multiple communities"""
+        
+        # Step 1: Extract all insights
+        all_insights = []
+        for analysis in community_analyses:
+            if analysis and 'key_insights' in analysis:
+                for insight in analysis['key_insights']:
+                    all_insights.append({
+                        'insight': insight,
+                        'source_community': analysis.get('community_id', 'unknown'),
+                        'confidence': analysis.get('confidence_score', 0.5),
+                        'evidence': analysis.get('evidence', [])
+                    })
+        
+        # Step 2: Cluster similar insights
+        insight_clusters = self.cluster_similar_insights(all_insights)
+        
+        # Step 3: Rank insight clusters by importance
+        ranked_clusters = self.rank_insight_clusters(insight_clusters, query)
+        
+        # Step 4: Generate synthesis
+        synthesis_prompt = self.create_synthesis_prompt(ranked_clusters, query)
+        synthesis = await self.llm_function(synthesis_prompt, max_tokens=1500)
+        
+        return {
+            'synthesis': synthesis,
+            'insight_clusters': ranked_clusters,
+            'source_communities': [a.get('community_id') for a in community_analyses]
+        }
+```
+
+#### Performance and Scalability Optimizations
+
+**Query processing includes sophisticated optimizations**:
+
+```python
+class QueryOptimizer:
+    def __init__(self):
+        self.query_cache = {}
+        self.embedding_cache = {}
+        self.performance_metrics = {}
+    
+    async def optimize_query_execution(self, query_type, query_params, available_resources):
+        """Optimize query execution based on available resources and query characteristics"""
+        
+        optimization_strategy = {
+            'parallel_processing': True,
+            'batch_size': 8,
+            'cache_strategy': 'aggressive',
+            'timeout_ms': 30000,
+            'fallback_enabled': True
+        }
+        
+        # Adjust based on query complexity
+        if query_type == 'global':
+            if query_params.global_max_consider_community > 100:
+                optimization_strategy['parallel_processing'] = True
+                optimization_strategy['batch_size'] = 16
+            else:
+                optimization_strategy['batch_size'] = 8
+        
+        # Adjust based on available memory
+        if available_resources.get('memory_mb', 1000) < 2000:
+            optimization_strategy['batch_size'] = 4
+            optimization_strategy['cache_strategy'] = 'conservative'
+        
+        return optimization_strategy
+    
+    async def execute_with_fallbacks(self, primary_strategy, fallback_strategies, query_func):
+        """Execute query with multiple fallback strategies"""
+        
+        strategies = [primary_strategy] + fallback_strategies
+        
+        for i, strategy in enumerate(strategies):
+            try:
+                start_time = time.time()
+                
+                result = await asyncio.wait_for(
+                    query_func(strategy),
+                    timeout=strategy.get('timeout_ms', 30000) / 1000.0
+                )
+                
+                execution_time = time.time() - start_time
+                self.record_performance_metric(strategy, execution_time, success=True)
+                
+                return result
+                
+            except asyncio.TimeoutError:
+                logger.warning(f"Query strategy {i} timed out, trying fallback")
+                self.record_performance_metric(strategy, strategy['timeout_ms']/1000, success=False)
+                continue
+            except Exception as e:
+                logger.warning(f"Query strategy {i} failed: {e}, trying fallback")
+                self.record_performance_metric(strategy, 0, success=False, error=str(e))
+                continue
+        
+        # All strategies failed
+        raise Exception("All query strategies failed")
+```
 
 **This flexibility makes nano-graphrag more versatile** than traditional RAG systems that only do similarity search or knowledge graphs that only do structured queries.
 
