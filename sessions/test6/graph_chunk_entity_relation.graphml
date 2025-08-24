@@ -1,0 +1,274 @@
+<?xml version='1.0' encoding='utf-8'?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
+  <key id="d7" for="edge" attr.name="order" attr.type="long" />
+  <key id="d6" for="edge" attr.name="source_id" attr.type="string" />
+  <key id="d5" for="edge" attr.name="description" attr.type="string" />
+  <key id="d4" for="edge" attr.name="weight" attr.type="double" />
+  <key id="d3" for="node" attr.name="clusters" attr.type="string" />
+  <key id="d2" for="node" attr.name="source_id" attr.type="string" />
+  <key id="d1" for="node" attr.name="description" attr.type="string" />
+  <key id="d0" for="node" attr.name="entity_type" attr.type="string" />
+  <graph edgedefault="undirected">
+    <node id="&quot;CHUANYUE YU&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Chuanyue Yu is an author of the research paper 'GraphRAG-R1: Graph Retrieval-Augmented Generation with Process-Constrained Reinforcement Learning' and is affiliated with Nankai University. Chuanyue Yu's email is yuchuanyue@mail.nankai.edu.cn."</data>
+      <data key="d2">chunk-e0b88d32f06db02af102ff4143604dd2</data>
+      <data key="d3">[{"level": 0, "cluster": 0}]</data>
+    </node>
+    <node id="&quot;KUO ZHAO&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Kuo Zhao is an author of the research paper 'GraphRAG-R1: Graph Retrieval-Augmented Generation with Process-Constrained Reinforcement Learning' and is affiliated with Nankai University."</data>
+      <data key="d2">chunk-e0b88d32f06db02af102ff4143604dd2</data>
+      <data key="d3">[{"level": 0, "cluster": 0}]</data>
+    </node>
+    <node id="&quot;YUHAN LI&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Yuhan Li is an author of the research paper 'GraphRAG-R1: Graph Retrieval-Augmented Generation with Process-Constrained Reinforcement Learning' and is affiliated with HKUST (Guangzhou)."</data>
+      <data key="d2">chunk-e0b88d32f06db02af102ff4143604dd2</data>
+    </node>
+    <node id="&quot;HENG CHANG&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Heng Chang is an author and project co-leader of the research paper 'GraphRAG-R1: Graph Retrieval-Augmented Generation with Process-Constrained Reinforcement Learning' and is affiliated with Huawei Technologies Co., Ltd. Heng Chang's email is changh.heng@gmail.com."</data>
+      <data key="d2">chunk-e0b88d32f06db02af102ff4143604dd2</data>
+    </node>
+    <node id="&quot;MINGJIAN FENG&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Mingjian Feng is an author of the research paper 'GraphRAG-R1: Graph Retrieval-Augmented Generation with Process-Constrained Reinforcement Learning' and is affiliated with Nankai University."</data>
+      <data key="d2">chunk-e0b88d32f06db02af102ff4143604dd2</data>
+      <data key="d3">[{"level": 0, "cluster": 0}]</data>
+    </node>
+    <node id="&quot;XIANGZHE JIANG&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Xiangzhe Jiang is an author of the research paper 'GraphRAG-R1: Graph Retrieval-Augmented Generation with Process-Constrained Reinforcement Learning' and is affiliated with Nankai University."</data>
+      <data key="d2">chunk-e0b88d32f06db02af102ff4143604dd2</data>
+      <data key="d3">[{"level": 0, "cluster": 0}]</data>
+    </node>
+    <node id="&quot;YUFEI SUN&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Yufei Sun is an author of the research paper 'GraphRAG-R1: Graph Retrieval-Augmented Generation with Process-Constrained Reinforcement Learning' and is affiliated with Nankai University."</data>
+      <data key="d2">chunk-e0b88d32f06db02af102ff4143604dd2</data>
+      <data key="d3">[{"level": 0, "cluster": 0}]</data>
+    </node>
+    <node id="&quot;JIA LI&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Jia Li is an author of the research paper 'GraphRAG-R1: Graph Retrieval-Augmented Generation with Process-Constrained Reinforcement Learning' and is affiliated with HKUST (Guangzhou)."</data>
+      <data key="d2">chunk-e0b88d32f06db02af102ff4143604dd2</data>
+    </node>
+    <node id="&quot;YUZHI ZHANG&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Yuzhi Zhang is an author and project co-leader of the research paper 'GraphRAG-R1: Graph Retrieval-Augmented Generation with Process-Constrained Reinforcement Learning' and is affiliated with Nankai University. Yuzhi Zhang's email is zyz@nankai.edu.cn."</data>
+      <data key="d2">chunk-e0b88d32f06db02af102ff4143604dd2</data>
+      <data key="d3">[{"level": 0, "cluster": 0}]</data>
+    </node>
+    <node id="&quot;JIANXIN LI&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Jianxin Li is an author of the research paper 'GraphRAG-R1: Graph Retrieval-Augmented Generation with Process-Constrained Reinforcement Learning' and is affiliated with Beihang University."</data>
+      <data key="d2">chunk-e0b88d32f06db02af102ff4143604dd2</data>
+    </node>
+    <node id="&quot;ZIWEI ZHANG&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Ziwei Zhang is an author and corresponding author of the research paper 'GraphRAG-R1: Graph Retrieval-Augmented Generation with Process-Constrained Reinforcement Learning' and is affiliated with Beihang University. Ziwei Zhang's email is zwzhang@buaa.edu.cn."</data>
+      <data key="d2">chunk-e0b88d32f06db02af102ff4143604dd2</data>
+    </node>
+    <node id="&quot;NANKAI UNIVERSITY&quot;">
+      <data key="d0">"ORGANIZATION"</data>
+      <data key="d1">"Nankai University is an academic institution affiliated with several authors of the GraphRAG-R1 paper, including Chuanyue Yu, Kuo Zhao, Mingjian Feng, Xiangzhe Jiang, Yufei Sun, and Yuzhi Zhang. It is listed as '1' in author affiliations."</data>
+      <data key="d2">chunk-e0b88d32f06db02af102ff4143604dd2</data>
+      <data key="d3">[{"level": 0, "cluster": 0}]</data>
+    </node>
+    <node id="&quot;BEIHANG UNIVERSITY&quot;">
+      <data key="d0">"ORGANIZATION"</data>
+      <data key="d1">"Beihang University is an academic institution affiliated with Jianxin Li and Ziwei Zhang, authors of the GraphRAG-R1 paper. It is listed as '2' in author affiliations."</data>
+      <data key="d2">chunk-e0b88d32f06db02af102ff4143604dd2</data>
+    </node>
+    <node id="&quot;HKUST (GUANGZHOU)&quot;">
+      <data key="d0">"ORGANIZATION"</data>
+      <data key="d1">"HKUST (Guangzhou) is an academic institution affiliated with Yuhan Li and Jia Li, authors of the GraphRAG-R1 paper. It is listed as '3' in author affiliations."</data>
+      <data key="d2">chunk-e0b88d32f06db02af102ff4143604dd2</data>
+    </node>
+    <node id="&quot;HUAWEI TECHNOLOGIES CO., LTD.&quot;">
+      <data key="d0">"ORGANIZATION"</data>
+      <data key="d1">"Huawei Technologies Co., Ltd. is a technology company affiliated with Heng Chang, an author of the GraphRAG-R1 paper. It is listed as '4' in author affiliations."</data>
+      <data key="d2">chunk-e0b88d32f06db02af102ff4143604dd2</data>
+    </node>
+    <node id="&quot;ACM&quot;">
+      <data key="d0">"ORGANIZATION"</data>
+      <data key="d1">"ACM (Association for Computing Machinery) is a professional organization that holds publication rights for the conference proceedings where the GraphRAG-R1 paper is published and is associated with New York, NY, USA and Woodstock, NY."</data>
+      <data key="d2">chunk-e0b88d32f06db02af102ff4143604dd2</data>
+    </node>
+    <node id="&quot;GREYHOUND&quot;">
+      <data key="d0">"ORGANIZATION"</data>
+      <data key="d1">"Greyhound is a bus transportation company, mentioned in an example question about bus departures from Kansas City, Missouri and Philadelphia."</data>
+      <data key="d2">chunk-e0b88d32f06db02af102ff4143604dd2</data>
+    </node>
+    <node id="&quot;THE BLACK KEYS&quot;">
+      <data key="d0">"ORGANIZATION"</data>
+      <data key="d1">"The Black Keys is a band mentioned in an example as having formed in Akron, Ohio."</data>
+      <data key="d2">chunk-e0b88d32f06db02af102ff4143604dd2</data>
+    </node>
+    <node id="&quot;DANKO JONES&quot;">
+      <data key="d0">"ORGANIZATION"</data>
+      <data key="d1">"Danko Jones is a Canadian hard rock band that recorded the album 'Never Too Loud' and is from Brampton, Ontario, Canada."</data>
+      <data key="d2">chunk-e0b88d32f06db02af102ff4143604dd2</data>
+    </node>
+    <node id="&quot;GREYHOUND CANADA&quot;">
+      <data key="d0">"ORGANIZATION"</data>
+      <data key="d1">"Greyhound Canada is a bus transportation company, mentioned in relation to the Toronto Coach Terminal."</data>
+      <data key="d2">chunk-e0b88d32f06db02af102ff4143604dd2</data>
+    </node>
+    <node id="&quot;NEW YORK, NY, USA&quot;">
+      <data key="d0">"GEO"</data>
+      <data key="d1">"New York, NY, USA is a location associated with the ACM publication format."</data>
+      <data key="d2">chunk-e0b88d32f06db02af102ff4143604dd2</data>
+    </node>
+    <node id="&quot;WOODSTOCK, NY&quot;">
+      <data key="d0">"GEO"</data>
+      <data key="d1">"Woodstock, NY is a location mentioned in the ACM conference acronym format and as the location of the conference in 2018."</data>
+      <data key="d2">chunk-e0b88d32f06db02af102ff4143604dd2</data>
+    </node>
+    <node id="&quot;KANSAS CITY, MISSOURI&quot;">
+      <data key="d0">"GEO"</data>
+      <data key="d1">"Kansas City, Missouri is a city mentioned in an example as a Greyhound bus departure location."</data>
+      <data key="d2">chunk-e0b88d32f06db02af102ff4143604dd2</data>
+    </node>
+    <node id="&quot;AKRON, OHIO&quot;">
+      <data key="d0">"GEO"</data>
+      <data key="d1">"Akron, Ohio is the city where the band The Black Keys formed, as mentioned in an example."</data>
+      <data key="d2">chunk-e0b88d32f06db02af102ff4143604dd2</data>
+    </node>
+    <node id="&quot;PHILADELPHIA&quot;">
+      <data key="d0">"GEO"</data>
+      <data key="d1">"Philadelphia is mentioned in an example as a major hub for Greyhound Lines."</data>
+      <data key="d2">chunk-e0b88d32f06db02af102ff4143604dd2</data>
+    </node>
+    <node id="&quot;BRAMPTON, ONTARIO, CANADA&quot;">
+      <data key="d0">"GEO"</data>
+      <data key="d1">"Brampton, Ontario, Canada is the city where the band Danko Jones is from, as mentioned in an example. It is located in Ontario."</data>
+      <data key="d2">chunk-e0b88d32f06db02af102ff4143604dd2</data>
+    </node>
+    <node id="&quot;TORONTO COACH TERMINAL&quot;">
+      <data key="d0">"GEO"</data>
+      <data key="d1">"The Toronto Coach Terminal is a hub for Greyhound buses and is mentioned as being leased to Greyhound Canada. It is located in Ontario."</data>
+      <data key="d2">chunk-e0b88d32f06db02af102ff4143604dd2</data>
+    </node>
+    <node id="&quot;ONTARIO&quot;">
+      <data key="d0">"GEO"</data>
+      <data key="d1">"Ontario is a province in Canada, mentioned in relation to Brampton, Ontario, Canada and the Toronto Coach Terminal."</data>
+      <data key="d2">chunk-e0b88d32f06db02af102ff4143604dd2</data>
+    </node>
+    <edge source="&quot;CHUANYUE YU&quot;" target="&quot;NANKAI UNIVERSITY&quot;">
+      <data key="d4">9.0</data>
+      <data key="d5">"Chuanyue Yu is affiliated with Nankai University, as indicated by the author's institutional affiliation."</data>
+      <data key="d6">chunk-e0b88d32f06db02af102ff4143604dd2</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;KUO ZHAO&quot;" target="&quot;NANKAI UNIVERSITY&quot;">
+      <data key="d4">9.0</data>
+      <data key="d5">"Kuo Zhao is affiliated with Nankai University, as indicated by the author's institutional affiliation."</data>
+      <data key="d6">chunk-e0b88d32f06db02af102ff4143604dd2</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;YUHAN LI&quot;" target="&quot;HKUST (GUANGZHOU)&quot;">
+      <data key="d4">9.0</data>
+      <data key="d5">"Yuhan Li is affiliated with HKUST (Guangzhou), as indicated by the author's institutional affiliation."</data>
+      <data key="d6">chunk-e0b88d32f06db02af102ff4143604dd2</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;HENG CHANG&quot;" target="&quot;HUAWEI TECHNOLOGIES CO., LTD.&quot;">
+      <data key="d4">9.0</data>
+      <data key="d5">"Heng Chang is affiliated with Huawei Technologies Co., Ltd., as indicated by the author's institutional affiliation."</data>
+      <data key="d6">chunk-e0b88d32f06db02af102ff4143604dd2</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;MINGJIAN FENG&quot;" target="&quot;NANKAI UNIVERSITY&quot;">
+      <data key="d4">9.0</data>
+      <data key="d5">"Mingjian Feng is affiliated with Nankai University, as indicated by the author's institutional affiliation."</data>
+      <data key="d6">chunk-e0b88d32f06db02af102ff4143604dd2</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;XIANGZHE JIANG&quot;" target="&quot;NANKAI UNIVERSITY&quot;">
+      <data key="d4">9.0</data>
+      <data key="d5">"Xiangzhe Jiang is affiliated with Nankai University, as indicated by the author's institutional affiliation."</data>
+      <data key="d6">chunk-e0b88d32f06db02af102ff4143604dd2</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;YUFEI SUN&quot;" target="&quot;NANKAI UNIVERSITY&quot;">
+      <data key="d4">9.0</data>
+      <data key="d5">"Yufei Sun is affiliated with Nankai University, as indicated by the author's institutional affiliation."</data>
+      <data key="d6">chunk-e0b88d32f06db02af102ff4143604dd2</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;JIA LI&quot;" target="&quot;HKUST (GUANGZHOU)&quot;">
+      <data key="d4">9.0</data>
+      <data key="d5">"Jia Li is affiliated with HKUST (Guangzhou), as indicated by the author's institutional affiliation."</data>
+      <data key="d6">chunk-e0b88d32f06db02af102ff4143604dd2</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;YUZHI ZHANG&quot;" target="&quot;NANKAI UNIVERSITY&quot;">
+      <data key="d4">9.0</data>
+      <data key="d5">"Yuzhi Zhang is affiliated with Nankai University, as indicated by the author's institutional affiliation."</data>
+      <data key="d6">chunk-e0b88d32f06db02af102ff4143604dd2</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;JIANXIN LI&quot;" target="&quot;BEIHANG UNIVERSITY&quot;">
+      <data key="d4">9.0</data>
+      <data key="d5">"Jianxin Li is affiliated with Beihang University, as indicated by the author's institutional affiliation."</data>
+      <data key="d6">chunk-e0b88d32f06db02af102ff4143604dd2</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;ZIWEI ZHANG&quot;" target="&quot;BEIHANG UNIVERSITY&quot;">
+      <data key="d4">9.0</data>
+      <data key="d5">"Ziwei Zhang is affiliated with Beihang University, as indicated by the author's institutional affiliation."</data>
+      <data key="d6">chunk-e0b88d32f06db02af102ff4143604dd2</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;ACM&quot;" target="&quot;NEW YORK, NY, USA&quot;">
+      <data key="d4">7.0</data>
+      <data key="d5">"ACM is associated with New York, NY, USA in the context of the ACM reference format for publication."</data>
+      <data key="d6">chunk-e0b88d32f06db02af102ff4143604dd2</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;ACM&quot;" target="&quot;WOODSTOCK, NY&quot;">
+      <data key="d4">7.0</data>
+      <data key="d5">"ACM is associated with Woodstock, NY, as the location for the conference mentioned in the publication details."</data>
+      <data key="d6">chunk-e0b88d32f06db02af102ff4143604dd2</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;GREYHOUND&quot;" target="&quot;KANSAS CITY, MISSOURI&quot;">
+      <data key="d4">8.0</data>
+      <data key="d5">"Greyhound buses are mentioned as leaving from Kansas City, Missouri in an example question within the text."</data>
+      <data key="d6">chunk-e0b88d32f06db02af102ff4143604dd2</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;GREYHOUND&quot;" target="&quot;PHILADELPHIA&quot;">
+      <data key="d4">8.0</data>
+      <data key="d5">"Philadelphia is identified as a major hub for Greyhound Lines in an example within the text."</data>
+      <data key="d6">chunk-e0b88d32f06db02af102ff4143604dd2</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;THE BLACK KEYS&quot;" target="&quot;AKRON, OHIO&quot;">
+      <data key="d4">9.0</data>
+      <data key="d5">"The band The Black Keys formed in Akron, Ohio, according to an example provided in the text."</data>
+      <data key="d6">chunk-e0b88d32f06db02af102ff4143604dd2</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;DANKO JONES&quot;" target="&quot;BRAMPTON, ONTARIO, CANADA&quot;">
+      <data key="d4">9.0</data>
+      <data key="d5">"Danko Jones, the band, is from Brampton, Ontario, Canada, as stated in an example in the text."</data>
+      <data key="d6">chunk-e0b88d32f06db02af102ff4143604dd2</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;GREYHOUND CANADA&quot;" target="&quot;TORONTO COACH TERMINAL&quot;">
+      <data key="d4">9.0</data>
+      <data key="d5">"The Toronto Coach Terminal is mentioned as being leased to Greyhound Canada in an example from the text."</data>
+      <data key="d6">chunk-e0b88d32f06db02af102ff4143604dd2</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;BRAMPTON, ONTARIO, CANADA&quot;" target="&quot;ONTARIO&quot;">
+      <data key="d4">9.0</data>
+      <data key="d5">"Brampton, Ontario, Canada is a city located within the province of Ontario, as indicated in an example."</data>
+      <data key="d6">chunk-e0b88d32f06db02af102ff4143604dd2</data>
+      <data key="d7">1</data>
+    </edge>
+  </graph>
+</graphml>

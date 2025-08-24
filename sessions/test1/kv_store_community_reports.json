@@ -1,0 +1,311 @@
+{
+  "3": {
+    "report_string": "# Graph RAG and SQL RAG in Conversational AI Systems\n\nThis community involves the integration of various Retrieval Augmented Generation (RAG) methods such as Graph RAG, SQL RAG, and Traditional RAG within Conversational AI Systems. These technologies are developed in part by OpenAI and aim to enhance data retrieval accuracy and reduce hallucinations in AI responses, leveraging distinct database querying approaches. Graph RAG employs Neo4j graph databases to improve flexibility and reasoning capabilities, whereas SQL RAG uses structured SQL queries for precise data handling.\n\n## Graph RAG's advanced capabilities and usage\n\nGraph RAG is a significant technology in this community known for utilizing graph database technologies, specifically with Neo4j, to connect and retrieve flight information through relationships. Its ability to handle reasoning-based inquiries in a Conversational AI System makes it a central component, achieving high accuracy (91.49%) compared to other RAG methods. Additionally, Graph RAG reduces hallucinations by deploying Cypher queries aimed at precise data retrieval, further enhancing its utility and reliability in generating accurate responses.\n\n## SQL RAG's precision in data retrieval\n\nSQL RAG stands out for its structured approach in the Conversational AI System by converting natural language questions into SQL queries. This method is known to significantly reduce hallucinations and improve airport safety by relying on precise data retrieval methods. In comparison to Graph RAG, SQL RAG offers higher EM scores but with less flexibility, focusing more on structured data entry and fixed queries to maintain accuracy and minimize erroneous outputs.\n\n## Comparison with Traditional RAG\n\nTraditional RAG, another member of this community, retrieves information using LLMs from flight databases. However, it is prone to hallucinations, particularly when processing large datasets where excessive information incorporation can lead to inaccuracies. While achieving 84.84% accuracy, Traditional RAG underperforms in reducing hallucinations compared to both Graph RAG and SQL RAG, highlighting the advancements these methods bring to the table in terms of accuracy and structured data querying.\n\n## OpenAI's involvement in the development of RAG methods\n\nOpenAI plays a pivotal role in advancing Conversational AI Systems by developing methodologies such as SQL RAG and contributing to the Graph RAG framework. Their involvement underscores their commitment to enhancing AI's querying capabilities and reducing hallucinations, thus improving overall response accuracy across various domains, specifically in contexts like flight information retrieval where precision is crucial.\n\n## Challenges addressed by the RAG methods\n\nThe RAG methods—Graph RAG, SQL RAG, and Traditional RAG—address the critical challenge of hallucinations, a concept referring to incorrect information generation by language models. By utilizing structured and graph-based data retrieval methods, these technologies aim to provide more reliable and accurate AI-generated insights, which in turn could transform data processing applications in high-stakes environments such as aviation and beyond.",
+    "report_json": {
+      "title": "Graph RAG and SQL RAG in Conversational AI Systems",
+      "summary": "This community involves the integration of various Retrieval Augmented Generation (RAG) methods such as Graph RAG, SQL RAG, and Traditional RAG within Conversational AI Systems. These technologies are developed in part by OpenAI and aim to enhance data retrieval accuracy and reduce hallucinations in AI responses, leveraging distinct database querying approaches. Graph RAG employs Neo4j graph databases to improve flexibility and reasoning capabilities, whereas SQL RAG uses structured SQL queries for precise data handling.",
+      "rating": 7.5,
+      "rating_explanation": "The impact severity rating is fairly high due to the potential advancements in AI capabilities presented by these technologies, alongside their applications in improving query accuracy and reliability.",
+      "findings": [
+        {
+          "summary": "Graph RAG's advanced capabilities and usage",
+          "explanation": "Graph RAG is a significant technology in this community known for utilizing graph database technologies, specifically with Neo4j, to connect and retrieve flight information through relationships. Its ability to handle reasoning-based inquiries in a Conversational AI System makes it a central component, achieving high accuracy (91.49%) compared to other RAG methods. Additionally, Graph RAG reduces hallucinations by deploying Cypher queries aimed at precise data retrieval, further enhancing its utility and reliability in generating accurate responses."
+        },
+        {
+          "summary": "SQL RAG's precision in data retrieval",
+          "explanation": "SQL RAG stands out for its structured approach in the Conversational AI System by converting natural language questions into SQL queries. This method is known to significantly reduce hallucinations and improve airport safety by relying on precise data retrieval methods. In comparison to Graph RAG, SQL RAG offers higher EM scores but with less flexibility, focusing more on structured data entry and fixed queries to maintain accuracy and minimize erroneous outputs."
+        },
+        {
+          "summary": "Comparison with Traditional RAG",
+          "explanation": "Traditional RAG, another member of this community, retrieves information using LLMs from flight databases. However, it is prone to hallucinations, particularly when processing large datasets where excessive information incorporation can lead to inaccuracies. While achieving 84.84% accuracy, Traditional RAG underperforms in reducing hallucinations compared to both Graph RAG and SQL RAG, highlighting the advancements these methods bring to the table in terms of accuracy and structured data querying."
+        },
+        {
+          "summary": "OpenAI's involvement in the development of RAG methods",
+          "explanation": "OpenAI plays a pivotal role in advancing Conversational AI Systems by developing methodologies such as SQL RAG and contributing to the Graph RAG framework. Their involvement underscores their commitment to enhancing AI's querying capabilities and reducing hallucinations, thus improving overall response accuracy across various domains, specifically in contexts like flight information retrieval where precision is crucial."
+        },
+        {
+          "summary": "Challenges addressed by the RAG methods",
+          "explanation": "The RAG methods—Graph RAG, SQL RAG, and Traditional RAG—address the critical challenge of hallucinations, a concept referring to incorrect information generation by language models. By utilizing structured and graph-based data retrieval methods, these technologies aim to provide more reliable and accurate AI-generated insights, which in turn could transform data processing applications in high-stakes environments such as aviation and beyond."
+        }
+      ]
+    },
+    "level": 0,
+    "title": "Cluster 3",
+    "edges": [
+      [
+        "\"OPENAI\"",
+        "\"SQL RAG\""
+      ],
+      [
+        "\"GRAPH RAG\"",
+        "\"TRADITIONAL RAG\""
+      ],
+      [
+        "\"HALLUCINATION\"",
+        "\"SQL RAG\""
+      ],
+      [
+        "\"GRAPH RAG\"",
+        "\"SQL RAG\""
+      ],
+      [
+        "\"GPT-4\"",
+        "\"GRAPH RAG\""
+      ],
+      [
+        "\"CONVERSATIONAL AI SYSTEM\"",
+        "\"TRADITIONAL RAG\""
+      ],
+      [
+        "\"SQL RAG\"",
+        "\"TRADITIONAL RAG\""
+      ],
+      [
+        "\"CONVERSATIONAL AI SYSTEM\"",
+        "\"GRAPH RAG\""
+      ],
+      [
+        "\"GRAPH RAG\"",
+        "\"NEO4J\""
+      ],
+      [
+        "\"GRAPH RAG\"",
+        "\"HALLUCINATION\""
+      ],
+      [
+        "\"CONVERSATIONAL AI SYSTEM\"",
+        "\"SQL RAG\""
+      ],
+      [
+        "\"GRAPH RAG\"",
+        "\"OPENAI\""
+      ],
+      [
+        "\"GPT-4O MINI\"",
+        "\"GRAPH RAG\""
+      ],
+      [
+        "\"HALLUCINATION\"",
+        "\"TRADITIONAL RAG\""
+      ]
+    ],
+    "nodes": [
+      "\"GPT-4O MINI\"",
+      "\"TRADITIONAL RAG\"",
+      "\"GRAPH RAG\"",
+      "\"SQL RAG\"",
+      "\"OPENAI\"",
+      "\"HALLUCINATION\""
+    ],
+    "chunk_ids": [
+      "chunk-293118b85820ded697d5ee6ddc5ee367",
+      "chunk-e14d9ce1582397e8542c20275b75c33d",
+      "chunk-100c3f50eb519a5f552b0b4d369a3cb4",
+      "chunk-b47db627416f909ee831c0541602f07b",
+      "chunk-431648e4f71d1297f41deef7e4e54605",
+      "chunk-2dd5909b360adfedad66f5936daffa07"
+    ],
+    "occurrence": 1.0,
+    "sub_communities": []
+  },
+  "1": {
+    "report_string": "# Conversational AI System for Flight Information\n\nThe community focuses on the Conversational AI System, which is being enhanced and tested using various datasets and technologies. The primary objective is to improve decision-making and efficiency in airports by enabling natural interactions with flight information systems. The system is tested with both straightforward and ambiguous datasets to evaluate its capability to handle different types of questions.\n\n## Core technology: Conversational AI System\n\nThe Conversational AI System is pivotal in this community, as it enables natural interactions between airport staff and flight information systems. This supports improved decision-making and efficiency, particularly when addressing operational queries. Its significance is reflected in its central role in the network, interfacing with various advanced components and datasets. The system's performance is crucial, dictating its adoption in enhancing airport operations.\n\n## Graph RAG's contribution to tackling complexity\n\nGraph RAG plays a critical role by enhancing the capabilities of the Conversational AI System, particularly in handling complex, reasoning-based inquiries. This improvement helps the system manage intricate queries that may not be straightforward, thereby increasing the operational efficacy and application of the AI in dynamic environments like airports. By integrating advanced reasoning capabilities, Graph RAG elevates the system's utility in real-world scenarios.\n\n## SQL RAG's structured querying benefits\n\nSQL RAG is integrated into the Conversational AI System, offering a structured approach that reduces the likelihood of hallucinations during querying. This integration means that the system can provide more accurate and reliable responses to user queries, especially within the structured and high-demand environment of airport operations. By ensuring data integrity and reducing errors, SQL RAG significantly bolsters the system's overall reliability.\n\n## Traditional RAG's role and limitations\n\nTraditional RAG provides information retrieval capabilities to the Conversational AI System. Despite its benefits, it bears some risk of hallucinations, which means it could present inaccurate information. This component underscores a trade-off between speed and accuracy in data retrieval processes, highlighting an area requiring careful management to prevent misinformation in critical airport operations.\n\n## Testing with diverse datasets\n\nThe Conversational AI System is tested using two key datasets: the Straightforward Dataset and the Complicated/Ambiguous Dataset. The former helps test the system's performance on direct questions, ensuring its capability to handle clear and concise queries efficiently. Conversely, the latter presents a unique challenge, assessing the system's ability to navigate vague or variable-dependent questions, which underscores its adaptability to real-life complexities within airport settings.",
+    "report_json": {
+      "title": "Conversational AI System for Flight Information",
+      "summary": "The community focuses on the Conversational AI System, which is being enhanced and tested using various datasets and technologies. The primary objective is to improve decision-making and efficiency in airports by enabling natural interactions with flight information systems. The system is tested with both straightforward and ambiguous datasets to evaluate its capability to handle different types of questions.",
+      "rating": 7.0,
+      "rating_explanation": "The impact severity rating is high due to the potential improvements in airport efficiency and decision-making offered by the Conversational AI System.",
+      "findings": [
+        {
+          "summary": "Core technology: Conversational AI System",
+          "explanation": "The Conversational AI System is pivotal in this community, as it enables natural interactions between airport staff and flight information systems. This supports improved decision-making and efficiency, particularly when addressing operational queries. Its significance is reflected in its central role in the network, interfacing with various advanced components and datasets. The system's performance is crucial, dictating its adoption in enhancing airport operations."
+        },
+        {
+          "summary": "Graph RAG's contribution to tackling complexity",
+          "explanation": "Graph RAG plays a critical role by enhancing the capabilities of the Conversational AI System, particularly in handling complex, reasoning-based inquiries. This improvement helps the system manage intricate queries that may not be straightforward, thereby increasing the operational efficacy and application of the AI in dynamic environments like airports. By integrating advanced reasoning capabilities, Graph RAG elevates the system's utility in real-world scenarios."
+        },
+        {
+          "summary": "SQL RAG's structured querying benefits",
+          "explanation": "SQL RAG is integrated into the Conversational AI System, offering a structured approach that reduces the likelihood of hallucinations during querying. This integration means that the system can provide more accurate and reliable responses to user queries, especially within the structured and high-demand environment of airport operations. By ensuring data integrity and reducing errors, SQL RAG significantly bolsters the system's overall reliability."
+        },
+        {
+          "summary": "Traditional RAG's role and limitations",
+          "explanation": "Traditional RAG provides information retrieval capabilities to the Conversational AI System. Despite its benefits, it bears some risk of hallucinations, which means it could present inaccurate information. This component underscores a trade-off between speed and accuracy in data retrieval processes, highlighting an area requiring careful management to prevent misinformation in critical airport operations."
+        },
+        {
+          "summary": "Testing with diverse datasets",
+          "explanation": "The Conversational AI System is tested using two key datasets: the Straightforward Dataset and the Complicated/Ambiguous Dataset. The former helps test the system's performance on direct questions, ensuring its capability to handle clear and concise queries efficiently. Conversely, the latter presents a unique challenge, assessing the system's ability to navigate vague or variable-dependent questions, which underscores its adaptability to real-life complexities within airport settings."
+        }
+      ]
+    },
+    "level": 0,
+    "title": "Cluster 1",
+    "edges": [
+      [
+        "\"CONVERSATIONAL AI SYSTEM\"",
+        "\"GRAPH RAG\""
+      ],
+      [
+        "\"CONVERSATIONAL AI SYSTEM\"",
+        "\"TRADITIONAL RAG\""
+      ],
+      [
+        "\"CONVERSATIONAL AI SYSTEM\"",
+        "\"STRAIGHTFORWARD DATASET\""
+      ],
+      [
+        "\"CONVERSATIONAL AI SYSTEM\"",
+        "\"SQL RAG\""
+      ],
+      [
+        "\"COMPLICATED/AMBIGUOUS DATASET\"",
+        "\"CONVERSATIONAL AI SYSTEM\""
+      ]
+    ],
+    "nodes": [
+      "\"CONVERSATIONAL AI SYSTEM\"",
+      "\"COMPLICATED/AMBIGUOUS DATASET\"",
+      "\"STRAIGHTFORWARD DATASET\""
+    ],
+    "chunk_ids": [
+      "chunk-b47db627416f909ee831c0541602f07b",
+      "chunk-ede8225cb6c767c6040415aca48fa637"
+    ],
+    "occurrence": 0.3333333333333333,
+    "sub_communities": []
+  },
+  "0": {
+    "report_string": "# BM25, FAISS, and GPT-4 in Information Retrieval\n\nThis community is focused on advanced information retrieval technologies, particularly the BM25 method, the FAISS organization, and the GPT-4 language model. BM25 and FAISS are jointly used in a hybrid search method to enhance retrieval accuracy, while GPT-4 demonstrates high performance within advanced retrieval frameworks like Graph RAG. Robertson and Zaragoza are noted for their foundational contributions to BM25.\n\n## BM25's role in information retrieval\n\nBM25 is a key technology in this community, serving as an advanced extension of the traditional TF-IDF model. It improves search performance by incorporating a term saturation function, which enhances keyword search effectiveness. Its integration within the traditional RAG pipeline underscores its reliability in achieving high accuracy for document retrieval tasks.\n\n## FAISS as a pioneering tool for vector databases\n\nFAISS (Fast Approximate Nearest Neighbors Search) is instrumental in facilitating semantic search through its efficient manipulation of vector representations. It enhances similarity search and clustering capabilities, contributing to improved accuracy and efficiency in retrieval processes. Additionally, its combination with BM25 in hybrid search further showcases its utility in the tech ecosystem.\n\n## Integration of BM25 and FAISS for enhanced search methods\n\nThe combined use of BM25 and FAISS in hybrid search methods exemplifies their complementary strengths. By leveraging BM25's probabilistic framework for relevance and FAISS's vector database capabilities, the hybrid approach significantly boosts retrieval accuracy, positioning the technology suite as pivotal in the landscape of semantic search.\n\n## GPT-4's excellence in language generation\n\nGPT-4 stands out for its superior accuracy in generating responses, leading in exact match (EM) and execution (EX) scores among language models. Its integration with the Graph RAG framework highlights its optimization for high-performance retrieval tasks. GPT-4's capabilities reflect cutting-edge advancements in AI-driven text prediction and generation.\n\n## Contributions by Robertson and Zaragoza\n\nRobertson and Zaragoza's foundational work in developing BM25 remains a cornerstone of modern search algorithms. Their extension of TF-IDF into BM25 marked a significant milestone in search performance, laying the groundwork for subsequent innovations in information retrieval.",
+    "report_json": {
+      "title": "BM25, FAISS, and GPT-4 in Information Retrieval",
+      "summary": "This community is focused on advanced information retrieval technologies, particularly the BM25 method, the FAISS organization, and the GPT-4 language model. BM25 and FAISS are jointly used in a hybrid search method to enhance retrieval accuracy, while GPT-4 demonstrates high performance within advanced retrieval frameworks like Graph RAG. Robertson and Zaragoza are noted for their foundational contributions to BM25.",
+      "rating": 7.5,
+      "rating_explanation": "The impact severity rating reflects the significant role these technologies play in shaping advanced information retrieval and search optimization strategies.",
+      "findings": [
+        {
+          "summary": "BM25's role in information retrieval",
+          "explanation": "BM25 is a key technology in this community, serving as an advanced extension of the traditional TF-IDF model. It improves search performance by incorporating a term saturation function, which enhances keyword search effectiveness. Its integration within the traditional RAG pipeline underscores its reliability in achieving high accuracy for document retrieval tasks."
+        },
+        {
+          "summary": "FAISS as a pioneering tool for vector databases",
+          "explanation": "FAISS (Fast Approximate Nearest Neighbors Search) is instrumental in facilitating semantic search through its efficient manipulation of vector representations. It enhances similarity search and clustering capabilities, contributing to improved accuracy and efficiency in retrieval processes. Additionally, its combination with BM25 in hybrid search further showcases its utility in the tech ecosystem."
+        },
+        {
+          "summary": "Integration of BM25 and FAISS for enhanced search methods",
+          "explanation": "The combined use of BM25 and FAISS in hybrid search methods exemplifies their complementary strengths. By leveraging BM25's probabilistic framework for relevance and FAISS's vector database capabilities, the hybrid approach significantly boosts retrieval accuracy, positioning the technology suite as pivotal in the landscape of semantic search."
+        },
+        {
+          "summary": "GPT-4's excellence in language generation",
+          "explanation": "GPT-4 stands out for its superior accuracy in generating responses, leading in exact match (EM) and execution (EX) scores among language models. Its integration with the Graph RAG framework highlights its optimization for high-performance retrieval tasks. GPT-4's capabilities reflect cutting-edge advancements in AI-driven text prediction and generation."
+        },
+        {
+          "summary": "Contributions by Robertson and Zaragoza",
+          "explanation": "Robertson and Zaragoza's foundational work in developing BM25 remains a cornerstone of modern search algorithms. Their extension of TF-IDF into BM25 marked a significant milestone in search performance, laying the groundwork for subsequent innovations in information retrieval."
+        }
+      ]
+    },
+    "level": 0,
+    "title": "Cluster 0",
+    "edges": [
+      [
+        "\"GPT-4\"",
+        "\"GRAPH RAG\""
+      ],
+      [
+        "\"BM25\"",
+        "\"ROBERTSON AND ZARAGOZA\""
+      ],
+      [
+        "\"BM25\"",
+        "\"FAISS\""
+      ],
+      [
+        "\"BM25\"",
+        "\"GPT-4\""
+      ],
+      [
+        "\"FAISS\"",
+        "\"VECTOR DATABASES\""
+      ]
+    ],
+    "nodes": [
+      "\"GPT-4\"",
+      "\"BM25\"",
+      "\"ROBERTSON AND ZARAGOZA\"",
+      "\"FAISS\"",
+      "\"VECTOR DATABASES\""
+    ],
+    "chunk_ids": [
+      "chunk-e14d9ce1582397e8542c20275b75c33d",
+      "chunk-100c3f50eb519a5f552b0b4d369a3cb4",
+      "chunk-11cff9efc5cf1d4449beed03e4533022",
+      "chunk-cf706093b3f4d348974dcbfa9bae4c5f",
+      "chunk-6b0cb085980014ac08ea749ec0a5275e"
+    ],
+    "occurrence": 0.8333333333333334,
+    "sub_communities": []
+  },
+  "2": {
+    "report_string": "# Neo4j and Graph Technologies\n\nThis report focuses on the community centered around Neo4j, a graph database platform known for its property graph model, which is particularly suitable for enterprise projects. The community's entities include Neo4j, knowledge graphs, APOC plugin, and graph databases, all of which are interrelated through the use of Neo4j technology in the Graph RAG method for querying flight connections. The connections between these entities enable efficient real-time analysis and complex data querying, highlighting Neo4j's pivotal role in this technological ecosystem.\n\n## Neo4j's central role in the community\n\nNeo4j is identified as a central figure in this technological community. It is renowned for its property graph model that supports efficient real-time analysis and querying, particularly when compared to RDF graphs. This capability makes Neo4j a critical asset for enterprise projects requiring robust graph database technology, thereby emphasizing its influence within this ecosystem.\n\n## Graph RAG method utilization of Neo4j\n\nThe Graph RAG method employs Neo4j's graph database technology to manage and query flight information through relationships, underscoring Neo4j's utility in complex data environments. By leveraging Neo4j, the Graph RAG method can retrieve detailed data across interconnected nodes, which is crucial for enterprises needing comprehensive data analysis.\n\n## Integration with APOC plugin\n\nNeo4j uses the APOC plugin to enhance its functionality, particularly for extracting schema information required for Graph RAG queries. This integration exemplifies how tools and technologies within this community are designed to extend Neo4j's core capabilities, providing users with more powerful and flexible data querying options.\n\n## Knowledge graphs and their reliance on Neo4j\n\nKnowledge graphs, another significant entity in this community, benefit from the foundational role of graph databases like Neo4j. Neo4j's property graph model facilitates the efficient storage and querying of structured data, which is essential for the development and use of knowledge graphs in providing insights and analytics.\n\n## Graph databases as infrastructure for knowledge graphs\n\nGraph databases act as the underlying infrastructure for creating and managing knowledge graphs. By offering a platform for structured data storage and complex query execution, graph databases like Neo4j enable knowledge graphs to represent and exploit the relationships between data points efficiently.",
+    "report_json": {
+      "title": "Neo4j and Graph Technologies",
+      "summary": "This report focuses on the community centered around Neo4j, a graph database platform known for its property graph model, which is particularly suitable for enterprise projects. The community's entities include Neo4j, knowledge graphs, APOC plugin, and graph databases, all of which are interrelated through the use of Neo4j technology in the Graph RAG method for querying flight connections. The connections between these entities enable efficient real-time analysis and complex data querying, highlighting Neo4j's pivotal role in this technological ecosystem.",
+      "rating": 6.5,
+      "rating_explanation": "The impact severity rating is based on the technological influence of Neo4j and its associated graph technologies in facilitating complex data queries and analysis in enterprise settings.",
+      "findings": [
+        {
+          "summary": "Neo4j's central role in the community",
+          "explanation": "Neo4j is identified as a central figure in this technological community. It is renowned for its property graph model that supports efficient real-time analysis and querying, particularly when compared to RDF graphs. This capability makes Neo4j a critical asset for enterprise projects requiring robust graph database technology, thereby emphasizing its influence within this ecosystem."
+        },
+        {
+          "summary": "Graph RAG method utilization of Neo4j",
+          "explanation": "The Graph RAG method employs Neo4j's graph database technology to manage and query flight information through relationships, underscoring Neo4j's utility in complex data environments. By leveraging Neo4j, the Graph RAG method can retrieve detailed data across interconnected nodes, which is crucial for enterprises needing comprehensive data analysis."
+        },
+        {
+          "summary": "Integration with APOC plugin",
+          "explanation": "Neo4j uses the APOC plugin to enhance its functionality, particularly for extracting schema information required for Graph RAG queries. This integration exemplifies how tools and technologies within this community are designed to extend Neo4j's core capabilities, providing users with more powerful and flexible data querying options."
+        },
+        {
+          "summary": "Knowledge graphs and their reliance on Neo4j",
+          "explanation": "Knowledge graphs, another significant entity in this community, benefit from the foundational role of graph databases like Neo4j. Neo4j's property graph model facilitates the efficient storage and querying of structured data, which is essential for the development and use of knowledge graphs in providing insights and analytics."
+        },
+        {
+          "summary": "Graph databases as infrastructure for knowledge graphs",
+          "explanation": "Graph databases act as the underlying infrastructure for creating and managing knowledge graphs. By offering a platform for structured data storage and complex query execution, graph databases like Neo4j enable knowledge graphs to represent and exploit the relationships between data points efficiently."
+        }
+      ]
+    },
+    "level": 0,
+    "title": "Cluster 2",
+    "edges": [
+      [
+        "\"GRAPH RAG\"",
+        "\"NEO4J\""
+      ],
+      [
+        "\"KNOWLEDGE GRAPHS\"",
+        "\"NEO4J\""
+      ],
+      [
+        "\"APOC PLUGIN\"",
+        "\"NEO4J\""
+      ],
+      [
+        "\"GRAPH DATABASES\"",
+        "\"KNOWLEDGE GRAPHS\""
+      ]
+    ],
+    "nodes": [
+      "\"GRAPH DATABASES\"",
+      "\"NEO4J\"",
+      "\"APOC PLUGIN\"",
+      "\"KNOWLEDGE GRAPHS\""
+    ],
+    "chunk_ids": [
+      "chunk-11cff9efc5cf1d4449beed03e4533022",
+      "chunk-2dd5909b360adfedad66f5936daffa07"
+    ],
+    "occurrence": 0.3333333333333333,
+    "sub_communities": []
+  }
+}

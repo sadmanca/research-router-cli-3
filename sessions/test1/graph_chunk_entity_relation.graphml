@@ -1,0 +1,1472 @@
+<?xml version='1.0' encoding='utf-8'?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
+  <key id="d7" for="edge" attr.name="order" attr.type="long" />
+  <key id="d6" for="edge" attr.name="source_id" attr.type="string" />
+  <key id="d5" for="edge" attr.name="description" attr.type="string" />
+  <key id="d4" for="edge" attr.name="weight" attr.type="double" />
+  <key id="d3" for="node" attr.name="clusters" attr.type="string" />
+  <key id="d2" for="node" attr.name="source_id" attr.type="string" />
+  <key id="d1" for="node" attr.name="description" attr.type="string" />
+  <key id="d0" for="node" attr.name="entity_type" attr.type="string" />
+  <graph edgedefault="undirected">
+    <node id="&quot;YUYANG LI&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Yuyang Li is one of the authors of the study on RAG methods for Conversational AI in the Airport Domain, affiliated with Karlsruhe Institute of Technology."</data>
+      <data key="d2">chunk-b47db627416f909ee831c0541602f07b</data>
+    </node>
+    <node id="&quot;PHILIP J.M. KERBUSCH&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Philip J.M. Kerbusch is an author who contributed to the research paper, associated with the Royal Schiphol Group."</data>
+      <data key="d2">chunk-b47db627416f909ee831c0541602f07b</data>
+    </node>
+    <node id="&quot;RAIMON H.R. PRUIM&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Raimon H.R. Pruim is one of the authors of the study, linked with the Royal Schiphol Group."</data>
+      <data key="d2">chunk-b47db627416f909ee831c0541602f07b</data>
+    </node>
+    <node id="&quot;TOBIAS KÄFER&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Tobias Käfer is an author involved in the study, associated with Karlsruhe Institute of Technology."</data>
+      <data key="d2">chunk-b47db627416f909ee831c0541602f07b</data>
+    </node>
+    <node id="&quot;KARLSRUHE INSTITUTE OF TECHNOLOGY&quot;">
+      <data key="d0">"ORGANIZATION"</data>
+      <data key="d1">"Karlsruhe Institute of Technology is an educational and research organization involved in the study of RAG methods for Conversational AI."</data>
+      <data key="d2">chunk-b47db627416f909ee831c0541602f07b</data>
+    </node>
+    <node id="&quot;ROYAL SCHIPHOL GROUP&quot;">
+      <data key="d0">"ORGANIZATION"</data>
+      <data key="d1">"Royal Schiphol Group is an organization involved in the research on AI methods for airports, specifically for enhancing decision-making and efficiency."&lt;SEP&gt;"Royal Schiphol Group is praised for its contributions to the research study and is affiliated with Amsterdam Airport Schiphol."&lt;SEP&gt;"The Royal Schiphol Group is an organization whose co-authors contributed to a research study mentioned in the document."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3&lt;SEP&gt;chunk-b47db627416f909ee831c0541602f07b&lt;SEP&gt;chunk-431648e4f71d1297f41deef7e4e54605</data>
+    </node>
+    <node id="&quot;AMSTERDAM AIRPORT SCHIPHOL&quot;">
+      <data key="d0">"GEO"</data>
+      <data key="d1">"Amsterdam Airport Schiphol is a highly trafficked airport ranked among the top 20 in the world, handling thousands of flights daily."&lt;SEP&gt;"Amsterdam Airport Schiphol is the location where the dataset for the study was authorized, and it is a specific domain for testing the system's performance."</data>
+      <data key="d2">chunk-b47db627416f909ee831c0541602f07b&lt;SEP&gt;chunk-431648e4f71d1297f41deef7e4e54605</data>
+    </node>
+    <node id="&quot;RAG METHODS FOR CONVERSATIONAL AI IN THE AIRPORT DOMAIN STUDY&quot;">
+      <data key="d0">"EVENT"</data>
+      <data key="d1">"This study evaluates different RAG methods for implementing Conversational AI systems to improve communication and efficiency in airport operations."</data>
+      <data key="d2">chunk-b47db627416f909ee831c0541602f07b</data>
+    </node>
+    <node id="&quot;RAG METHODS&quot;">
+      <data key="d0">"TECHNOLOGY"</data>
+      <data key="d1">"RAG Methods include traditional, SQL, and Graph approaches each handling flight data queries to retrieve and generate relevant answers."&lt;SEP&gt;"RAG Methods, including Traditional RAG, SQL RAG, and Knowledge Graph-based RAG, are techniques used to improve the performance and safety of Conversational AI systems in airport environments."&lt;SEP&gt;"RAG methods, including SQL RAG and Graph RAG, are used to retrieve and generate queries for flight information based on prompt styles and data structures."</data>
+      <data key="d2">chunk-b47db627416f909ee831c0541602f07b&lt;SEP&gt;chunk-cf706093b3f4d348974dcbfa9bae4c5f&lt;SEP&gt;chunk-2dd5909b360adfedad66f5936daffa07</data>
+    </node>
+    <node id="&quot;TRADITIONAL RAG&quot;">
+      <data key="d0">"TECHNOLOGY"</data>
+      <data key="d1">"Traditional RAG is a method that retrieves relevant information from flight databases using LLMs, achieving 84.84% accuracy but with occasional hallucinations."&lt;SEP&gt;"Traditional RAG is a retrieval augmented generation method that struggles with hallucinations due to the incorporation of excessive information in responses."&lt;SEP&gt;"Traditional RAG is a retrieval method that accesses flight information and is potentially prone to information hallucination when dealing with large datasets."</data>
+      <data key="d2">chunk-b47db627416f909ee831c0541602f07b&lt;SEP&gt;chunk-293118b85820ded697d5ee6ddc5ee367&lt;SEP&gt;chunk-431648e4f71d1297f41deef7e4e54605</data>
+      <data key="d3">[{"level": 0, "cluster": 3}]</data>
+    </node>
+    <node id="&quot;SQL RAG&quot;">
+      <data key="d0">"TECHNOLOGY"</data>
+      <data key="d1">"SQL RAG is a method storing datasets in an SQL database, using structured SQL queries to minimize hallucinations for improved airport safety."&lt;SEP&gt;"SQL RAG is a retrieval augmented generation method that converts natural language questions into SQL queries to ensure accuracy and reduce hallucinations."&lt;SEP&gt;"SQL RAG is a retrieval-augmented generation method that generates SQL queries based on gate and flight information from tables."&lt;SEP&gt;"SQL RAG is a technology using structured data to create fixed SQL queries, resulting in higher EM scores though less flexibility compared to Graph RAG."&lt;SEP&gt;"SQL RAG is an advanced retrieval method which converts natural language queries to SQL queries for precise data retrieval, reducing the chance of hallucinations."</data>
+      <data key="d2">chunk-293118b85820ded697d5ee6ddc5ee367&lt;SEP&gt;chunk-e14d9ce1582397e8542c20275b75c33d&lt;SEP&gt;chunk-b47db627416f909ee831c0541602f07b&lt;SEP&gt;chunk-431648e4f71d1297f41deef7e4e54605&lt;SEP&gt;chunk-2dd5909b360adfedad66f5936daffa07</data>
+      <data key="d3">[{"level": 0, "cluster": 3}]</data>
+    </node>
+    <node id="&quot;GRAPH RAG&quot;">
+      <data key="d0">"TECHNOLOGY"</data>
+      <data key="d1">"Graph RAG is a method using graph database technology to connect flight information through relationships, providing detailed flight data."&lt;SEP&gt;"Graph RAG is a method utilizing knowledge graphs to effectively handle reasoning-based questions, achieving 91.49% accuracy with fewer hallucinations."&lt;SEP&gt;"Graph RAG is a retrieval augmented generation method known for leveraging graph relationships to improve data retrieval and reduce hallucinations."&lt;SEP&gt;"Graph RAG is a retrieval method that utilizes Cypher queries to obtain precise data, minimizing hallucination occurrences compared to traditional RAG."&lt;SEP&gt;"Graph RAG is a technology that focuses on using graph query languages to generate flexible and accurate responses, demonstrating high EX scores as compared to SQL RAG."</data>
+      <data key="d2">chunk-293118b85820ded697d5ee6ddc5ee367&lt;SEP&gt;chunk-e14d9ce1582397e8542c20275b75c33d&lt;SEP&gt;chunk-b47db627416f909ee831c0541602f07b&lt;SEP&gt;chunk-431648e4f71d1297f41deef7e4e54605&lt;SEP&gt;chunk-2dd5909b360adfedad66f5936daffa07</data>
+      <data key="d3">[{"level": 0, "cluster": 3}]</data>
+    </node>
+    <node id="&quot;CONVERSATIONAL AI SYSTEM&quot;">
+      <data key="d0">"TECHNOLOGY"</data>
+      <data key="d1">"The Conversational AI System enables airport staff to interact naturally with flight information systems, enhancing decision-making and efficiency."&lt;SEP&gt;"The Conversational AI System is the technology being tested for its ability to handle straightforward and ambiguous questions effectively."</data>
+      <data key="d2">chunk-b47db627416f909ee831c0541602f07b&lt;SEP&gt;chunk-ede8225cb6c767c6040415aca48fa637</data>
+      <data key="d3">[{"level": 0, "cluster": 1}]</data>
+    </node>
+    <node id="&quot;GUO ET AL.&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Guo et al. refers to the authors of a study or paper in 2023 related to SQL Retrieval-Augmented Generation techniques."</data>
+      <data key="d2">chunk-11cff9efc5cf1d4449beed03e4533022</data>
+    </node>
+    <node id="&quot;EDGE ET AL.&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Edge et al. refers to the authors of a study or paper in 2024 related to Knowledge Graph-based Retrieval-Augmented Generation techniques."</data>
+      <data key="d2">chunk-11cff9efc5cf1d4449beed03e4533022</data>
+    </node>
+    <node id="&quot;LIU ET AL.&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Liu et al. refers to the authors of a study or paper in 2018 related to TF-IDF in keyword search."</data>
+      <data key="d2">chunk-11cff9efc5cf1d4449beed03e4533022</data>
+    </node>
+    <node id="&quot;ROBERTSON AND ZARAGOZA&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Robertson and Zaragoza are authors who contributed to the development of BM25, extending TF-IDF for better search performance."</data>
+      <data key="d2">chunk-11cff9efc5cf1d4449beed03e4533022</data>
+      <data key="d3">[{"level": 0, "cluster": 0}]</data>
+    </node>
+    <node id="&quot;CHEN AND WISEMAN&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Chen and Wiseman are authors of a study or paper in 2023 discussing advancements in retrieval techniques."</data>
+      <data key="d2">chunk-11cff9efc5cf1d4449beed03e4533022</data>
+    </node>
+    <node id="&quot;JEGOU ET AL.&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Jegou et al. refers to authors of a study related to FAISS, a vector database tool used in semantic search."</data>
+      <data key="d2">chunk-11cff9efc5cf1d4449beed03e4533022</data>
+    </node>
+    <node id="&quot;GEORGE AND RAJAN&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"George and Rajan are contributors to research in 2022 focusing on vector databases in semantic search."</data>
+      <data key="d2">chunk-11cff9efc5cf1d4449beed03e4533022</data>
+    </node>
+    <node id="&quot;ROBERT LEE&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Robert Lee is a co-author of a study on hybrid search using vectors and full text in Azure AI Search."&lt;SEP&gt;"Robert Lee is mentioned in relation to the development of hybrid search algorithms, particularly Reciprocal Rank Fusion in 2024."</data>
+      <data key="d2">chunk-11cff9efc5cf1d4449beed03e4533022&lt;SEP&gt;chunk-6b1da5dfbfbe5e118e4a2106615023e3</data>
+    </node>
+    <node id="&quot;RAJKUMAR ET AL.&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Rajkumar et al. contributed to research in 2022 on Text-to-SQL tasks using Large Language Models."</data>
+      <data key="d2">chunk-11cff9efc5cf1d4449beed03e4533022</data>
+    </node>
+    <node id="&quot;GAO ET AL.&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Gao et al. contributed to research regarding prompt engineering for Text-to-SQL tasks and Graph RAG techniques."</data>
+      <data key="d2">chunk-11cff9efc5cf1d4449beed03e4533022</data>
+    </node>
+    <node id="&quot;MAO ET AL.&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Mao et al. contributed to research on Maximal Marginal Relevance (MMR) in semantic search techniques."</data>
+      <data key="d2">chunk-11cff9efc5cf1d4449beed03e4533022</data>
+    </node>
+    <node id="&quot;BARRASA ET AL.&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Barrasa et al. refers to authors discussing Neo4j’s labeled property graph model and its applications in enterprise projects in 2023."</data>
+      <data key="d2">chunk-11cff9efc5cf1d4449beed03e4533022</data>
+    </node>
+    <node id="&quot;FAISS&quot;">
+      <data key="d0">"ORGANIZATION"</data>
+      <data key="d1">"FAISS (Fast Approximate Nearest Neighbors Search) is a library for efficient similarity search and clustering of dense vectors."&lt;SEP&gt;"FAISS is a vector database tool used in semantic search methods for retrieving similar items based on vector representation."&lt;SEP&gt;"FAISS is a vector database used in combination with BM25 in the hybrid search method for article retrieval, contributing to high accuracy."</data>
+      <data key="d2">chunk-11cff9efc5cf1d4449beed03e4533022&lt;SEP&gt;chunk-100c3f50eb519a5f552b0b4d369a3cb4&lt;SEP&gt;chunk-cf706093b3f4d348974dcbfa9bae4c5f</data>
+      <data key="d3">[{"level": 0, "cluster": 0}]</data>
+    </node>
+    <node id="&quot;NEO4J&quot;">
+      <data key="d0">"ORGANIZATION"</data>
+      <data key="d1">"Neo4j is a graph database platform mentioned for its property graph model suitable for enterprise projects."&lt;SEP&gt;"Neo4j is a graph database technology mentioned as part of the Graph RAG method for querying flight connections."</data>
+      <data key="d2">chunk-11cff9efc5cf1d4449beed03e4533022&lt;SEP&gt;chunk-2dd5909b360adfedad66f5936daffa07</data>
+      <data key="d3">[{"level": 0, "cluster": 2}]</data>
+    </node>
+    <node id="&quot;RDF GRAPHS&quot;">
+      <data key="d0">"ORGANIZATION"</data>
+      <data key="d1">"RDF graphs refer to a type of knowledge graph used for structured representation of data, involved in SPARQL querying."</data>
+      <data key="d2">chunk-11cff9efc5cf1d4449beed03e4533022</data>
+    </node>
+    <node id="&quot;THE FLIGHT INFORMATION DATASET&quot;">
+      <data key="d0">"EVENT"</data>
+      <data key="d1">"The flight information dataset is described as a tabular collection of data on thousands of flights, used for experiments in retrieval-augmented generation."</data>
+      <data key="d2">chunk-11cff9efc5cf1d4449beed03e4533022</data>
+    </node>
+    <node id="&quot;TF-IDF&quot;">
+      <data key="d0">"TECHNOLOGY"</data>
+      <data key="d1">"TF-IDF is a keyword search technique used to evaluate the importance of terms within a document and across a corpus."&lt;SEP&gt;"TF-IDF stands for Term Frequency-Inverse Document Frequency, used to reflect the importance of a word in a document in information retrieval."</data>
+      <data key="d2">chunk-11cff9efc5cf1d4449beed03e4533022&lt;SEP&gt;chunk-100c3f50eb519a5f552b0b4d369a3cb4</data>
+    </node>
+    <node id="&quot;BM25&quot;">
+      <data key="d0">"TECHNOLOGY"</data>
+      <data key="d1">"BM25 is a method used for information retrieval, ranking documents based on the Bayesian interference."&lt;SEP&gt;"BM25 is a probabilistic relevance framework method mentioned in the context of information retrieval."&lt;SEP&gt;"BM25 is a retrieval method used within the traditional RAG pipeline, performing with high accuracy in retrieving correct articles in a straightforward dataset."&lt;SEP&gt;"BM25 is an extension of TF-IDF, incorporating a term saturation function to improve keyword search effectiveness."</data>
+      <data key="d2">chunk-11cff9efc5cf1d4449beed03e4533022&lt;SEP&gt;chunk-100c3f50eb519a5f552b0b4d369a3cb4&lt;SEP&gt;chunk-cf706093b3f4d348974dcbfa9bae4c5f&lt;SEP&gt;chunk-6b0cb085980014ac08ea749ec0a5275e</data>
+      <data key="d3">[{"level": 0, "cluster": 0}]</data>
+    </node>
+    <node id="&quot;LSH&quot;">
+      <data key="d0">"TECHNOLOGY"</data>
+      <data key="d1">"Locality-Sensitive Hashing (LSH) is a semantic search method for efficiently identifying similar items."</data>
+      <data key="d2">chunk-11cff9efc5cf1d4449beed03e4533022</data>
+    </node>
+    <node id="&quot;KNN&quot;">
+      <data key="d0">"TECHNOLOGY"</data>
+      <data key="d1">"k-Nearest Neighbors (KNN) is a semantic search method used for classifying items based on closest feature resemblance."</data>
+      <data key="d2">chunk-11cff9efc5cf1d4449beed03e4533022</data>
+    </node>
+    <node id="&quot;RRF&quot;">
+      <data key="d0">"TECHNOLOGY"</data>
+      <data key="d1">"Reciprocal Rank Fusion (RRF) is a hybrid search algorithm that combines keyword and semantic methods for improved search results."</data>
+      <data key="d2">chunk-11cff9efc5cf1d4449beed03e4533022</data>
+    </node>
+    <node id="&quot;WORD2VEC&quot;">
+      <data key="d0">"TECHNOLOGY"</data>
+      <data key="d1">"Word2Vec is an embedding model that transforms words into vector representations to compute similarities in semantic search."</data>
+      <data key="d2">chunk-11cff9efc5cf1d4449beed03e4533022</data>
+    </node>
+    <node id="&quot;SPARQL&quot;">
+      <data key="d0">"TECHNOLOGY"</data>
+      <data key="d1">"SPARQL is a query language used for retrieving and manipulating data stored in RDF format graphs."</data>
+      <data key="d2">chunk-11cff9efc5cf1d4449beed03e4533022</data>
+    </node>
+    <node id="&quot;CYPHER&quot;">
+      <data key="d0">"TECHNOLOGY"</data>
+      <data key="d1">"Cypher is the query language for Neo4j property graphs, used for efficiently querying and managing graph data."</data>
+      <data key="d2">chunk-11cff9efc5cf1d4449beed03e4533022</data>
+    </node>
+    <node id="&quot;GRAPH DATABASES&quot;">
+      <data key="d0">"TECHNOLOGY"</data>
+      <data key="d1">"Graph databases store structured data as entities and relationships, facilitating complex queries and data representation."</data>
+      <data key="d2">chunk-11cff9efc5cf1d4449beed03e4533022</data>
+      <data key="d3">[{"level": 0, "cluster": 2}]</data>
+    </node>
+    <node id="&quot;LLMS&quot;">
+      <data key="d0">"TECHNOLOGY"</data>
+      <data key="d1">"LLMs, including models like GPT-4 and GPT-4o Mini, are utilized for language generation in various RAG methods, showing variability but significant accuracy across tasks."&lt;SEP&gt;"Large Language Models (LLMs) are AI models used for generating human-like text responses, critical in Text-to-SQL tasks."&lt;SEP&gt;"Large Language Models are utilized to generate answers to user questions from flight data, with various LLMs tested for performance."</data>
+      <data key="d2">chunk-11cff9efc5cf1d4449beed03e4533022&lt;SEP&gt;chunk-cf706093b3f4d348974dcbfa9bae4c5f&lt;SEP&gt;chunk-e14d9ce1582397e8542c20275b75c33d</data>
+    </node>
+    <node id="&quot;GAO ET AL., 2024&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Gao et al. are researchers contributing to semantic search advancements and embedding models, as mentioned in 2024 studies."</data>
+      <data key="d2">chunk-11cff9efc5cf1d4449beed03e4533022</data>
+    </node>
+    <node id="&quot;DELTA&quot;">
+      <data key="d0">"ORGANIZATION"</data>
+      <data key="d1">"Delta is an airline mentioned in the context of flight queries, where specific flight details are requested for better processing."&lt;SEP&gt;"Delta is mentioned in the context of airline flight information, needing clarification on specific flight details."&lt;SEP&gt;"Delta is referenced in the context of flight information, presumably as an airline, needing clarification regarding specific flight details."</data>
+      <data key="d2">chunk-2dd5909b360adfedad66f5936daffa07&lt;SEP&gt;chunk-cf706093b3f4d348974dcbfa9bae4c5f</data>
+    </node>
+    <node id="&quot;SQL&quot;">
+      <data key="d0">"TECHNOLOGY"</data>
+      <data key="d1">"SQL is used in the SQL RAG method to process natural language questions into queries for retrieving information from a database schema."</data>
+      <data key="d2">chunk-cf706093b3f4d348974dcbfa9bae4c5f</data>
+    </node>
+    <node id="&quot;GAO ET AL., 2023&quot;">
+      <data key="d0">"EVENT"</data>
+      <data key="d1">"Gao et al., 2023 is a referenced work in the context of research and experimentation related to SQL RAG methods and Code Representation Prompts."</data>
+      <data key="d2">chunk-cf706093b3f4d348974dcbfa9bae4c5f</data>
+    </node>
+    <node id="&quot;BARRASA ET AL., 2023&quot;">
+      <data key="d0">"EVENT"</data>
+      <data key="d1">"Barrasa et al., 2023 is a referenced work discussing the efficiency and application of real-time analysis and querying in enterprise projects."</data>
+      <data key="d2">chunk-cf706093b3f4d348974dcbfa9bae4c5f</data>
+    </node>
+    <node id="&quot;LLAMA-3-8B-INSTRUCT&quot;">
+      <data key="d0">"TECHNOLOGY"</data>
+      <data key="d1">"Llama-3-8B-Instruct is a language model used for specific instructions and tasks."&lt;SEP&gt;"Llama-3-8B-Instruct is one of several LLMs evaluated for performance in answering flight data-related queries."</data>
+      <data key="d2">chunk-100c3f50eb519a5f552b0b4d369a3cb4&lt;SEP&gt;chunk-cf706093b3f4d348974dcbfa9bae4c5f</data>
+    </node>
+    <node id="&quot;BERT&quot;">
+      <data key="d0">"TECHNOLOGY"</data>
+      <data key="d1">"BERT is a model used within LLMs for performance evaluation in response generation for flight data."&lt;SEP&gt;"BERT stands for Bidirectional Encoder Representations from Transformers, a technique for NLP pre-training developed by Google."</data>
+      <data key="d2">chunk-100c3f50eb519a5f552b0b4d369a3cb4&lt;SEP&gt;chunk-cf706093b3f4d348974dcbfa9bae4c5f</data>
+    </node>
+    <node id="&quot;CRP&quot;">
+      <data key="d0">"TECHNOLOGY"</data>
+      <data key="d1">"CRP is a method utilized in SQL RAG to fine-tune prompts for improving query accuracy and results."&lt;SEP&gt;"CRP refers to a prompt or aspect within the context of flight information analysis, possibly related to the demonstration of RAG methods."&lt;SEP&gt;"CRP, or Code Representation Prompt, provides a detailed SQL-style schema for generating precise queries, suitable for complex databases."</data>
+      <data key="d2">chunk-2dd5909b360adfedad66f5936daffa07&lt;SEP&gt;chunk-cf706093b3f4d348974dcbfa9bae4c5f&lt;SEP&gt;chunk-293118b85820ded697d5ee6ddc5ee367</data>
+    </node>
+    <node id="&quot;ODP&quot;">
+      <data key="d0">"TECHNOLOGY"</data>
+      <data key="d1">"ODP is employed in SQL RAG methods to enhance prompt precision for generating SQL queries."&lt;SEP&gt;"ODP, or OpenAI Demonstration Prompt, emphasizes simplicity and explicit rules, generating SQL queries with straightforward instructions."</data>
+      <data key="d2">chunk-2dd5909b360adfedad66f5936daffa07&lt;SEP&gt;chunk-cf706093b3f4d348974dcbfa9bae4c5f</data>
+    </node>
+    <node id="&quot;GPT-4&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"GPT-4 is a large language model leading in accuracy for generating responses, showing the highest EM and EX scores among the models discussed."&lt;SEP&gt;"GPT-4 is an advanced language model developed by OpenAI, used to predict and generate human-like text."</data>
+      <data key="d2">chunk-100c3f50eb519a5f552b0b4d369a3cb4&lt;SEP&gt;chunk-e14d9ce1582397e8542c20275b75c33d</data>
+      <data key="d3">[{"level": 0, "cluster": 0}]</data>
+    </node>
+    <node id="&quot;GPT-4O MINI&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"GPT-4o Mini is a variant of the GPT-4 language model, likely designed with specific optimizations."&lt;SEP&gt;"GPT-4o Mini is a variation of GPT-4 with slightly lower accuracy scores, involved in generating flexible and accurate responses as part of the Graph RAG framework."</data>
+      <data key="d2">chunk-100c3f50eb519a5f552b0b4d369a3cb4&lt;SEP&gt;chunk-e14d9ce1582397e8542c20275b75c33d</data>
+      <data key="d3">[{"level": 0, "cluster": 3}]</data>
+    </node>
+    <node id="&quot;GPT-3.5 TURBO&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"GPT-3.5 Turbo is a version of the GPT-3 language model known for faster processing speeds."&lt;SEP&gt;"GPT-3.5 Turbo is another variation of language models discussed, showing a notable performance in executing queries with a moderate EX score."</data>
+      <data key="d2">chunk-100c3f50eb519a5f552b0b4d369a3cb4&lt;SEP&gt;chunk-e14d9ce1582397e8542c20275b75c33d</data>
+    </node>
+    <node id="&quot;ROBERTA&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"RoBERTa is a robustly optimized BERT approach, designed to improve the training of language representations."</data>
+      <data key="d2">chunk-100c3f50eb519a5f552b0b4d369a3cb4</data>
+    </node>
+    <node id="&quot;DISTILBERT&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"DistilBERT is a smaller, faster, cheaper, and lighter version of BERT."</data>
+      <data key="d2">chunk-100c3f50eb519a5f552b0b4d369a3cb4</data>
+    </node>
+    <node id="&quot;DEBERTA&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"DeBERTa stands for Decoding-enhanced BERT with Disentangled Attention, designed to optimize BERT’s performance."</data>
+      <data key="d2">chunk-100c3f50eb519a5f552b0b4d369a3cb4</data>
+    </node>
+    <node id="&quot;MDEBERTA&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"mDeBERTa is a multilingual version of the DeBERTa language model."</data>
+      <data key="d2">chunk-100c3f50eb519a5f552b0b4d369a3cb4</data>
+    </node>
+    <node id="&quot;ELECTRA&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Electra is an efficient pre-training method for transformers that replaces masked language modeling."</data>
+      <data key="d2">chunk-100c3f50eb519a5f552b0b4d369a3cb4</data>
+    </node>
+    <node id="&quot;ELECTRA LARGE&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Electra Large is a larger version of the Electra language model for improved performance."</data>
+      <data key="d2">chunk-100c3f50eb519a5f552b0b4d369a3cb4</data>
+    </node>
+    <node id="&quot;SPECIALIZED AIRPORT JARGON&quot;">
+      <data key="d0">"EVENT"</data>
+      <data key="d1">"Specialized airport jargon refers to a dataset containing ambiguous jargon and questions classified into several complex categories for evaluation purposes."</data>
+      <data key="d2">chunk-e14d9ce1582397e8542c20275b75c33d</data>
+    </node>
+    <node id="&quot;SCHEMA PROMPT&quot;">
+      <data key="d0">"EVENT"</data>
+      <data key="d1">"Schema Prompt is used within the Graph RAG method to improve accuracy and retrieval outcomes."</data>
+      <data key="d2">chunk-e14d9ce1582397e8542c20275b75c33d</data>
+    </node>
+    <node id="&quot;TAQ&quot;">
+      <data key="d0">"EVENT"</data>
+      <data key="d1">"TAQ, or Time Ambiguous Questions, involves incomplete questions lacking details like flight numbers and requires classification and further information for answers."</data>
+      <data key="d2">chunk-e14d9ce1582397e8542c20275b75c33d</data>
+    </node>
+    <node id="&quot;TWAQ&quot;">
+      <data key="d0">"EVENT"</data>
+      <data key="d1">"TWAQ, or Time With Ambiguous Flight Number Questions, involves incomplete questions combining time and flight number ambiguities, which need additional data for answering."</data>
+      <data key="d2">chunk-e14d9ce1582397e8542c20275b75c33d</data>
+    </node>
+    <node id="&quot;BGQ&quot;">
+      <data key="d0">"EVENT"</data>
+      <data key="d1">"BGQ stands for Board Gate Questions, dealing with incomplete queries about gate information that require further clarification."</data>
+      <data key="d2">chunk-e14d9ce1582397e8542c20275b75c33d</data>
+    </node>
+    <node id="&quot;NFQ&quot;">
+      <data key="d0">"EVENT"</data>
+      <data key="d1">"Next Flight Questions involve determining the next flight information based on current airline or ramp details, requiring dynamic problem-solving."</data>
+      <data key="d2">chunk-e14d9ce1582397e8542c20275b75c33d</data>
+    </node>
+    <node id="&quot;BQA&quot;">
+      <data key="d0">"EVENT"</data>
+      <data key="d1">"Board Questions of Aircraft involve queries with abbreviations and jargon, focusing on aircraft and flight details like gate numbers."</data>
+      <data key="d2">chunk-e14d9ce1582397e8542c20275b75c33d</data>
+    </node>
+    <node id="&quot;AFQ&quot;">
+      <data key="d0">"EVENT"</data>
+      <data key="d1">"Ambiguous Flight Number Questions involve incomplete questions with unclear flight numbers, requiring additional clarification."</data>
+      <data key="d2">chunk-e14d9ce1582397e8542c20275b75c33d</data>
+    </node>
+    <node id="&quot;CONFUSION MATRIX&quot;">
+      <data key="d0">"TECHNOLOGY"</data>
+      <data key="d1">"Confusion Matrix visually represents the classification accuracy and errors when classifying different question types in the dataset."</data>
+      <data key="d2">chunk-e14d9ce1582397e8542c20275b75c33d</data>
+    </node>
+    <node id="&quot;CLASSIFICATION PROMPT&quot;">
+      <data key="d0">"TECHNOLOGY"</data>
+      <data key="d1">"Classification Prompt used in question classification to improve accuracy and performance during evaluation of the dataset."</data>
+      <data key="d2">chunk-e14d9ce1582397e8542c20275b75c33d</data>
+    </node>
+    <node id="&quot;DEUTSCHE FORSCHUNGSGEMEINSCHAFT&quot;">
+      <data key="d0">"ORGANIZATION"</data>
+      <data key="d1">"Deutsche Forschungsgemeinschaft is the German Research Foundation that supported the research study under Research Unit FOR 5339."</data>
+      <data key="d2">chunk-431648e4f71d1297f41deef7e4e54605</data>
+    </node>
+    <node id="&quot;RAG PIPELINE&quot;">
+      <data key="d0">"TECHNOLOGY"</data>
+      <data key="d1">"RAG Pipeline refers to the various methods of retrieval augmented generation evaluated in the study, each handling data and hallucinations differently."</data>
+      <data key="d2">chunk-431648e4f71d1297f41deef7e4e54605</data>
+    </node>
+    <node id="&quot;REASONING QUESTION DATASET&quot;">
+      <data key="d0">"EVENT"</data>
+      <data key="d1">"Reasoning Question Dataset is the set of data used in the research to assess the performance of different RAG pipelines, focusing on reasoning and hallucination rates."</data>
+      <data key="d2">chunk-431648e4f71d1297f41deef7e4e54605</data>
+    </node>
+    <node id="&quot;BM25+GPT-4&quot;">
+      <data key="d0">"TECHNOLOGY"</data>
+      <data key="d1">"BM25+GPT-4 is a traditional RAG method noted for its efficiency due to specialized terminology handling within the airport domain."</data>
+      <data key="d2">chunk-431648e4f71d1297f41deef7e4e54605</data>
+    </node>
+    <node id="&quot;AVIATION OPERATIONS&quot;">
+      <data key="d0">"EVENT"</data>
+      <data key="d1">"Aviation Operations refers to activities in the aviation domain requiring high safety standards, where RAG methods need to minimize hallucinations."</data>
+      <data key="d2">chunk-431648e4f71d1297f41deef7e4e54605</data>
+    </node>
+    <node id="&quot;APPENDIX A&quot;">
+      <data key="d0">"EVENT"</data>
+      <data key="d1">"Appendix A is a section of the study providing detailed experimental results concerning the evaluation of different RAG methods."</data>
+      <data key="d2">chunk-431648e4f71d1297f41deef7e4e54605</data>
+    </node>
+    <node id="&quot;PROJECT NO.459291153&quot;">
+      <data key="d0">"ORGANIZATION"</data>
+      <data key="d1">"Project No.459291153 is part of the research funding provided by Deutsche Forschungsgemeinschaft under Research Unit FOR 5339."</data>
+      <data key="d2">chunk-431648e4f71d1297f41deef7e4e54605</data>
+    </node>
+    <node id="&quot;ETHICS POLICY&quot;">
+      <data key="d0">"CONCEPT"</data>
+      <data key="d1">"The Ethics Policy outlines the ethical considerations ensuring that the dataset used in the study is authorized and does not contain sensitive information."</data>
+      <data key="d2">chunk-431648e4f71d1297f41deef7e4e54605</data>
+    </node>
+    <node id="&quot;FUTURE WORK&quot;">
+      <data key="d0">"CONCEPT"</data>
+      <data key="d1">"Future Work refers to the planned research activities outlined in the study, aiming to improve and expand the system's capabilities with real-time data."</data>
+      <data key="d2">chunk-431648e4f71d1297f41deef7e4e54605</data>
+    </node>
+    <node id="&quot;SECURITY REVIEWS&quot;">
+      <data key="d0">"CONCEPT"</data>
+      <data key="d1">"Security Reviews are future measures needed to ensure the safe deployment of RAG systems in live aviation environments to prevent misuse."</data>
+      <data key="d2">chunk-431648e4f71d1297f41deef7e4e54605</data>
+    </node>
+    <node id="&quot;GODWIN GEORGE&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Godwin George is an author of a study related to a faiss-based search for story generation."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3</data>
+    </node>
+    <node id="&quot;RAJEEV RAJAN&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Rajeev Rajan is an author of a study related to a faiss-based search for story generation."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3</data>
+    </node>
+    <node id="&quot;INDICON 2022&quot;">
+      <data key="d0">"EVENT"</data>
+      <data key="d1">"INDICON 2022 is an event where a paper on a faiss-based search for story generation was presented."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3</data>
+    </node>
+    <node id="&quot;J. BARRASA&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"J. Barrasa is a co-author of a publication on building knowledge graphs."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3</data>
+    </node>
+    <node id="&quot;J. WEBBER&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"J. Webber is a co-author mentioned twice in the publication on building knowledge graphs."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3</data>
+    </node>
+    <node id="&quot;XIAOYIN CHEN&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Xiaoyin Chen is a co-author of a study on BM25 query augmentation learned end-to-end."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3</data>
+    </node>
+    <node id="&quot;SAM WISEMAN&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Sam Wiseman is a co-author of a study on BM25 query augmentation learned end-to-end."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3</data>
+    </node>
+    <node id="&quot;DARREN EDGE&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Darren Edge is a co-author of a study on query-focused summarization using a graph-based approach."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3</data>
+    </node>
+    <node id="&quot;HA TRINH&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Ha Trinh is a co-author of a study on query-focused summarization using a graph-based approach."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3</data>
+    </node>
+    <node id="&quot;NEWMAN CHENG&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Newman Cheng is a co-author of a study on query-focused summarization using a graph-based approach."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3</data>
+    </node>
+    <node id="&quot;JOSHUA BRADLEY&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Joshua Bradley is a co-author of a study on query-focused summarization using a graph-based approach."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3</data>
+    </node>
+    <node id="&quot;ALEX CHAO&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Alex Chao is a co-author of a study on query-focused summarization using a graph-based approach."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3</data>
+    </node>
+    <node id="&quot;APURVA MODY&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Apurva Mody is a co-author of a study on query-focused summarization using a graph-based approach."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3</data>
+    </node>
+    <node id="&quot;STEVEN TRUITT&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Steven Truitt is a co-author of a study on query-focused summarization using a graph-based approach."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3</data>
+    </node>
+    <node id="&quot;JONATHAN LARSON&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Jonathan Larson is a co-author of a study on query-focused summarization using a graph-based approach."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3</data>
+    </node>
+    <node id="&quot;DAWEI GAO&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Dawei Gao is a co-author of a study on text-to-SQL empowered by large language models."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3</data>
+    </node>
+    <node id="&quot;HAIBIN WANG&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Haibin Wang is a co-author of a study on text-to-SQL empowered by large language models."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3</data>
+    </node>
+    <node id="&quot;YALIANG LI&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Yaliang Li is a co-author of a study on text-to-SQL empowered by large language models."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3</data>
+    </node>
+    <node id="&quot;XIUYU SUN&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Xiuyu Sun is a co-author of a study on text-to-SQL empowered by large language models."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3</data>
+    </node>
+    <node id="&quot;YICHEN QIAN&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Yichen Qian is a co-author of a study on text-to-SQL empowered by large language models."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3</data>
+    </node>
+    <node id="&quot;BOLIN DING&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Bolin Ding is a co-author of a study on text-to-SQL empowered by large language models."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3</data>
+    </node>
+    <node id="&quot;JINGREN ZHOU&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Jingren Zhou is a co-author of a study on text-to-SQL empowered by large language models."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3</data>
+    </node>
+    <node id="&quot;YUNFAN GAO&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Yunfan Gao is a co-author of a survey on retrieval-augmented generation for large language models."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3</data>
+    </node>
+    <node id="&quot;YUN XIONG&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Yun Xiong is a co-author of a survey on retrieval-augmented generation for large language models."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3</data>
+    </node>
+    <node id="&quot;XINYU GAO&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Xinyu Gao is a co-author of a survey on retrieval-augmented generation for large language models."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3</data>
+    </node>
+    <node id="&quot;KANGXIANG JIA&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Kangxiang Jia is a co-author of a survey on retrieval-augmented generation for large language models."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3</data>
+    </node>
+    <node id="&quot;JINLIU PAN&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Jinliu Pan is a co-author of a survey on retrieval-augmented generation for large language models."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3</data>
+    </node>
+    <node id="&quot;YUXI BI&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Yuxi Bi is a co-author of a survey on retrieval-augmented generation for large language models."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3</data>
+    </node>
+    <node id="&quot;YI DAI&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Yi Dai is a co-author of a survey on retrieval-augmented generation for large language models."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3</data>
+    </node>
+    <node id="&quot;JIAWEI SUN&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Jiawei Sun is a co-author of a survey on retrieval-augmented generation for large language models."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3</data>
+    </node>
+    <node id="&quot;MENG WANG&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Meng Wang is a co-author of a survey on retrieval-augmented generation for large language models."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3</data>
+    </node>
+    <node id="&quot;HAOFEN WANG&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Haofen Wang is a co-author of a survey on retrieval-augmented generation for large language models."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3</data>
+    </node>
+    <node id="&quot;CHUNXI GUO&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Chunxi Guo is a co-author of a study on a retrieval-augmented GPT-3.5-based text-to-SQL framework."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3</data>
+    </node>
+    <node id="&quot;ZHILIANG TIAN&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Zhiliang Tian is a co-author of a study on a retrieval-augmented GPT-3.5-based text-to-SQL framework."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3</data>
+    </node>
+    <node id="&quot;JINTAO TANG&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Jintao Tang is a co-author of a study on a retrieval-augmented GPT-3.5-based text-to-SQL framework."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3</data>
+    </node>
+    <node id="&quot;SHASHA LI&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Shasha Li is a co-author of a study on a retrieval-augmented GPT-3.5-based text-to-SQL framework."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3</data>
+    </node>
+    <node id="&quot;ZHIHUA WEN&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Zhihua Wen is a co-author of a study on a retrieval-augmented GPT-3.5-based text-to-SQL framework."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3</data>
+    </node>
+    <node id="&quot;KAIXUAN WANG&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Kaixuan Wang is a co-author of a study on a retrieval-augmented GPT-3.5-based text-to-SQL framework."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3</data>
+    </node>
+    <node id="&quot;TING WANG&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Ting Wang is a co-author of a study on a retrieval-augmented GPT-3.5-based text-to-SQL framework."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3</data>
+    </node>
+    <node id="&quot;SVEN JACOBS&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Sven Jacobs is a co-author of a study on leveraging lecture content for feedback using GPT-4."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3</data>
+    </node>
+    <node id="&quot;STEFFEN JASCHKE&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Steffen Jaschke is a co-author of a study on leveraging lecture content for feedback using GPT-4."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3</data>
+    </node>
+    <node id="&quot;OMID JAFARI&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Omid Jafari is a co-author of a survey on locality sensitive hashing algorithms."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3</data>
+    </node>
+    <node id="&quot;PREETI MAURYA&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Preeti Maurya is a co-author of a survey on locality sensitive hashing algorithms."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3</data>
+    </node>
+    <node id="&quot;PARTH NAGARKAR&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Parth Nagarkar is a co-author of a survey on locality sensitive hashing algorithms."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3</data>
+    </node>
+    <node id="&quot;KHANDKER MUSHFIQUL ISLAM&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Khandker Mushfiqul Islam is a co-author of a survey on locality sensitive hashing algorithms."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3</data>
+    </node>
+    <node id="&quot;CHIDAMBARAM CRUSHEV&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Chidambaram Crushev is a co-author of a survey on locality sensitive hashing algorithms."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3</data>
+    </node>
+    <node id="&quot;HERVÉ JEGOU&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Hervé Jegou is a co-author of a study related to the Faiss library, focusing on efficient similarity search."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3</data>
+    </node>
+    <node id="&quot;MATTHIJS DOUZE&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Matthijs Douze is a co-author of a study related to the Faiss library, focusing on efficient similarity search."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3</data>
+    </node>
+    <node id="&quot;JEFF JOHNSON&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Jeff Johnson is a co-author of a study related to the Faiss library, focusing on efficient similarity search."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3</data>
+    </node>
+    <node id="&quot;PATRICK LEWIS&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Patrick Lewis is an author of a study on retrieval-augmented generation for knowledge-intensive NLP tasks."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3</data>
+    </node>
+    <node id="&quot;ETHAN PEREZ&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Ethan Perez is an author of a study on retrieval-augmented generation for knowledge-intensive NLP tasks."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3</data>
+    </node>
+    <node id="&quot;ALEKSANDRA PIKTUS&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Aleksandra Piktus is an author of a study on retrieval-augmented generation for knowledge-intensive NLP tasks."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3</data>
+    </node>
+    <node id="&quot;FABIO PETRONI&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Fabio Petroni is an author of a study on retrieval-augmented generation for knowledge-intensive NLP tasks."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3</data>
+    </node>
+    <node id="&quot;VLADIMIR KARPUKHIN&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Vladimir Karpukhin is an author of a study on retrieval-augmented generation for knowledge-intensive NLP tasks."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3</data>
+    </node>
+    <node id="&quot;NAMAN GOYAL&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Naman Goyal is an author of a study on retrieval-augmented generation for knowledge-intensive NLP tasks."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3</data>
+    </node>
+    <node id="&quot;HEINRICH KÜTTLER&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Heinrich Küttler is an author of a study on retrieval-augmented generation for knowledge-intensive NLP tasks."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3</data>
+    </node>
+    <node id="&quot;MIKE LEWIS&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Mike Lewis is an author of a study on retrieval-augmented generation for knowledge-intensive NLP tasks."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3</data>
+    </node>
+    <node id="&quot;WEN TAU YIH&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Wen tau Yih is an author of a study on retrieval-augmented generation for knowledge-intensive NLP tasks."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3</data>
+    </node>
+    <node id="&quot;TIM ROCKTÄSCHEL&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Tim Rocktäschel is an author of a study on retrieval-augmented generation for knowledge-intensive NLP tasks."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3</data>
+    </node>
+    <node id="&quot;SEBASTIAN RIEDEL&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Sebastian Riedel is an author of a study on retrieval-augmented generation for knowledge-intensive NLP tasks."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3</data>
+    </node>
+    <node id="&quot;DOUWE KIELA&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Douwe Kiela is an author of a study on retrieval-augmented generation for knowledge-intensive NLP tasks."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3</data>
+    </node>
+    <node id="&quot;CAI-ZHI LIU&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Cai-zhi Liu is a co-author of a study on improved text classification with the TF-IDF algorithm."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3</data>
+    </node>
+    <node id="&quot;YAN-XIU SHENG&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Yan-xiu Sheng is a co-author of a study on improved text classification with the TF-IDF algorithm."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3</data>
+    </node>
+    <node id="&quot;ZHI-QIANG WEI&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Zhi-qiang Wei is a co-author of a study on improved text classification with the TF-IDF algorithm."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3</data>
+    </node>
+    <node id="&quot;YONG-QUAN YANG&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Yong-Quan Yang is a co-author of a study on improved text classification with the TF-IDF algorithm."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3</data>
+    </node>
+    <node id="&quot;ANTOINE LOUIS&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Antoine Louis is a co-author of a study on interpretable long-form legal question answering."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3</data>
+    </node>
+    <node id="&quot;GIJS VAN DIJCK&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Gijs van Dijck is a co-author of a study on interpretable long-form legal question answering."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3</data>
+    </node>
+    <node id="&quot;GERASIMOS SPANAKIS&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Gerasimos Spanakis is a co-author of a study on interpretable long-form legal question answering."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3</data>
+    </node>
+    <node id="&quot;MAASTRICHT UNIVERSITY, LAW &amp; TECH LAB&quot;">
+      <data key="d0">"ORGANIZATION"</data>
+      <data key="d1">"Maastricht University, Law &amp; Tech Lab is associated with a study on interpretable long-form legal question answering."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3</data>
+    </node>
+    <node id="&quot;YUNING MAO&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Yuning Mao is a co-author of a study on multi-document summarization using reinforcement learning."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3</data>
+    </node>
+    <node id="&quot;YANRU QU&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Yanru Qu is a co-author of a study on multi-document summarization using reinforcement learning."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3</data>
+    </node>
+    <node id="&quot;YIQING XIE&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Yiqing Xie is a co-author of a study on multi-document summarization using reinforcement learning."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3</data>
+    </node>
+    <node id="&quot;XIANG REN&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Xiang Ren is a co-author of a study on multi-document summarization using reinforcement learning."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3</data>
+    </node>
+    <node id="&quot;JIAWEI HAN&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Jiawei Han is a co-author of a study on multi-document summarization using reinforcement learning."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3</data>
+    </node>
+    <node id="&quot;TOMAS MIKOLOV&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Tomas Mikolov is a co-author of a study on efficient estimation of word representations in vector space."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3</data>
+    </node>
+    <node id="&quot;KAI CHEN&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Kai Chen is a co-author of a study on efficient estimation of word representations in vector space."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3</data>
+    </node>
+    <node id="&quot;GREG CORRADO&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Greg Corrado is a co-author of a study on efficient estimation of word representations in vector space."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3</data>
+    </node>
+    <node id="&quot;JEFFREY DEAN&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Jeffrey Dean is a co-author of a study on efficient estimation of word representations in vector space."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3</data>
+    </node>
+    <node id="&quot;NITARSHAN RAJKUMAR&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Nitarshan Rajkumar is a co-author of a study evaluating the text-to-SQL capabilities of large language models."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3</data>
+    </node>
+    <node id="&quot;RAYMOND LI&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Raymond Li is a co-author of a study evaluating the text-to-SQL capabilities of large language models."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3</data>
+    </node>
+    <node id="&quot;DZMITRY BAHDANAU&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Dzmitry Bahdanau is a co-author of a study evaluating the text-to-SQL capabilities of large language models."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3</data>
+    </node>
+    <node id="&quot;HEIDI STEEN&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Heidi Steen is a co-author of a study on hybrid search using vectors and full text in Azure AI Search."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3</data>
+    </node>
+    <node id="&quot;STEPHEN ROBERTSON&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Stephen Robertson is an author mentioned in the text, known for his work on the probabilistic relevance framework and BM25."&lt;SEP&gt;"Stephen Robertson is an author who has contributed to understanding inverse document frequency and relevance frameworks."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3&lt;SEP&gt;chunk-6b0cb085980014ac08ea749ec0a5275e</data>
+    </node>
+    <node id="&quot;HUGO ZARAGOZA&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Hugo Zaragoza is a co-author of research on probabilistic relevance frameworks."&lt;SEP&gt;"Hugo Zaragoza is an author mentioned alongside Stephen Robertson, contributing to work on the probabilistic relevance framework."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3&lt;SEP&gt;chunk-6b0cb085980014ac08ea749ec0a5275e</data>
+    </node>
+    <node id="&quot;BHASKARJIT SARMAH&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Bhaskarjit Sarmah is a co-author of research integrating knowledge graphs and vector representations."&lt;SEP&gt;"Bhaskarjit Sarmah is an author involved in research on integrating knowledge graphs and vector retrieval for efficient information extraction."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3&lt;SEP&gt;chunk-6b0cb085980014ac08ea749ec0a5275e</data>
+    </node>
+    <node id="&quot;BENIKA HALL&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Benika Hall is a co-author of research integrating knowledge graphs and vector representations."&lt;SEP&gt;"Benika Hall is an author contributing to the research on hybrid retrieval methods for information extraction."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3&lt;SEP&gt;chunk-6b0cb085980014ac08ea749ec0a5275e</data>
+    </node>
+    <node id="&quot;ROHAN RAO&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Rohan Rao is a co-author of research integrating knowledge graphs and vector representations."&lt;SEP&gt;"Rohan Rao is an author part of a team researching knowledge graphs and vector retrieval methods."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3&lt;SEP&gt;chunk-6b0cb085980014ac08ea749ec0a5275e</data>
+    </node>
+    <node id="&quot;SUNIL PATEL&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Sunil Patel is a co-author of research integrating knowledge graphs and vector representations."&lt;SEP&gt;"Sunil Patel is an author involved in the research concerning hybrid retrieval methods and information extraction."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3&lt;SEP&gt;chunk-6b0cb085980014ac08ea749ec0a5275e</data>
+    </node>
+    <node id="&quot;STEFANO PASQUALI&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Stefano Pasquali is a co-author of research integrating knowledge graphs and vector representations."&lt;SEP&gt;"Stefano Pasquali is part of a research team focusing on integrating knowledge graphs with retrieval techniques."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3&lt;SEP&gt;chunk-6b0cb085980014ac08ea749ec0a5275e</data>
+    </node>
+    <node id="&quot;DHAGASH MEHTA&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Dhagash Mehta is a co-author of research integrating knowledge graphs and vector representations."&lt;SEP&gt;"Dhagash Mehta is one of the contributors to research on hybrid information extraction methods."</data>
+      <data key="d2">chunk-6b1da5dfbfbe5e118e4a2106615023e3&lt;SEP&gt;chunk-6b0cb085980014ac08ea749ec0a5275e</data>
+    </node>
+    <node id="&quot;ZIWEI XU&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Ziwei Xu is an author researching the limitations of large language models related to hallucination."</data>
+      <data key="d2">chunk-6b0cb085980014ac08ea749ec0a5275e</data>
+    </node>
+    <node id="&quot;SANJAY JAIN&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Sanjay Jain is a contributor to research on the inherent limitations of large language models."</data>
+      <data key="d2">chunk-6b0cb085980014ac08ea749ec0a5275e</data>
+    </node>
+    <node id="&quot;MOHAN KANKANHALLI&quot;">
+      <data key="d0">"PERSON"</data>
+      <data key="d1">"Mohan Kankanhalli is involved in researching the inevitable hallucination in large language models."</data>
+      <data key="d2">chunk-6b0cb085980014ac08ea749ec0a5275e</data>
+    </node>
+    <node id="&quot;HYBRIDRAG&quot;">
+      <data key="d0">"ORGANIZATION"</data>
+      <data key="d1">"Hybridrag is described as a project integrating knowledge graphs and vector retrieval augmented generation for efficient information extraction."</data>
+      <data key="d2">chunk-6b0cb085980014ac08ea749ec0a5275e</data>
+    </node>
+    <node id="&quot;ARXIV&quot;">
+      <data key="d0">"ORGANIZATION"</data>
+      <data key="d1">"Arxiv is an online archive where preprints such as the works of Bhaskarjit Sarmah, Ziwei Xu, and others are published."</data>
+      <data key="d2">chunk-6b0cb085980014ac08ea749ec0a5275e</data>
+    </node>
+    <node id="&quot;FOUNDATIONS AND TRENDS IN INFORMATION RETRIEVAL&quot;">
+      <data key="d0">"ORGANIZATION"</data>
+      <data key="d1">"Foundations and Trends in Information Retrieval is a publication that features work on the probabilistic relevance framework and BM25."</data>
+      <data key="d2">chunk-6b0cb085980014ac08ea749ec0a5275e</data>
+    </node>
+    <node id="&quot;QUESTION CLASSIFICATION&quot;">
+      <data key="d0">"EVENT"</data>
+      <data key="d1">"Question Classification is a process described in the text for categorizing various types of questions based on a flight information dataset."&lt;SEP&gt;"Question Classification is a process where questions are categorized into types based on their characteristics to aid in prompt engineering."&lt;SEP&gt;"Question Classification refers to the process of categorizing questions to facilitate accurate data retrieval."</data>
+      <data key="d2">chunk-ede8225cb6c767c6040415aca48fa637&lt;SEP&gt;chunk-293118b85820ded697d5ee6ddc5ee367&lt;SEP&gt;chunk-6b0cb085980014ac08ea749ec0a5275e</data>
+    </node>
+    <node id="&quot;FLIGHT INFORMATION DATASET&quot;">
+      <data key="d0">"EVENT"</data>
+      <data key="d1">"Flight Information Dataset contains comprehensive data about flights, used for question classification and generation in the text."</data>
+      <data key="d2">chunk-6b0cb085980014ac08ea749ec0a5275e</data>
+    </node>
+    <node id="&quot;QUESTION GENERATION&quot;">
+      <data key="d0">"EVENT"</data>
+      <data key="d1">"Question Generation is the process of creating datasets of straightforward and ambiguous questions for evaluating retrieval methods, as discussed in the text."</data>
+      <data key="d2">chunk-6b0cb085980014ac08ea749ec0a5275e</data>
+    </node>
+    <node id="&quot;FIGURE 7&quot;">
+      <data key="d0">"EVENT"</data>
+      <data key="d1">"Figure 7 is an event or point of reference mentioned as a source of dataset generation examples for straightforward questions."</data>
+      <data key="d2">chunk-ede8225cb6c767c6040415aca48fa637</data>
+    </node>
+    <node id="&quot;FIGURE 8&quot;">
+      <data key="d0">"EVENT"</data>
+      <data key="d1">"Figure 8 is an event referenced when discussing the generation of complicated or ambiguous question datasets."</data>
+      <data key="d2">chunk-ede8225cb6c767c6040415aca48fa637</data>
+    </node>
+    <node id="&quot;B24&quot;">
+      <data key="d0">"GEO"</data>
+      <data key="d1">"B24 is a gate number referenced in the datasets, used in example questions that might require additional context or information for precise answers."</data>
+      <data key="d2">chunk-ede8225cb6c767c6040415aca48fa637</data>
+    </node>
+    <node id="&quot;STRAIGHTFORWARD DATASET&quot;">
+      <data key="d0">"EVENT"</data>
+      <data key="d1">"The Straightforward Dataset is a collection of questions that can be directly answered using flight information tables, focusing on clarity and directness."</data>
+      <data key="d2">chunk-ede8225cb6c767c6040415aca48fa637</data>
+      <data key="d3">[{"level": 0, "cluster": 1}]</data>
+    </node>
+    <node id="&quot;COMPLICATED/AMBIGUOUS DATASET&quot;">
+      <data key="d0">"EVENT"</data>
+      <data key="d1">"The Complicated/Ambiguous Dataset contains questions that are more vague and require variables like time, airline, and flight number for accurate answers."</data>
+      <data key="d2">chunk-ede8225cb6c767c6040415aca48fa637</data>
+      <data key="d3">[{"level": 0, "cluster": 1}]</data>
+    </node>
+    <node id="&quot;LANGUAGE MODELS&quot;">
+      <data key="d0">"TECHNOLOGY"</data>
+      <data key="d1">"Language Models are used to generate variations of questions to enrich datasets in the question generation process."</data>
+      <data key="d2">chunk-ede8225cb6c767c6040415aca48fa637</data>
+    </node>
+    <node id="&quot;PROMPT ENGINEERING&quot;">
+      <data key="d0">"EVENT"</data>
+      <data key="d1">"Prompt Engineering involves designing and utilizing prompts to generate and refine question types for language model testing."</data>
+      <data key="d2">chunk-ede8225cb6c767c6040415aca48fa637</data>
+    </node>
+    <node id="&quot;OPENAI&quot;">
+      <data key="d0">"ORGANIZATION"</data>
+      <data key="d1">"OpenAI is a company that develops artificial intelligence technologies and methodologies, including SQL RAG and other language processing prompts."</data>
+      <data key="d2">chunk-2dd5909b360adfedad66f5936daffa07</data>
+      <data key="d3">[{"level": 0, "cluster": 3}]</data>
+    </node>
+    <node id="&quot;A74&quot;">
+      <data key="d0">"GEO"</data>
+      <data key="d1">"A74 is a gate or ramp number mentioned in a query example, representing a location within an airport environment."</data>
+      <data key="d2">chunk-2dd5909b360adfedad66f5936daffa07</data>
+    </node>
+    <node id="&quot;APOC PLUGIN&quot;">
+      <data key="d0">"TECHNOLOGY"</data>
+      <data key="d1">"APOC plugin is a tool used in conjunction with Neo4j for extracting schema information for Graph RAG queries."</data>
+      <data key="d2">chunk-2dd5909b360adfedad66f5936daffa07</data>
+      <data key="d3">[{"level": 0, "cluster": 2}]</data>
+    </node>
+    <node id="&quot;0164 FLIGHT&quot;">
+      <data key="d0">"EVENT"</data>
+      <data key="d1">"The 0164 flight is referenced as an example in questions about gate assignments and includes cases of ambiguous flight number queries."</data>
+      <data key="d2">chunk-2dd5909b360adfedad66f5936daffa07</data>
+    </node>
+    <node id="&quot;AMBIGUOUS FLIGHT NUMBER QUESTIONS&quot;">
+      <data key="d0">"EVENT"</data>
+      <data key="d1">"Ambiguous Flight Number Questions are those that lack specific identifiers and require additional details to resolve."</data>
+      <data key="d2">chunk-2dd5909b360adfedad66f5936daffa07</data>
+    </node>
+    <node id="&quot;TIME AMBIGUOUS QUESTIONS&quot;">
+      <data key="d0">"EVENT"</data>
+      <data key="d1">"Time Ambiguous Questions are queries where time-related details are not clear and need specific prompts to extract information."</data>
+      <data key="d2">chunk-2dd5909b360adfedad66f5936daffa07</data>
+    </node>
+    <node id="&quot;BOARD GATE QUESTIONS&quot;">
+      <data key="d0">"EVENT"</data>
+      <data key="d1">"Board Gate Questions are inquiries focused on identifying gate numbers for boarding purposes."</data>
+      <data key="d2">chunk-2dd5909b360adfedad66f5936daffa07</data>
+    </node>
+    <node id="&quot;FLIGHT UID&quot;">
+      <data key="d0">"TECHNOLOGY"</data>
+      <data key="d1">"Flight UID is a unique identifier for flights, mentioned as necessary information for accurate flight queries."</data>
+      <data key="d2">chunk-2dd5909b360adfedad66f5936daffa07</data>
+    </node>
+    <node id="&quot;FLIGHT NUMBER (FLIGHT_NR)&quot;">
+      <data key="d0">"TECHNOLOGY"</data>
+      <data key="d1">"Flight Number (Flight_NR) is a specific identifier for flights, required to enhance the precision of flight information queries."</data>
+      <data key="d2">chunk-2dd5909b360adfedad66f5936daffa07</data>
+    </node>
+    <node id="&quot;AIRCRAFT REGISTRATION&quot;">
+      <data key="d0">"TECHNOLOGY"</data>
+      <data key="d1">"Aircraft Registration is an identification code for aircraft, mentioned for use in resolving specific flight queries."</data>
+      <data key="d2">chunk-2dd5909b360adfedad66f5936daffa07</data>
+    </node>
+    <node id="&quot;CONNECTING FLIGHT UID&quot;">
+      <data key="d0">"TECHNOLOGY"</data>
+      <data key="d1">"Connecting Flight UID is the unique identifier for connecting flights, important for accurate query resolution."</data>
+      <data key="d2">chunk-2dd5909b360adfedad66f5936daffa07</data>
+    </node>
+    <node id="&quot;CONNECTING FLIGHT NUMBER&quot;">
+      <data key="d0">"TECHNOLOGY"</data>
+      <data key="d1">"Connecting Flight Number is the identifier for connecting flights and is used to resolve detailed flight information."</data>
+      <data key="d2">chunk-2dd5909b360adfedad66f5936daffa07</data>
+    </node>
+    <node id="&quot;RAMP&quot;">
+      <data key="d0">"GEO"</data>
+      <data key="d1">"Ramp refers to the location aspect in flight queries, such as specific gate or boarding areas within an airport."</data>
+      <data key="d2">chunk-2dd5909b360adfedad66f5936daffa07</data>
+    </node>
+    <node id="&quot;HALLUCINATION&quot;">
+      <data key="d0">"CONCEPT"</data>
+      <data key="d1">"Hallucination refers to incorrect or misleading information generation by language models, particularly in data retrieval contexts."</data>
+      <data key="d2">chunk-293118b85820ded697d5ee6ddc5ee367</data>
+      <data key="d3">[{"level": 0, "cluster": 3}]</data>
+    </node>
+    <node id="&quot;BOARD GATE QUESTION (BGQ)&quot;">
+      <data key="d0">"CONCEPT"</data>
+      <data key="d1">"Board Gate Question (BGQ) is a category of queries particularly focused on gate-specific flight information."</data>
+      <data key="d2">chunk-293118b85820ded697d5ee6ddc5ee367</data>
+    </node>
+    <node id="&quot;FLIGHT INFORMATION&quot;">
+      <data key="d0">"CONCEPT"</data>
+      <data key="d1">"Flight Information encompasses data related to flights, such as flight numbers, gate numbers, and schedules, which is processed using RAG methods."</data>
+      <data key="d2">chunk-293118b85820ded697d5ee6ddc5ee367</data>
+    </node>
+    <node id="&quot;B18&quot;">
+      <data key="d0">"GEO"</data>
+      <data key="d1">"B18 denotes a specific board gate relevant to flight information queries and retrieval processes."</data>
+      <data key="d2">chunk-293118b85820ded697d5ee6ddc5ee367</data>
+    </node>
+    <node id="&quot;LLM&quot;">
+      <data key="d0">"TECHNOLOGY"</data>
+      <data key="d1">"LLM refers to a Language Model used to generate answers based on retrieved flight information."</data>
+      <data key="d2">chunk-293118b85820ded697d5ee6ddc5ee367</data>
+    </node>
+    <node id="&quot;INFORMATION RETRIEVAL&quot;">
+      <data key="d0">"CONCEPT"</data>
+      <data key="d1">"Information Retrieval is the process of extracting relevant data from large datasets, crucial in reducing hallucination risks."</data>
+      <data key="d2">chunk-293118b85820ded697d5ee6ddc5ee367</data>
+    </node>
+    <node id="&quot;LEWIS ET AL.&quot;">
+      <data key="d2">chunk-11cff9efc5cf1d4449beed03e4533022</data>
+      <data key="d1">"Lewis et al. played a key role in researching and defining Traditional RAG techniques for airport environments in 2021."</data>
+      <data key="d0">"UNKNOWN"</data>
+    </node>
+    <node id="&quot;TRADITIONAL RETRIEVAL-AUGMENTED GENERATION&quot;">
+      <data key="d2">chunk-11cff9efc5cf1d4449beed03e4533022</data>
+      <data key="d1">"Lewis et al. played a key role in researching and defining Traditional RAG techniques for airport environments in 2021."</data>
+      <data key="d0">"UNKNOWN"</data>
+    </node>
+    <node id="&quot;SQL RETRIEVAL-AUGMENTED GENERATION&quot;">
+      <data key="d2">chunk-11cff9efc5cf1d4449beed03e4533022</data>
+      <data key="d1">"Guo et al. are associated with the development and study of SQL RAG techniques in 2023."</data>
+      <data key="d0">"UNKNOWN"</data>
+    </node>
+    <node id="&quot;GRAPH RETRIEVAL-AUGMENTED GENERATION&quot;">
+      <data key="d2">chunk-11cff9efc5cf1d4449beed03e4533022</data>
+      <data key="d1">"Edge et al. made contributions to improving Graph RAG by integrating knowledge graphs in 2024."</data>
+      <data key="d0">"UNKNOWN"</data>
+    </node>
+    <node id="&quot;RETRIEVAL TECHNIQUES&quot;">
+      <data key="d2">chunk-11cff9efc5cf1d4449beed03e4533022</data>
+      <data key="d1">"Chen and Wiseman contributed to enhancing retrieval techniques, focusing on better search performance in 2023."</data>
+      <data key="d0">"UNKNOWN"</data>
+    </node>
+    <node id="&quot;KNOWLEDGE GRAPHS&quot;">
+      <data key="d2">chunk-11cff9efc5cf1d4449beed03e4533022</data>
+      <data key="d1">"Neo4j is recognized for its property graph model that offers efficient real-time analysis and querying relative to RDF graphs."</data>
+      <data key="d0">"UNKNOWN"</data>
+      <data key="d3">[{"level": 0, "cluster": 2}]</data>
+    </node>
+    <node id="&quot;TEXT-TO-SQL TASK&quot;">
+      <data key="d2">chunk-11cff9efc5cf1d4449beed03e4533022</data>
+      <data key="d1">"Rajkumar et al. explored the application of LLMs to convert natural language into SQL queries in 2022."</data>
+      <data key="d0">"UNKNOWN"</data>
+    </node>
+    <node id="&quot;RETRIEVAL-AUGMENTED GENERATION TECHNIQUES&quot;">
+      <data key="d2">chunk-11cff9efc5cf1d4449beed03e4533022</data>
+      <data key="d1">"The flight information dataset is utilized to analyze and experiment with various RAG techniques."</data>
+      <data key="d0">"UNKNOWN"</data>
+    </node>
+    <node id="&quot;SEMANTIC SEARCH&quot;">
+      <data key="d2">chunk-11cff9efc5cf1d4449beed03e4533022</data>
+      <data key="d1">"Gao et al., 2024 contributed to advancements in semantic search techniques and embedding methods."</data>
+      <data key="d0">"UNKNOWN"</data>
+    </node>
+    <node id="&quot;VECTOR DATABASES&quot;">
+      <data key="d2">chunk-11cff9efc5cf1d4449beed03e4533022</data>
+      <data key="d1">"FAISS is a tool that facilitates semantic search through efficient handling of vector representations."</data>
+      <data key="d0">"UNKNOWN"</data>
+      <data key="d3">[{"level": 0, "cluster": 0}]</data>
+    </node>
+    <node id="&quot;AMBIGUOUS AND COMPLICATED DATASET&quot;">
+      <data key="d2">chunk-ede8225cb6c767c6040415aca48fa637</data>
+      <data key="d1">"Figure 8 presents examples and details of ambiguous and complicated question datasets, helping to classify and prompt engineering during experiments."</data>
+      <data key="d0">"UNKNOWN"</data>
+    </node>
+    <node id="&quot;FLIGHT QUERIES&quot;">
+      <data key="d2">chunk-2dd5909b360adfedad66f5936daffa07</data>
+      <data key="d1">"Delta is referenced in flight queries, indicating that queries about flights require specific Delta flight information."</data>
+      <data key="d0">"UNKNOWN"</data>
+    </node>
+    <node id="&quot;COMPLEX DATABASES&quot;">
+      <data key="d2">chunk-2dd5909b360adfedad66f5936daffa07</data>
+      <data key="d1">"CRP is designed to handle the intricacies of complex databases by using detailed schema descriptions for precision."</data>
+      <data key="d0">"UNKNOWN"</data>
+    </node>
+    <edge source="&quot;YUYANG LI&quot;" target="&quot;KARLSRUHE INSTITUTE OF TECHNOLOGY&quot;">
+      <data key="d4">9.0</data>
+      <data key="d5">"Yuyang Li is affiliated with Karlsruhe Institute of Technology where part of the study on RAG methods was conducted."</data>
+      <data key="d6">chunk-b47db627416f909ee831c0541602f07b</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;YUYANG LI&quot;" target="&quot;RAG METHODS&quot;">
+      <data key="d4">7.0</data>
+      <data key="d5">"Yuyang Li contributed to evaluating RAG Methods for enhancing Conversational AI systems in airport environments."</data>
+      <data key="d6">chunk-b47db627416f909ee831c0541602f07b</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;PHILIP J.M. KERBUSCH&quot;" target="&quot;ROYAL SCHIPHOL GROUP&quot;">
+      <data key="d4">8.0</data>
+      <data key="d5">"Philip J.M. Kerbusch is associated with the Royal Schiphol Group, contributing to the research on AI methods for airport efficiency."</data>
+      <data key="d6">chunk-b47db627416f909ee831c0541602f07b</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;RAIMON H.R. PRUIM&quot;" target="&quot;ROYAL SCHIPHOL GROUP&quot;">
+      <data key="d4">8.0</data>
+      <data key="d5">"Raimon H.R. Pruim is affiliated with the Royal Schiphol Group in the study focusing on AI's role in improving airport operations."</data>
+      <data key="d6">chunk-b47db627416f909ee831c0541602f07b</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;TOBIAS KÄFER&quot;" target="&quot;KARLSRUHE INSTITUTE OF TECHNOLOGY&quot;">
+      <data key="d4">9.0</data>
+      <data key="d5">"Tobias Käfer is linked to Karlsruhe Institute of Technology, contributing to the study on RAG methods for Conversational AI."</data>
+      <data key="d6">chunk-b47db627416f909ee831c0541602f07b</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;KARLSRUHE INSTITUTE OF TECHNOLOGY&quot;" target="&quot;RAG METHODS FOR CONVERSATIONAL AI IN THE AIRPORT DOMAIN STUDY&quot;">
+      <data key="d4">7.0</data>
+      <data key="d5">"Karlsruhe Institute of Technology participated in the study assessing RAG methods for conversational systems in airports."</data>
+      <data key="d6">chunk-b47db627416f909ee831c0541602f07b</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;ROYAL SCHIPHOL GROUP&quot;" target="&quot;AMSTERDAM AIRPORT SCHIPHOL&quot;">
+      <data key="d4">14.0</data>
+      <data key="d5">"Amsterdam Airport Schiphol is the location affiliated with Royal Schiphol Group contributing a dataset for the research study."&lt;SEP&gt;"Royal Schiphol Group is likely involved with Amsterdam Airport Schiphol given its focus on improving airport operations through AI."</data>
+      <data key="d6">chunk-b47db627416f909ee831c0541602f07b&lt;SEP&gt;chunk-431648e4f71d1297f41deef7e4e54605</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;ROYAL SCHIPHOL GROUP&quot;" target="&quot;RAG METHODS FOR CONVERSATIONAL AI IN THE AIRPORT DOMAIN STUDY&quot;">
+      <data key="d4">8.0</data>
+      <data key="d5">"The Royal Schiphol Group collaborated in a study to evaluate RAG methods for enhancing AI communication systems in airport operations."</data>
+      <data key="d6">chunk-b47db627416f909ee831c0541602f07b</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;ROYAL SCHIPHOL GROUP&quot;" target="&quot;DEUTSCHE FORSCHUNGSGEMEINSCHAFT&quot;">
+      <data key="d4">7.0</data>
+      <data key="d5">"The research study involving Royal Schiphol Group was funded in part by Deutsche Forschungsgemeinschaft."</data>
+      <data key="d6">chunk-431648e4f71d1297f41deef7e4e54605</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;AMSTERDAM AIRPORT SCHIPHOL&quot;" target="&quot;RAG METHODS&quot;">
+      <data key="d4">8.0</data>
+      <data key="d5">"RAG Methods are studied to improve airport operations and enhance communication at Amsterdam Airport Schiphol."</data>
+      <data key="d6">chunk-b47db627416f909ee831c0541602f07b</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;AMSTERDAM AIRPORT SCHIPHOL&quot;" target="&quot;DEUTSCHE FORSCHUNGSGEMEINSCHAFT&quot;">
+      <data key="d4">6.0</data>
+      <data key="d5">"The research at Amsterdam Airport Schiphol was supported by funding from Deutsche Forschungsgemeinschaft."</data>
+      <data key="d6">chunk-431648e4f71d1297f41deef7e4e54605</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;RAG METHODS&quot;" target="&quot;AMBIGUOUS FLIGHT NUMBER QUESTIONS&quot;">
+      <data key="d4">7.0</data>
+      <data key="d5">"RAG methods are employed to resolve Ambiguous Flight Number Questions by extracting necessary details and querying databases."</data>
+      <data key="d6">chunk-2dd5909b360adfedad66f5936daffa07</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;TRADITIONAL RAG&quot;" target="&quot;CONVERSATIONAL AI SYSTEM&quot;">
+      <data key="d4">7.0</data>
+      <data key="d5">"Traditional RAG is a component of the Conversational AI System, providing information retrieval capabilities, despite some risks of hallucinations."</data>
+      <data key="d6">chunk-b47db627416f909ee831c0541602f07b</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;TRADITIONAL RAG&quot;" target="&quot;GRAPH RAG&quot;">
+      <data key="d4">9.0</data>
+      <data key="d5">"Graph RAG outperforms Traditional RAG by leveraging graph relationships and reducing hallucinations effectively."</data>
+      <data key="d6">chunk-431648e4f71d1297f41deef7e4e54605</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;TRADITIONAL RAG&quot;" target="&quot;SQL RAG&quot;">
+      <data key="d4">8.0</data>
+      <data key="d5">"SQL RAG performs better than Traditional RAG in reducing hallucinations by using accurate data through SQL query conversion."</data>
+      <data key="d6">chunk-431648e4f71d1297f41deef7e4e54605</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;TRADITIONAL RAG&quot;" target="&quot;HALLUCINATION&quot;">
+      <data key="d4">9.0</data>
+      <data key="d5">"Traditional RAG is more prone to hallucination due to less precise retrieval methods, especially when handling large amounts of data."</data>
+      <data key="d6">chunk-293118b85820ded697d5ee6ddc5ee367</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;SQL RAG&quot;" target="&quot;CONVERSATIONAL AI SYSTEM&quot;">
+      <data key="d4">8.0</data>
+      <data key="d5">"SQL RAG is integrated into the Conversational AI System, offering a structured approach to querying with reduced hallucinations."</data>
+      <data key="d6">chunk-b47db627416f909ee831c0541602f07b</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;SQL RAG&quot;" target="&quot;GRAPH RAG&quot;">
+      <data key="d4">15.0</data>
+      <data key="d5">"Graph RAG and SQL RAG are two different methods with contrasting flexibility and accuracy performances, with Graph RAG being more flexible and SQL RAG being more structured."&lt;SEP&gt;"Graph RAG and SQL RAG both are retrieval augmented generation methods that reduce hallucinations, with Graph RAG having stronger reasoning capabilities."</data>
+      <data key="d6">chunk-e14d9ce1582397e8542c20275b75c33d&lt;SEP&gt;chunk-431648e4f71d1297f41deef7e4e54605</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;SQL RAG&quot;" target="&quot;OPENAI&quot;">
+      <data key="d4">8.0</data>
+      <data key="d5">"OpenAI develops methods like SQL RAG to enhance the querying capabilities of language models in flight information retrieval."</data>
+      <data key="d6">chunk-2dd5909b360adfedad66f5936daffa07</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;SQL RAG&quot;" target="&quot;HALLUCINATION&quot;">
+      <data key="d4">10.0</data>
+      <data key="d5">"SQL RAG significantly reduces hallucinations through precise retrieval using SQL queries."</data>
+      <data key="d6">chunk-293118b85820ded697d5ee6ddc5ee367</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;GRAPH RAG&quot;" target="&quot;CONVERSATIONAL AI SYSTEM&quot;">
+      <data key="d4">8.0</data>
+      <data key="d5">"Graph RAG enhances the Conversational AI System by improving its ability to handle complex, reasoning-based inquiries."</data>
+      <data key="d6">chunk-b47db627416f909ee831c0541602f07b</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;GRAPH RAG&quot;" target="&quot;GPT-4&quot;">
+      <data key="d4">9.0</data>
+      <data key="d5">"GPT-4 demonstrates the highest accuracy within the Graph RAG framework, indicating close integration and performance optimization."</data>
+      <data key="d6">chunk-e14d9ce1582397e8542c20275b75c33d</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;GRAPH RAG&quot;" target="&quot;GPT-4O MINI&quot;">
+      <data key="d4">8.0</data>
+      <data key="d5">"GPT-4o Mini is part of the Graph RAG framework, showing slightly lower performance but retains high flexibility in answering questions."</data>
+      <data key="d6">chunk-e14d9ce1582397e8542c20275b75c33d</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;GRAPH RAG&quot;" target="&quot;OPENAI&quot;">
+      <data key="d4">8.0</data>
+      <data key="d5">"OpenAI is involved in the development of Graph RAG, which enhances querying by leveraging graph database technology."</data>
+      <data key="d6">chunk-2dd5909b360adfedad66f5936daffa07</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;GRAPH RAG&quot;" target="&quot;NEO4J&quot;">
+      <data key="d4">9.0</data>
+      <data key="d5">"Graph RAG uses Neo4j graph database technology to connect flight information through relationships and retrieve detailed data."</data>
+      <data key="d6">chunk-2dd5909b360adfedad66f5936daffa07</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;GRAPH RAG&quot;" target="&quot;HALLUCINATION&quot;">
+      <data key="d4">10.0</data>
+      <data key="d5">"Graph RAG also reduces hallucinations by employing Cypher queries that target specific, relevant information."</data>
+      <data key="d6">chunk-293118b85820ded697d5ee6ddc5ee367</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;CONVERSATIONAL AI SYSTEM&quot;" target="&quot;STRAIGHTFORWARD DATASET&quot;">
+      <data key="d4">9.0</data>
+      <data key="d5">"The Straightforward Dataset is used to test the performance of the Conversational AI System in handling direct questions."</data>
+      <data key="d6">chunk-ede8225cb6c767c6040415aca48fa637</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;CONVERSATIONAL AI SYSTEM&quot;" target="&quot;COMPLICATED/AMBIGUOUS DATASET&quot;">
+      <data key="d4">8.0</data>
+      <data key="d5">"The Complicated/Ambiguous Dataset challenges the Conversational AI System to accurately interpret and respond to vague or variable-dependent questions."</data>
+      <data key="d6">chunk-ede8225cb6c767c6040415aca48fa637</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;GUO ET AL.&quot;" target="&quot;SQL RETRIEVAL-AUGMENTED GENERATION&quot;">
+      <data key="d4">8.0</data>
+      <data key="d5">"Guo et al. are associated with the development and study of SQL RAG techniques in 2023."</data>
+      <data key="d6">chunk-11cff9efc5cf1d4449beed03e4533022</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;EDGE ET AL.&quot;" target="&quot;GRAPH RETRIEVAL-AUGMENTED GENERATION&quot;">
+      <data key="d4">8.0</data>
+      <data key="d5">"Edge et al. made contributions to improving Graph RAG by integrating knowledge graphs in 2024."</data>
+      <data key="d6">chunk-11cff9efc5cf1d4449beed03e4533022</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;LIU ET AL.&quot;" target="&quot;TF-IDF&quot;">
+      <data key="d4">7.0</data>
+      <data key="d5">"Liu et al. contributed to advancements in keyword search performance using TF-IDF measures in 2018."</data>
+      <data key="d6">chunk-11cff9efc5cf1d4449beed03e4533022</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;ROBERTSON AND ZARAGOZA&quot;" target="&quot;BM25&quot;">
+      <data key="d4">7.0</data>
+      <data key="d5">"Robertson and Zaragoza developed BM25, enhancing TF-IDF use in search algorithms."</data>
+      <data key="d6">chunk-11cff9efc5cf1d4449beed03e4533022</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;CHEN AND WISEMAN&quot;" target="&quot;RETRIEVAL TECHNIQUES&quot;">
+      <data key="d4">6.0</data>
+      <data key="d5">"Chen and Wiseman contributed to enhancing retrieval techniques, focusing on better search performance in 2023."</data>
+      <data key="d6">chunk-11cff9efc5cf1d4449beed03e4533022</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;RAJKUMAR ET AL.&quot;" target="&quot;TEXT-TO-SQL TASK&quot;">
+      <data key="d4">8.0</data>
+      <data key="d5">"Rajkumar et al. explored the application of LLMs to convert natural language into SQL queries in 2022."</data>
+      <data key="d6">chunk-11cff9efc5cf1d4449beed03e4533022</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;GAO ET AL.&quot;" target="&quot;PROMPT ENGINEERING&quot;">
+      <data key="d4">9.0</data>
+      <data key="d5">"Gao et al. researched prompt engineering strategies to enhance Text-to-SQL and Graph RAG tasks."</data>
+      <data key="d6">chunk-11cff9efc5cf1d4449beed03e4533022</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;FAISS&quot;" target="&quot;VECTOR DATABASES&quot;">
+      <data key="d4">8.0</data>
+      <data key="d5">"FAISS is a tool that facilitates semantic search through efficient handling of vector representations."</data>
+      <data key="d6">chunk-11cff9efc5cf1d4449beed03e4533022</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;FAISS&quot;" target="&quot;BM25&quot;">
+      <data key="d4">8.0</data>
+      <data key="d5">"BM25 and FAISS are combined in a hybrid search method to enhance retrieval accuracy."</data>
+      <data key="d6">chunk-100c3f50eb519a5f552b0b4d369a3cb4</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;NEO4J&quot;" target="&quot;KNOWLEDGE GRAPHS&quot;">
+      <data key="d4">9.0</data>
+      <data key="d5">"Neo4j is recognized for its property graph model that offers efficient real-time analysis and querying relative to RDF graphs."</data>
+      <data key="d6">chunk-11cff9efc5cf1d4449beed03e4533022</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;NEO4J&quot;" target="&quot;APOC PLUGIN&quot;">
+      <data key="d4">7.0</data>
+      <data key="d5">"Neo4j utilizes the APOC plugin to extract schema information needed for Graph RAG queries."</data>
+      <data key="d6">chunk-2dd5909b360adfedad66f5936daffa07</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;THE FLIGHT INFORMATION DATASET&quot;" target="&quot;RETRIEVAL-AUGMENTED GENERATION TECHNIQUES&quot;">
+      <data key="d4">8.0</data>
+      <data key="d5">"The flight information dataset is utilized to analyze and experiment with various RAG techniques."</data>
+      <data key="d6">chunk-11cff9efc5cf1d4449beed03e4533022</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;BM25&quot;" target="&quot;GPT-4&quot;">
+      <data key="d4">9.0</data>
+      <data key="d5">"BM25 is used in conjunction with GPT-4 in the traditional RAG pipeline to achieve high accuracy for retrieval tasks."</data>
+      <data key="d6">chunk-100c3f50eb519a5f552b0b4d369a3cb4</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;WORD2VEC&quot;" target="&quot;SEMANTIC SEARCH&quot;">
+      <data key="d4">8.0</data>
+      <data key="d5">"Word2Vec is used in semantic search by transforming words into vectors for similarity measurement."</data>
+      <data key="d6">chunk-11cff9efc5cf1d4449beed03e4533022</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;GRAPH DATABASES&quot;" target="&quot;KNOWLEDGE GRAPHS&quot;">
+      <data key="d4">9.0</data>
+      <data key="d5">"Graph databases are fundamental to storing and querying knowledge graphs, facilitating structured data representation."</data>
+      <data key="d6">chunk-11cff9efc5cf1d4449beed03e4533022</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;LLMS&quot;" target="&quot;SPECIALIZED AIRPORT JARGON&quot;">
+      <data key="d4">6.0</data>
+      <data key="d5">"LLMs are used to process and classify the Specialized airport jargon dataset, illustrating their capacity to handle complex and ambiguous data."</data>
+      <data key="d6">chunk-e14d9ce1582397e8542c20275b75c33d</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;GAO ET AL., 2024&quot;" target="&quot;SEMANTIC SEARCH&quot;">
+      <data key="d4">8.0</data>
+      <data key="d5">"Gao et al., 2024 contributed to advancements in semantic search techniques and embedding methods."</data>
+      <data key="d6">chunk-11cff9efc5cf1d4449beed03e4533022</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;DELTA&quot;" target="&quot;FLIGHT QUERIES&quot;">
+      <data key="d4">6.0</data>
+      <data key="d5">"Delta is referenced in flight queries, indicating that queries about flights require specific Delta flight information."</data>
+      <data key="d6">chunk-2dd5909b360adfedad66f5936daffa07</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;CRP&quot;" target="&quot;COMPLEX DATABASES&quot;">
+      <data key="d4">8.0</data>
+      <data key="d5">"CRP is designed to handle the intricacies of complex databases by using detailed schema descriptions for precision."</data>
+      <data key="d6">chunk-2dd5909b360adfedad66f5936daffa07</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;GODWIN GEORGE&quot;" target="&quot;INDICON 2022&quot;">
+      <data key="d4">8.0</data>
+      <data key="d5">"Godwin George presented or contributed to the presentation of a study at INDICON 2022."</data>
+      <data key="d6">chunk-6b1da5dfbfbe5e118e4a2106615023e3</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;RAJEEV RAJAN&quot;" target="&quot;INDICON 2022&quot;">
+      <data key="d4">8.0</data>
+      <data key="d5">"Rajeev Rajan presented or contributed to the presentation of a study at INDICON 2022."</data>
+      <data key="d6">chunk-6b1da5dfbfbe5e118e4a2106615023e3</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;STEPHEN ROBERTSON&quot;" target="&quot;HUGO ZARAGOZA&quot;">
+      <data key="d4">9.0</data>
+      <data key="d5">"Stephen Robertson and Hugo Zaragoza collaborated on work related to the probabilistic relevance framework and BM25."</data>
+      <data key="d6">chunk-6b0cb085980014ac08ea749ec0a5275e</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;BHASKARJIT SARMAH&quot;" target="&quot;BENIKA HALL&quot;">
+      <data key="d4">8.0</data>
+      <data key="d5">"Bhaskarjit Sarmah and Benika Hall are collaborators in research focused on integrating knowledge graphs and information extraction."</data>
+      <data key="d6">chunk-6b0cb085980014ac08ea749ec0a5275e</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;ROHAN RAO&quot;" target="&quot;SUNIL PATEL&quot;">
+      <data key="d4">8.0</data>
+      <data key="d5">"Rohan Rao and Sunil Patel are co-authors involved in research on hybrid retrieval for information extraction."</data>
+      <data key="d6">chunk-6b0cb085980014ac08ea749ec0a5275e</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;STEFANO PASQUALI&quot;" target="&quot;DHAGASH MEHTA&quot;">
+      <data key="d4">8.0</data>
+      <data key="d5">"Stefano Pasquali and Dhagash Mehta are part of a research collaboration focusing on improving information extraction methods."</data>
+      <data key="d6">chunk-6b0cb085980014ac08ea749ec0a5275e</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;ZIWEI XU&quot;" target="&quot;SANJAY JAIN&quot;">
+      <data key="d4">8.0</data>
+      <data key="d5">"Ziwei Xu and Sanjay Jain collaborated on researching the limitations of large language models, focusing on the issue of hallucination."</data>
+      <data key="d6">chunk-6b0cb085980014ac08ea749ec0a5275e</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;SANJAY JAIN&quot;" target="&quot;MOHAN KANKANHALLI&quot;">
+      <data key="d4">8.0</data>
+      <data key="d5">"Sanjay Jain and Mohan Kankanhalli worked together on the inevitable hallucination in large language models, highlighting an innate limitation."</data>
+      <data key="d6">chunk-6b0cb085980014ac08ea749ec0a5275e</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;QUESTION CLASSIFICATION&quot;" target="&quot;PROMPT ENGINEERING&quot;">
+      <data key="d4">7.0</data>
+      <data key="d5">"Question Classification aids Prompt Engineering by categorizing questions to improve prompt design for language models."</data>
+      <data key="d6">chunk-ede8225cb6c767c6040415aca48fa637</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;QUESTION GENERATION&quot;" target="&quot;FIGURE 7&quot;">
+      <data key="d4">8.0</data>
+      <data key="d5">"Figure 7 illustrates examples of dataset generation for straightforward questions, demonstrating the process described in question generation."</data>
+      <data key="d6">chunk-ede8225cb6c767c6040415aca48fa637</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;QUESTION GENERATION&quot;" target="&quot;LANGUAGE MODELS&quot;">
+      <data key="d4">8.0</data>
+      <data key="d5">"Language Models are employed in the question generation step to create varied question examples from templates."</data>
+      <data key="d6">chunk-ede8225cb6c767c6040415aca48fa637</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;FIGURE 8&quot;" target="&quot;AMBIGUOUS AND COMPLICATED DATASET&quot;">
+      <data key="d4">8.0</data>
+      <data key="d5">"Figure 8 presents examples and details of ambiguous and complicated question datasets, helping to classify and prompt engineering during experiments."</data>
+      <data key="d6">chunk-ede8225cb6c767c6040415aca48fa637</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;B24&quot;" target="&quot;AMBIGUOUS AND COMPLICATED DATASET&quot;">
+      <data key="d4">9.0</data>
+      <data key="d5">"Gate B24 is a constant reference point in ambiguous and complicated datasets, highlighting the challenges of determining precise information without additional context."</data>
+      <data key="d6">chunk-ede8225cb6c767c6040415aca48fa637</data>
+      <data key="d7">1</data>
+    </edge>
+    <edge source="&quot;LEWIS ET AL.&quot;" target="&quot;TRADITIONAL RETRIEVAL-AUGMENTED GENERATION&quot;">
+      <data key="d4">8.0</data>
+      <data key="d5">"Lewis et al. played a key role in researching and defining Traditional RAG techniques for airport environments in 2021."</data>
+      <data key="d6">chunk-11cff9efc5cf1d4449beed03e4533022</data>
+      <data key="d7">1</data>
+    </edge>
+  </graph>
+</graphml>
