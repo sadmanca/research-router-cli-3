@@ -355,14 +355,14 @@ class ResearchRouterCLI:
         """Handle insert commands with file browser support"""
         if not parsed_cmd.subcommand and not parsed_cmd.args:
             console.print(error_msg("Insert command requires arguments"))
-            console.print(info_msg("Usage: insert <pdf_path> | insert files <f1> <f2> ... | insert folder <path> [-r] | insert browse"))
+            console.print(info_msg("Usage: insert <file_path> | insert files <f1> <f2> ... | insert folder <path> [-r] | insert browse"))
             return
             
         if parsed_cmd.subcommand == "browse" or (parsed_cmd.args and parsed_cmd.args[0] == "browse"):
             # Interactive file browser
             console.print(info_msg("🗂️ Opening interactive file browser..."))
             selected_files = self.file_browser.browse_for_files(
-                file_filter="*.pdf", 
+                file_filter="*.*", 
                 multi_select=True
             )
             
@@ -393,8 +393,8 @@ class ResearchRouterCLI:
         else:
             # Single file: insert file.pdf
             if parsed_cmd.args:
-                pdf_path = parsed_cmd.args[0]
-                await self.insert_command.insert_pdf(pdf_path)
+                file_path = parsed_cmd.args[0]
+                await self.insert_command.insert_file(file_path)
             else:
                 console.print(error_msg("Please specify a file path or use 'insert browse'"))
     
@@ -424,7 +424,7 @@ class ResearchRouterCLI:
             # Interactive file browser for enhanced insertion
             console.print(info_msg("🗂️ Opening interactive file browser for enhanced insertion..."))
             try:
-                selected_files = self.file_browser.browse_for_files()
+                selected_files = self.file_browser.browse_for_files(file_filter="*.*")
             except Exception as e:
                 console.print(error_msg(f"File browser error: {e}"))
                 return
@@ -470,15 +470,15 @@ class ResearchRouterCLI:
             if parsed_cmd.args:
                 # Check if it looks like a file path (not a subcommand that wasn't recognized)
                 first_arg = parsed_cmd.args[0]
-                if any(first_arg.endswith(ext) for ext in ['.pdf']) or '/' in first_arg or '\\' in first_arg:
+                if any(first_arg.endswith(ext) for ext in ['.pdf', '.txt', '.md', '.rst']) or '/' in first_arg or '\\' in first_arg:
                     # Single file enhanced insertion
-                    await self.enhanced_insert_command.enhanced_insert_pdf(first_arg, nodes_per_paper, export_formats)
+                    await self.enhanced_insert_command.enhanced_insert_file(first_arg, nodes_per_paper, export_formats)
                 else:
                     # Multiple files or pattern
                     await self.enhanced_insert_command.enhanced_insert_multiple_files(parsed_cmd.args, nodes_per_paper, export_formats)
             else:
                 console.print(error_msg("Please specify a file path or use 'enhanced-insert browse'"))
-                console.print(info_msg("Usage: enhanced-insert <pdf_path> [--nodes 30] [--formats html,json]"))
+                console.print(info_msg("Usage: enhanced-insert <file_path> [--nodes 30] [--formats html,json]"))
                 console.print(info_msg("       enhanced-insert browse"))
                 console.print(info_msg("       enhanced-insert files <f1> <f2> ..."))
                 console.print(info_msg("       enhanced-insert folder <path>"))

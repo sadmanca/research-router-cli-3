@@ -10,7 +10,7 @@ from rich.progress import Progress, SpinnerColumn, TextColumn
 from rich.prompt import Confirm
 from rich.table import Table
 
-from ..utils.pdf_processor import PDFProcessor
+from ..utils.file_processor import FileProcessor
 from ..utils.file_tracker import FileTracker
 from ..utils.colors import console, success_msg, error_msg, warning_msg, info_msg, progress_msg, document_status_msg
 from .session import SessionManager
@@ -21,31 +21,31 @@ class EnhancedInsertCommand:
     
     def __init__(self, session_manager: SessionManager):
         self.session_manager = session_manager
-        self.pdf_processor = PDFProcessor()
+        self.file_processor = FileProcessor()
         self._genkg_instance = None
         self._graphrag_instance = None
         self._file_tracker = None
         
-    async def enhanced_insert_pdf(self, pdf_path: Union[str, Path], nodes_per_paper: int = 25, 
+    async def enhanced_insert_file(self, file_path: Union[str, Path], nodes_per_paper: int = 25, 
                                  export_formats: List[str] = None):
-        """Insert a single PDF using enhanced knowledge graph generation"""
+        """Insert a single file using enhanced knowledge graph generation"""
         if not self.session_manager.ensure_session():
             return
             
         if export_formats is None:
             export_formats = ['html', 'json']  # Default formats
             
-        path = Path(pdf_path)
+        path = Path(file_path)
         
         # Handle different input types
         if path.is_dir():
             await self._enhanced_insert_directory(path, nodes_per_paper, export_formats)
-        elif path.suffix.lower() == '.pdf':
-            await self._enhanced_insert_single_pdf(path, nodes_per_paper, export_formats)
+        elif self.file_processor.is_supported_file(path):
+            await self._enhanced_insert_single_file(path, nodes_per_paper, export_formats)
         elif '*' in str(path) or '?' in str(path):
             await self._enhanced_insert_glob_pattern(str(path), nodes_per_paper, export_formats)
         else:
-            console.print(error_msg(f"Error: {path} is not a valid PDF file or directory"))
+            console.print(error_msg(f"Error: {path} is not a supported file type or directory"))
             
     async def enhanced_insert_multiple_files(self, file_paths: List[Union[str, Path]], 
                                            nodes_per_paper: int = 25, export_formats: List[str] = None):
@@ -56,20 +56,20 @@ class EnhancedInsertCommand:
         if export_formats is None:
             export_formats = ['html', 'json']
             
-        # Filter for valid PDF files
-        pdf_paths = []
+        # Filter for valid files
+        valid_paths = []
         for file_path in file_paths:
             path = Path(file_path)
-            if path.suffix.lower() == '.pdf' and path.exists():
-                pdf_paths.append(path)
+            if self.file_processor.is_supported_file(path):
+                valid_paths.append(path)
             else:
-                console.print(warning_msg(f"Skipping non-PDF or missing file: {path}"))
+                console.print(warning_msg(f"Skipping unsupported or missing file: {path}"))
                 
-        if not pdf_paths:
-            console.print(error_msg("No valid PDF files found"))
+        if not valid_paths:
+            console.print(error_msg("No valid files found"))
             return
             
-        console.print(info_msg(f"Processing {len(pdf_paths)} PDF files with enhanced knowledge graph generation..."))
+        console.print(info_msg(f"Processing {len(valid_paths)} files with enhanced knowledge graph generation..."))
         
         # Get file tracker
         file_tracker = await self._get_file_tracker()
@@ -80,20 +80,20 @@ class EnhancedInsertCommand:
         new_files = []
         duplicates = []
         
-        for pdf_path in pdf_paths:
-            file_hash = self.pdf_processor.get_file_hash(pdf_path)
+        for file_path in valid_paths:
+            file_hash = self.file_processor.get_file_hash(file_path)
             if await file_tracker.is_file_inserted(file_hash):
                 duplicate_info = await file_tracker.get_duplicate_info(file_hash)
-                duplicates.append((pdf_path, duplicate_info))
+                duplicates.append((file_path, duplicate_info))
             else:
-                new_files.append(pdf_path)
+                new_files.append(file_path)
                 
         # Show duplicate summary
         if duplicates:
             console.print(warning_msg(f"Found {len(duplicates)} duplicate files:"))
-            for pdf_path, dup_info in duplicates:
+            for file_path, dup_info in duplicates:
                 duplicate_msg = f'already inserted as {dup_info["filename"]}'
-                console.print(f"  {document_status_msg(pdf_path.name, 'duplicate', duplicate_msg)}")
+                console.print(f"  {document_status_msg(file_path.name, 'duplicate', duplicate_msg)}")
                 
         if not new_files:
             console.print(info_msg("All files are duplicates. No new files to insert."))
@@ -110,66 +110,67 @@ class EnhancedInsertCommand:
             await self._process_files_with_enhanced_kg(new_files, nodes_per_paper, export_formats)
             
             # Record successful insertions
-            for pdf_path in new_files:
+            for file_path in new_files:
                 try:
-                    file_hash = self.pdf_processor.get_file_hash(pdf_path)
+                    file_hash = self.file_processor.get_file_hash(file_path)
                     # Get file size
-                    size_bytes = pdf_path.stat().st_size if pdf_path.exists() else 0
+                    size_bytes = file_path.stat().st_size if file_path.exists() else 0
                     await file_tracker.record_file_insertion(
-                        filename=pdf_path.name,
-                        filepath=str(pdf_path),
+                        filename=file_path.name,
+                        filepath=str(file_path),
                         file_hash=file_hash,
                         size_bytes=size_bytes
                     )
                 except Exception as e:
-                    console.print(warning_msg(f"Failed to record insertion for {pdf_path.name}: {e}"))
+                    console.print(warning_msg(f"Failed to record insertion for {file_path.name}: {e}"))
                     
             console.print(success_msg(f"Successfully processed {len(new_files)} files with enhanced knowledge graph"))
             
         except Exception as e:
             console.print(error_msg(f"Error during enhanced insertion: {e}"))
 
-    async def _enhanced_insert_single_pdf(self, pdf_path: Path, nodes_per_paper: int, export_formats: List[str]):
-        """Insert single PDF with enhanced KG generation"""
-        console.print(info_msg(f"Processing {pdf_path.name} with enhanced knowledge graph generation..."))
+    async def _enhanced_insert_single_file(self, file_path: Path, nodes_per_paper: int, export_formats: List[str]):
+        """Insert single file with enhanced KG generation"""
+        console.print(info_msg(f"Processing {file_path.name} with enhanced knowledge graph generation..."))
         
         try:
-            # Extract text from PDF
-            pdf_texts = self.pdf_processor.extract_text_from_multiple_pdfs([pdf_path])
-            if not pdf_texts:
-                console.print(error_msg(f"Failed to extract text from {pdf_path.name}"))
+            # Extract text from file
+            file_texts = self.file_processor.extract_text_from_multiple_files([file_path])
+            if not file_texts:
+                console.print(error_msg(f"Failed to extract text from {file_path.name}"))
                 return False
                 
             # Use enhanced KG generation
-            await self._process_files_with_enhanced_kg([pdf_path], nodes_per_paper, export_formats, pdf_texts)
+            await self._process_files_with_enhanced_kg([file_path], nodes_per_paper, export_formats, file_texts)
             return True
             
         except Exception as e:
-            console.print(error_msg(f"Error processing {pdf_path.name}: {e}"))
+            console.print(error_msg(f"Error processing {file_path.name}: {e}"))
             return False
 
     async def _enhanced_insert_directory(self, dir_path: Path, nodes_per_paper: int, export_formats: List[str]):
-        """Insert all PDFs in directory with enhanced KG generation"""
-        pdf_files = list(dir_path.glob("*.pdf"))
-        if not pdf_files:
-            console.print(warning_msg(f"No PDF files found in {dir_path}"))
+        """Insert all supported files in directory with enhanced KG generation"""
+        supported_files = self.file_processor.find_files_in_directory(dir_path)
+        if not supported_files:
+            console.print(warning_msg(f"No supported files found in {dir_path}"))
             return
             
-        console.print(info_msg(f"Found {len(pdf_files)} PDF files in {dir_path}"))
-        await self.enhanced_insert_multiple_files(pdf_files, nodes_per_paper, export_formats)
+        console.print(info_msg(f"Found {len(supported_files)} supported files in {dir_path}"))
+        await self.enhanced_insert_multiple_files(supported_files, nodes_per_paper, export_formats)
 
     async def _enhanced_insert_glob_pattern(self, pattern: str, nodes_per_paper: int, export_formats: List[str]):
         """Insert files matching glob pattern with enhanced KG generation"""
-        pdf_files = [Path(f) for f in glob.glob(pattern) if f.lower().endswith('.pdf')]
-        if not pdf_files:
-            console.print(warning_msg(f"No PDF files found matching pattern: {pattern}"))
+        all_files = [Path(f) for f in glob.glob(pattern)]
+        supported_files = [f for f in all_files if self.file_processor.is_supported_file(f)]
+        if not supported_files:
+            console.print(warning_msg(f"No supported files found matching pattern: {pattern}"))
             return
             
-        console.print(info_msg(f"Found {len(pdf_files)} PDF files matching pattern"))
-        await self.enhanced_insert_multiple_files(pdf_files, nodes_per_paper, export_formats)
+        console.print(info_msg(f"Found {len(supported_files)} supported files matching pattern"))
+        await self.enhanced_insert_multiple_files(supported_files, nodes_per_paper, export_formats)
 
-    async def _process_files_with_enhanced_kg(self, pdf_paths: List[Path], nodes_per_paper: int, 
-                                            export_formats: List[str], pdf_texts: Dict[Path, str] = None):
+    async def _process_files_with_enhanced_kg(self, file_paths: List[Path], nodes_per_paper: int, 
+                                            export_formats: List[str], file_texts: Dict[Path, str] = None):
         """Process files using genkg.py methods and create nano-graphrag storage"""
         
         # Get or create genkg instance for enhanced visualization
@@ -183,22 +184,22 @@ class EnhancedInsertCommand:
             return
             
         # Extract text if not provided
-        if pdf_texts is None:
+        if file_texts is None:
             with Progress(
                 SpinnerColumn(),
                 TextColumn("[progress.description]{task.description}"),
                 transient=True,
             ) as progress:
-                progress.add_task(description="Extracting text from PDFs...", total=None)
-                pdf_texts = self.pdf_processor.extract_text_from_multiple_pdfs(pdf_paths)
+                progress.add_task(description="Extracting text from files...", total=None)
+                file_texts = self.file_processor.extract_text_from_multiple_files(file_paths)
                 
-        if not pdf_texts:
-            console.print(error_msg("Failed to extract text from PDF files"))
+        if not file_texts:
+            console.print(error_msg("Failed to extract text from files"))
             return
             
         # Convert paths to strings for compatibility
-        paper_paths = [str(path) for path in pdf_paths]
-        paper_texts = {str(path): text for path, text in pdf_texts.items()}
+        paper_paths = [str(path) for path in file_paths]
+        paper_texts = {str(path): text for path, text in file_texts.items()}
         
         # First, insert into nano-graphrag to create the core storage files
         with Progress(
@@ -209,7 +210,7 @@ class EnhancedInsertCommand:
             progress.add_task(description="Creating nano-graphrag knowledge graph...", total=None)
             
             # Combine all texts for nano-graphrag insertion
-            combined_text = '\n\n'.join(pdf_texts.values())
+            combined_text = '\n\n'.join(file_texts.values())
             await graphrag.ainsert(combined_text)
         
         console.print(success_msg("Nano-graphrag knowledge graph created successfully!"))

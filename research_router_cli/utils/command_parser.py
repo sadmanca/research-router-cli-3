@@ -76,7 +76,7 @@ class EnhancedCommandParser:
                 name="insert",
                 aliases=["i", "add"],
                 subcommands=["files", "folder", "browse"],
-                description="Insert PDFs into knowledge graph",
+                description="Insert files (PDFs, text files, markdown) into knowledge graph",
                 usage="insert <path|files|folder|browse> [options]",
                 requires_session=True,
                 min_args=0,  # browse doesn't need args
@@ -87,7 +87,7 @@ class EnhancedCommandParser:
                 name="enhanced-insert",
                 aliases=["ei", "einsert", "advanced-insert"],
                 subcommands=["files", "folder", "browse"],
-                description="Insert PDFs with enhanced knowledge graph generation",
+                description="Insert files (PDFs, text files, markdown) with enhanced knowledge graph generation",
                 usage="enhanced-insert <path|files|folder|browse> [--nodes N] [--formats html,json]",
                 requires_session=True,
                 min_args=0,  # Allow no args to show options, or direct file paths

@@ -27,7 +27,7 @@ class FileBrowser:
         
     def browse_for_files(self, 
                         initial_path: Optional[Union[str, Path]] = None,
-                        file_filter: str = "*.pdf",
+                        file_filter: str = "*.*",
                         multi_select: bool = True,
                         show_hidden: bool = False) -> List[Path]:
         """Interactive file browser that returns selected files"""
@@ -422,7 +422,7 @@ class FileBrowser:
 
 
 def quick_file_select(prompt: str = "Select file", 
-                     file_filter: str = "*.pdf",
+                     file_filter: str = "*.*",
                      multi_select: bool = False) -> List[str]:
     """Quick file selection utility"""
     browser = FileBrowser()
