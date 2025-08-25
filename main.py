@@ -21,6 +21,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from research_router_cli.commands.session import SessionManager
 from research_router_cli.commands.insert import InsertCommand
+from research_router_cli.commands.enhanced_insert import EnhancedInsertCommand
 from research_router_cli.commands.query import QueryCommand
 from research_router_cli.commands.arxiv import ArxivCommand
 from research_router_cli.utils.config import Config
@@ -38,6 +39,7 @@ class ResearchRouterCLI:
     def __init__(self):
         self.session_manager = SessionManager()
         self.insert_command = InsertCommand(self.session_manager)
+        self.enhanced_insert_command = EnhancedInsertCommand(self.session_manager)
         self.query_command = QueryCommand(self.session_manager)
         self.arxiv_command = ArxivCommand(self.session_manager)
         self.config = Config()
@@ -54,7 +56,7 @@ class ResearchRouterCLI:
     def show_welcome(self):
         """Show welcome screen"""
         console.print()
-        console.print(highlight_msg("🔬 Research Router CLI"))
+        console.print(highlight_msg("Research Router CLI"))
         console.print("[dim]Interactive knowledge graph CLI for research[/dim]")
         console.print()
         console.print(info_msg("Type 'help' for commands or start with 'session create <name>'"))
@@ -126,7 +128,7 @@ class ResearchRouterCLI:
         cmd = parsed_cmd.command
         
         if cmd == "exit":
-            console.print(success_msg("👋 Goodbye!"))
+            console.print(success_msg("Goodbye!"))
             return False
         elif cmd == "help":
             self._handle_help_command(parsed_cmd.args)
@@ -134,7 +136,7 @@ class ResearchRouterCLI:
             self.config.show_config()
         elif cmd == "status":
             self._show_status()
-        elif cmd in ["iquery", "history", "duplicates", "session", "insert", "arxiv", "query"]:
+        elif cmd in ["iquery", "history", "duplicates", "session", "insert", "enhanced-insert", "arxiv", "query"]:
             # Run async commands using asyncio.run
             return asyncio.run(self._execute_async_command(parsed_cmd))
         else:
@@ -157,6 +159,8 @@ class ResearchRouterCLI:
             await self._handle_session_command(parsed_cmd)
         elif cmd == "insert":
             await self._handle_insert_command(parsed_cmd)
+        elif cmd == "enhanced-insert":
+            await self._handle_enhanced_insert_command(parsed_cmd)
         elif cmd == "arxiv":
             await self._handle_arxiv_command(parsed_cmd)
         elif cmd == "query":
@@ -183,7 +187,7 @@ class ResearchRouterCLI:
         # Group commands by category
         categories = {
             "Session Management": ["session"],
-            "Content Management": ["insert", "query", "iquery"],
+            "Content Management": ["insert", "enhanced-insert", "query", "iquery"],
             "ArXiv Integration": ["arxiv"],
             "Information": ["history", "duplicates", "status", "config"],
             "Utility": ["help", "exit"]
@@ -334,6 +338,7 @@ class ResearchRouterCLI:
             if self.session_manager.switch_session(session_name):
                 # Reset instances when switching sessions
                 self.insert_command.reset_instance()
+                self.enhanced_insert_command.reset_instance()
                 self.query_command.reset_instance()
                 self.arxiv_command.reset_instance()
         elif action == "delete" and parsed_cmd.args:
@@ -393,13 +398,109 @@ class ResearchRouterCLI:
             else:
                 console.print(error_msg("Please specify a file path or use 'insert browse'"))
     
+    async def _handle_enhanced_insert_command(self, parsed_cmd: ParsedCommand):
+        """Handle enhanced insert commands with advanced knowledge graph generation"""
+        # If no subcommand and no args, show options
+        if not parsed_cmd.subcommand and not parsed_cmd.args:
+            await self.enhanced_insert_command.show_enhanced_options()
+            return
+            
+        # Extract parameters
+        nodes_per_paper = 25
+        export_formats = ['html', 'json']
+        
+        # Parse flags for nodes per paper
+        if parsed_cmd.flags.get('nodes'):
+            try:
+                nodes_per_paper = int(parsed_cmd.flags['nodes'])
+            except ValueError:
+                console.print(warning_msg("Invalid nodes value, using default 25"))
+                
+        # Parse export formats
+        if parsed_cmd.flags.get('formats'):
+            export_formats = parsed_cmd.flags['formats'].split(',')
+            
+        if parsed_cmd.subcommand == "browse" or (parsed_cmd.args and parsed_cmd.args[0] == "browse"):
+            # Interactive file browser for enhanced insertion
+            console.print(info_msg("🗂️ Opening interactive file browser for enhanced insertion..."))
+            try:
+                selected_files = self.file_browser.browse_for_files()
+            except Exception as e:
+                console.print(error_msg(f"File browser error: {e}"))
+                return
+                
+            if selected_files:
+                console.print(success_msg(f"Selected {len(selected_files)} files"))
+                file_paths = [str(f) for f in selected_files]
+                await self.enhanced_insert_command.enhanced_insert_multiple_files(file_paths, nodes_per_paper, export_formats)
+            else:
+                console.print(info_msg("No files selected"))
+            return
+            
+        elif parsed_cmd.subcommand == "files":
+            # Enhanced insert multiple files
+            if not parsed_cmd.args:
+                console.print(error_msg("enhanced-insert files requires at least one file path"))
+                return
+            await self.enhanced_insert_command.enhanced_insert_multiple_files(parsed_cmd.args, nodes_per_paper, export_formats)
+            
+        elif parsed_cmd.subcommand == "folder":
+            # Enhanced insert folder (treat as multiple files)
+            if not parsed_cmd.args:
+                console.print(error_msg("enhanced-insert folder requires a folder path"))
+                return
+            folder_path = parsed_cmd.args[0]
+            from pathlib import Path
+            folder = Path(folder_path)
+            if not folder.exists() or not folder.is_dir():
+                console.print(error_msg(f"Folder not found: {folder_path}"))
+                return
+            
+            # Get all PDF files in the folder
+            pdf_files = list(folder.glob("*.pdf"))
+            if not pdf_files:
+                console.print(warning_msg(f"No PDF files found in {folder_path}"))
+                return
+                
+            console.print(info_msg(f"Found {len(pdf_files)} PDF files in folder"))
+            await self.enhanced_insert_command.enhanced_insert_multiple_files(pdf_files, nodes_per_paper, export_formats)
+            
+        else:
+            # Handle direct file paths without subcommand
+            if parsed_cmd.args:
+                # Check if it looks like a file path (not a subcommand that wasn't recognized)
+                first_arg = parsed_cmd.args[0]
+                if any(first_arg.endswith(ext) for ext in ['.pdf']) or '/' in first_arg or '\\' in first_arg:
+                    # Single file enhanced insertion
+                    await self.enhanced_insert_command.enhanced_insert_pdf(first_arg, nodes_per_paper, export_formats)
+                else:
+                    # Multiple files or pattern
+                    await self.enhanced_insert_command.enhanced_insert_multiple_files(parsed_cmd.args, nodes_per_paper, export_formats)
+            else:
+                console.print(error_msg("Please specify a file path or use 'enhanced-insert browse'"))
+                console.print(info_msg("Usage: enhanced-insert <pdf_path> [--nodes 30] [--formats html,json]"))
+                console.print(info_msg("       enhanced-insert browse"))
+                console.print(info_msg("       enhanced-insert files <f1> <f2> ..."))
+                console.print(info_msg("       enhanced-insert folder <path>"))
+    
     async def _handle_query_command(self, parsed_cmd: ParsedCommand):
         """Handle query commands"""
         if not parsed_cmd.args:
             console.print(error_msg("Query command requires a question"))
             return
+        
+        # Determine mode from flags
+        mode = 'global'  # default
+        
+        if 'mode' in parsed_cmd.flags:
+            mode = parsed_cmd.flags['mode']
+        elif 'local' in parsed_cmd.flags:
+            mode = 'local'
+        elif 'global' in parsed_cmd.flags:
+            mode = 'global'  
+        elif 'naive' in parsed_cmd.flags:
+            mode = 'naive'
             
-        mode = parsed_cmd.flags.get('mode', 'global')
         query_text = " ".join(parsed_cmd.args)
             
         await self.query_command.query(query_text, mode)

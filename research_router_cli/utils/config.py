@@ -20,6 +20,7 @@ class Config:
         self._openai_api_key: Optional[str] = None
         self._azure_openai_endpoint: Optional[str] = None
         self._azure_openai_api_key: Optional[str] = None
+        self._gemini_api_key: Optional[str] = None
         self._load_config()
         
     def _load_config(self):
@@ -27,6 +28,7 @@ class Config:
         self._openai_api_key = os.getenv('OPENAI_API_KEY')
         self._azure_openai_endpoint = os.getenv('AZURE_OPENAI_ENDPOINT')
         self._azure_openai_api_key = os.getenv('AZURE_OPENAI_API_KEY')
+        self._gemini_api_key = os.getenv('GEMINI_API_KEY')
         
     @property
     def openai_api_key(self) -> Optional[str]:
@@ -40,6 +42,14 @@ class Config:
     def has_azure_openai_config(self) -> bool:
         return (self._azure_openai_endpoint is not None and 
                 self._azure_openai_api_key is not None)
+    
+    @property
+    def gemini_api_key(self) -> Optional[str]:
+        return self._gemini_api_key
+        
+    @property
+    def has_gemini_config(self) -> bool:
+        return self._gemini_api_key is not None
                 
     def show_config(self):
         """Display current configuration"""
@@ -60,21 +70,30 @@ class Config:
             table.add_row("Azure OpenAI", "✓ Set", self._azure_openai_endpoint)
         else:
             table.add_row("Azure OpenAI", "✗ Not Set", "")
+        
+        # Gemini API Key
+        if self.has_gemini_config:
+            masked_key = f"{self._gemini_api_key[:8]}...{self._gemini_api_key[-4:]}"
+            table.add_row("Gemini API Key", "✓ Set", masked_key)
+        else:
+            table.add_row("Gemini API Key", "✗ Not Set", "")
             
         console.print(table)
         
-        if not self.has_openai_config and not self.has_azure_openai_config:
+        if not self.has_openai_config and not self.has_azure_openai_config and not self.has_gemini_config:
             console.print("\n[red]⚠️  No API configuration found![/red]")
-            console.print("Set your OpenAI API key:")
-            console.print("  export OPENAI_API_KEY='your-api-key-here'")
+            console.print("Set your API key:")
+            console.print("  export OPENAI_API_KEY='your-openai-api-key-here'")
+            console.print("  export GEMINI_API_KEY='your-gemini-api-key-here'")
             console.print("\nOr create a .env file with:")
-            console.print("  OPENAI_API_KEY=your-api-key-here")
+            console.print("  OPENAI_API_KEY=your-openai-api-key-here")
+            console.print("  GEMINI_API_KEY=your-gemini-api-key-here")
             
     def validate_config(self) -> bool:
         """Validate that required configuration is present"""
-        if not self.has_openai_config and not self.has_azure_openai_config:
+        if not self.has_openai_config and not self.has_azure_openai_config and not self.has_gemini_config:
             console.print("[red]Error: No API configuration found[/red]")
-            console.print("Please set OPENAI_API_KEY environment variable or configure Azure OpenAI")
+            console.print("Please set OPENAI_API_KEY or GEMINI_API_KEY environment variable or configure Azure OpenAI")
             return False
         return True
         
@@ -82,7 +101,17 @@ class Config:
         """Get configuration for nano-graphrag LLM setup"""
         config = {}
         
-        if self.has_azure_openai_config:
+        # Prioritize Gemini + GenKG if available
+        if self.has_gemini_config:
+            config.update({
+                'using_gemini': True,
+                'use_genkg_extraction': True,
+                'genkg_node_limit': 25,
+                'genkg_create_visualization': True,
+                'genkg_llm_provider': 'gemini',
+                'genkg_model_name': 'gemini-2.5-flash',
+            })
+        elif self.has_azure_openai_config:
             config['using_azure_openai'] = True
             # Azure specific config would go here
         elif self.has_openai_config:

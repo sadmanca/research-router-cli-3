@@ -83,15 +83,26 @@ class EnhancedCommandParser:
                 max_args=-1,
                 valid_flags=["-r", "--recursive"]
             ),
+            "enhanced-insert": CommandDef(
+                name="enhanced-insert",
+                aliases=["ei", "einsert", "advanced-insert"],
+                subcommands=["files", "folder", "browse"],
+                description="Insert PDFs with enhanced knowledge graph generation",
+                usage="enhanced-insert <path|files|folder|browse> [--nodes N] [--formats html,json]",
+                requires_session=True,
+                min_args=0,  # Allow no args to show options, or direct file paths
+                max_args=-1,
+                valid_flags=["--nodes", "--formats"]
+            ),
             "query": CommandDef(
                 name="query",
                 aliases=["q", "search"],
                 description="Query the knowledge graph",
-                usage="query [--mode local|global|naive] <question>",
+                usage="query [--mode local|global|naive | --local | --global | --naive] <question>",
                 requires_session=True,
                 min_args=1,
                 max_args=-1,
-                valid_flags=["--mode"]
+                valid_flags=["--mode", "--local", "--global", "--naive"]
             ),
             "arxiv": CommandDef(
                 name="arxiv",
@@ -262,18 +273,26 @@ class EnhancedCommandParser:
         flags = {}
         i = 0
         
+        # Define boolean flags that don't take values
+        boolean_flags = ["--local", "--global", "--naive"]
+        
         while i < len(parts):
             part = parts[i]
             
             if part.startswith('-') and valid_flags:
                 if part in valid_flags:
-                    # Check if next part is the flag value
-                    if i + 1 < len(parts) and not parts[i + 1].startswith('-'):
-                        flags[part.lstrip('-')] = parts[i + 1]
-                        i += 2
-                    else:
+                    if part in boolean_flags:
+                        # Boolean flags don't take values
                         flags[part.lstrip('-')] = True
                         i += 1
+                    else:
+                        # Check if next part is the flag value
+                        if i + 1 < len(parts) and not parts[i + 1].startswith('-'):
+                            flags[part.lstrip('-')] = parts[i + 1]
+                            i += 2
+                        else:
+                            flags[part.lstrip('-')] = True
+                            i += 1
                 else:
                     # Unknown flag, treat as argument
                     args.append(part)
@@ -300,8 +319,8 @@ class EnhancedCommandParser:
         if cmd_def.max_args >= 0 and arg_count > cmd_def.max_args:
             errors.append(f"Command '{parsed.command}' accepts at most {cmd_def.max_args} arguments. Usage: {cmd_def.usage}")
             
-        # Validate subcommands
-        if cmd_def.subcommands and not parsed.subcommand:
+        # Validate subcommands (but allow enhanced-insert to work without subcommands for direct file paths)
+        if cmd_def.subcommands and not parsed.subcommand and parsed.command != "enhanced-insert":
             errors.append(f"Command '{parsed.command}' requires a subcommand: {', '.join(cmd_def.subcommands)}")
             
         return errors
