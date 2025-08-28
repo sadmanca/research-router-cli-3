@@ -1,0 +1,349 @@
+{% extends "base.html" %}
+
+{% block title %}Upload Documents - {{ session_name }}{% endblock %}
+
+{% block head %}
+<style>
+.drop-zone {
+    border: 2px dashed #ccc;
+    border-radius: 10px;
+    padding: 2rem;
+    text-align: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.drop-zone:hover {
+    border-color: #0d6efd;
+    background-color: #f8f9fa;
+}
+
+.drop-zone.dragover {
+    border-color: #0d6efd;
+    background-color: #e7f3ff;
+}
+
+.file-preview {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 0.375rem;
+    padding: 0.75rem;
+    margin-bottom: 0.5rem;
+}
+
+.file-preview.success {
+    background-color: #d1edff;
+    border-color: #0d6efd;
+}
+
+.file-preview.error {
+    background-color: #f8d7da;
+    border-color: #dc3545;
+}
+
+.upload-progress {
+    height: 4px;
+    background-color: #e9ecef;
+    border-radius: 2px;
+    overflow: hidden;
+    margin-top: 0.5rem;
+}
+
+.upload-progress-bar {
+    height: 100%;
+    background-color: #0d6efd;
+    width: 0%;
+    transition: width 0.3s ease;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 mx-auto">
+        <!-- Header -->
+        <div class="text-center mb-4">
+            <h2>
+                <i class="bi bi-cloud-upload text-primary"></i>
+                Upload Documents
+            </h2>
+            <p class="text-muted">Session: <strong>{{ session_name }}</strong></p>
+        </div>
+
+        <!-- Upload Card -->
+        <div class="card">
+            <div class="card-body">
+                <!-- File Drop Zone -->
+                <div id="dropZone" class="drop-zone mb-4">
+                    <i class="bi bi-cloud-upload" style="font-size: 3rem; color: #6c757d;"></i>
+                    <h5 class="mt-3">Drop files here or click to browse</h5>
+                    <p class="text-muted">
+                        Supported formats: PDF, TXT, MD, DOC, DOCX<br>
+                        Maximum file size: 50MB
+                    </p>
+                    <input type="file" id="fileInput" multiple accept=".pdf,.txt,.md,.doc,.docx" style="display: none;">
+                </div>
+
+                <!-- File List -->
+                <div id="fileList" class="mb-3" style="display: none;">
+                    <h6>Selected Files:</h6>
+                    <div id="fileItems"></div>
+                </div>
+
+                <!-- Upload Button -->
+                <div id="uploadSection" class="text-center" style="display: none;">
+                    <button id="uploadBtn" class="btn btn-primary btn-lg">
+                        <i class="bi bi-upload"></i> Upload and Process
+                    </button>
+                    <button id="clearBtn" class="btn btn-outline-secondary btn-lg ms-2">
+                        <i class="bi bi-x-circle"></i> Clear
+                    </button>
+                </div>
+
+                <!-- Overall Progress -->
+                <div id="overallProgress" class="mt-4" style="display: none;">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span>Processing files...</span>
+                        <span id="progressText">0%</span>
+                    </div>
+                    <div class="upload-progress">
+                        <div id="progressBar" class="upload-progress-bar"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Success Message -->
+        <div id="successMessage" class="alert alert-success mt-4" style="display: none;">
+            <i class="bi bi-check-circle"></i>
+            <strong>Success!</strong> Your documents have been processed and added to the knowledge graph.
+            <div class="mt-2">
+                <a href="{{ url_for('chat') }}" class="btn btn-success">
+                    <i class="bi bi-chat-dots"></i> Start Chatting
+                </a>
+            </div>
+        </div>
+
+        <!-- Instructions -->
+        <div class="card mt-4">
+            <div class="card-header">
+                <h6 class="mb-0">
+                    <i class="bi bi-info-circle"></i> How it works
+                </h6>
+            </div>
+            <div class="card-body">
+                <ol class="mb-0">
+                    <li>Select or drag and drop your documents</li>
+                    <li>Click "Upload and Process" to add them to your knowledge graph</li>
+                    <li>Wait for processing to complete (this may take a few minutes)</li>
+                    <li>Start chatting with your documents!</li>
+                </ol>
+                
+                <div class="alert alert-info mt-3 mb-0">
+                    <small>
+                        <i class="bi bi-lightbulb"></i>
+                        <strong>Tip:</strong> The system will automatically detect and skip duplicate files.
+                        Processing time depends on document size and complexity.
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const dropZone = document.getElementById('dropZone');
+    const fileInput = document.getElementById('fileInput');
+    const fileList = document.getElementById('fileList');
+    const fileItems = document.getElementById('fileItems');
+    const uploadSection = document.getElementById('uploadSection');
+    const uploadBtn = document.getElementById('uploadBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const overallProgress = document.getElementById('overallProgress');
+    const progressBar = document.getElementById('progressBar');
+    const progressText = document.getElementById('progressText');
+    const successMessage = document.getElementById('successMessage');
+
+    let selectedFiles = [];
+
+    // Click to browse
+    dropZone.addEventListener('click', () => fileInput.click());
+
+    // Drag and drop handlers
+    dropZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropZone.classList.add('dragover');
+    });
+
+    dropZone.addEventListener('dragleave', () => {
+        dropZone.classList.remove('dragover');
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropZone.classList.remove('dragover');
+        handleFiles(e.dataTransfer.files);
+    });
+
+    // File input change
+    fileInput.addEventListener('change', (e) => {
+        handleFiles(e.target.files);
+    });
+
+    // Clear button
+    clearBtn.addEventListener('click', () => {
+        selectedFiles = [];
+        fileInput.value = '';
+        updateFileList();
+    });
+
+    // Upload button
+    uploadBtn.addEventListener('click', async () => {
+        if (selectedFiles.length === 0) return;
+
+        const formData = new FormData();
+        selectedFiles.forEach(file => {
+            formData.append('files', file);
+        });
+
+        // Show progress
+        overallProgress.style.display = 'block';
+        uploadBtn.disabled = true;
+        clearBtn.disabled = true;
+
+        try {
+            // Simulate progress for user experience
+            let progress = 0;
+            const progressInterval = setInterval(() => {
+                if (progress < 90) {
+                    progress += Math.random() * 15;
+                    updateProgress(Math.min(progress, 90));
+                }
+            }, 500);
+
+            const response = await fetch('/api/upload', {
+                method: 'POST',
+                body: formData
+            });
+
+            clearInterval(progressInterval);
+
+            const result = await response.json();
+
+            if (result.success) {
+                updateProgress(100);
+                setTimeout(() => {
+                    overallProgress.style.display = 'none';
+                    successMessage.style.display = 'block';
+                    
+                    // Update file items to show success
+                    fileItems.querySelectorAll('.file-preview').forEach(item => {
+                        item.classList.add('success');
+                        const statusSpan = item.querySelector('.file-status');
+                        if (statusSpan) {
+                            statusSpan.innerHTML = '<i class="bi bi-check-circle text-success"></i> Processed';
+                        }
+                    });
+                }, 500);
+            } else {
+                throw new Error(result.error || 'Upload failed');
+            }
+
+        } catch (error) {
+            alert('Upload failed: ' + error.message);
+            overallProgress.style.display = 'none';
+        } finally {
+            uploadBtn.disabled = false;
+            clearBtn.disabled = false;
+        }
+    });
+
+    function handleFiles(files) {
+        const allowedTypes = ['application/pdf', 'text/plain', 'text/markdown', 
+                             'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+        const maxSize = 50 * 1024 * 1024; // 50MB
+
+        Array.from(files).forEach(file => {
+            // Check file type
+            const isValidType = allowedTypes.includes(file.type) || 
+                               file.name.match(/\.(pdf|txt|md|doc|docx)$/i);
+            
+            if (!isValidType) {
+                alert(`File "${file.name}" is not a supported format.`);
+                return;
+            }
+
+            // Check file size
+            if (file.size > maxSize) {
+                alert(`File "${file.name}" is too large (max 50MB).`);
+                return;
+            }
+
+            // Check for duplicates
+            const exists = selectedFiles.some(f => 
+                f.name === file.name && f.size === file.size
+            );
+
+            if (!exists) {
+                selectedFiles.push(file);
+            }
+        });
+
+        updateFileList();
+    }
+
+    function updateFileList() {
+        if (selectedFiles.length === 0) {
+            fileList.style.display = 'none';
+            uploadSection.style.display = 'none';
+            successMessage.style.display = 'none';
+            return;
+        }
+
+        fileList.style.display = 'block';
+        uploadSection.style.display = 'block';
+        successMessage.style.display = 'none';
+
+        fileItems.innerHTML = '';
+        selectedFiles.forEach((file, index) => {
+            const fileDiv = document.createElement('div');
+            fileDiv.className = 'file-preview';
+            
+            const sizeText = (file.size / 1024 / 1024).toFixed(2) + ' MB';
+            
+            fileDiv.innerHTML = `
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <i class="bi bi-file-earmark-text me-2"></i>
+                        <strong>${file.name}</strong>
+                        <small class="text-muted ms-2">(${sizeText})</small>
+                    </div>
+                    <div>
+                        <span class="file-status text-muted">Ready</span>
+                        <button class="btn btn-sm btn-outline-danger ms-2" onclick="removeFile(${index})">
+                            <i class="bi bi-x"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            fileItems.appendChild(fileDiv);
+        });
+    }
+
+    function updateProgress(percent) {
+        progressBar.style.width = percent + '%';
+        progressText.textContent = Math.round(percent) + '%';
+    }
+
+    // Global function to remove files
+    window.removeFile = function(index) {
+        selectedFiles.splice(index, 1);
+        updateFileList();
+    };
+});
+</script>
+{% endblock %}

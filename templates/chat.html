@@ -1,0 +1,394 @@
+{% extends "base.html" %}
+
+{% block title %}Chat - {{ session_name }}{% endblock %}
+
+{% block head %}
+<style>
+.chat-container {
+    height: 70vh;
+    overflow-y: auto;
+    border: 1px solid #dee2e6;
+    border-radius: 0.375rem;
+}
+
+.message {
+    margin-bottom: 1rem;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+}
+
+.message.user {
+    background-color: #e3f2fd;
+    margin-left: 2rem;
+}
+
+.message.assistant {
+    background-color: #f5f5f5;
+    margin-right: 2rem;
+}
+
+.message-time {
+    font-size: 0.75rem;
+    color: #6c757d;
+}
+
+.typing-indicator {
+    display: none;
+    margin-bottom: 1rem;
+    padding: 0.75rem;
+    background-color: #f8f9fa;
+    border-radius: 0.5rem;
+    margin-right: 2rem;
+}
+
+.typing-dots {
+    display: inline-block;
+}
+
+.typing-dots span {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #6c757d;
+    margin: 0 2px;
+    animation: typing 1.4s infinite ease-in-out both;
+}
+
+.typing-dots span:nth-child(1) { animation-delay: -0.32s; }
+.typing-dots span:nth-child(2) { animation-delay: -0.16s; }
+
+@keyframes typing {
+    0%, 80%, 100% { transform: scale(0); }
+    40% { transform: scale(1); }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <!-- Chat Header -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="bi bi-chat-dots text-primary"></i>
+                    Chat with {{ session_name }}
+                </h5>
+            </div>
+        </div>
+
+        <!-- Chat Messages -->
+        <div class="card">
+            <div class="card-body p-0">
+                <div id="chatContainer" class="chat-container p-3">
+                    <!-- Welcome message -->
+                    {% if not history %}
+                    <div class="message assistant">
+                        <div class="d-flex align-items-start">
+                            <i class="bi bi-robot me-2 text-primary mt-1"></i>
+                            <div>
+                                <strong>Assistant</strong>
+                                <div class="mt-2">
+                                    Welcome to your research session! I can help you explore and answer questions about your uploaded documents.
+                                    {% if session_name %}
+                                    <br><br>
+                                    <em>It looks like you haven't uploaded any documents yet. 
+                                    <a href="{{ url_for('upload_page') }}">Upload some documents</a> to get started!</em>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Previous messages -->
+                    {% for entry in history %}
+                    <div class="message user">
+                        <div class="d-flex align-items-start">
+                            <i class="bi bi-person-fill me-2 text-secondary mt-1"></i>
+                            <div>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <strong>You</strong>
+                                    <span class="message-time">{{ entry.timestamp[:16].replace('T', ' ') }}</span>
+                                </div>
+                                <div class="mt-2">{{ entry.query }}</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="message assistant">
+                        <div class="d-flex align-items-start">
+                            <i class="bi bi-robot me-2 text-primary mt-1"></i>
+                            <div>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <strong>Assistant</strong>
+                                    <span class="badge bg-secondary">{{ entry.mode or 'global' }}</span>
+                                </div>
+                                <div class="mt-2" id="response-{{ loop.index }}">{{ entry.response }}</div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+
+                    <!-- Typing indicator -->
+                    <div id="typingIndicator" class="typing-indicator">
+                        <div class="d-flex align-items-start">
+                            <i class="bi bi-robot me-2 text-primary mt-1"></i>
+                            <div>
+                                <strong>Assistant</strong>
+                                <div class="mt-2">
+                                    <div class="typing-dots">
+                                        <span></span>
+                                        <span></span>
+                                        <span></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chat Input -->
+        <div class="card mt-3">
+            <div class="card-body">
+                <form id="chatForm">
+                    <div class="row g-3">
+                        <div class="col-md-8">
+                            <textarea class="form-control" id="messageInput" 
+                                    placeholder="Ask a question about your documents..." 
+                                    rows="2" required></textarea>
+                        </div>
+                        <div class="col-md-2">
+                            <select class="form-select" id="queryMode">
+                                <option value="global">Global</option>
+                                <option value="local">Local</option>
+                                <option value="naive">Naive</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="submit" class="btn btn-primary h-100 w-100">
+                                <i class="bi bi-send"></i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="col-md-4">
+        <!-- Session Info -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h6 class="mb-0">
+                    <i class="bi bi-info-circle"></i> Session Info
+                </h6>
+            </div>
+            <div class="card-body">
+                <div id="sessionStatus">
+                    <div class="text-center">
+                        <div class="spinner-border spinner-border-sm" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <small class="text-muted">Loading session info...</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h6 class="mb-0">
+                    <i class="bi bi-lightning"></i> Quick Actions
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="{{ url_for('upload_page') }}" class="btn btn-outline-primary btn-sm">
+                        <i class="bi bi-cloud-upload"></i> Upload Documents
+                    </a>
+                    <a href="{{ url_for('index') }}" class="btn btn-outline-secondary btn-sm">
+                        <i class="bi bi-house"></i> Back to Sessions
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Query Mode Info -->
+        <div class="card">
+            <div class="card-header">
+                <h6 class="mb-0">
+                    <i class="bi bi-question-circle"></i> Query Modes
+                </h6>
+            </div>
+            <div class="card-body">
+                <small>
+                    <strong>Global:</strong> Searches across all documents and community summaries.<br><br>
+                    <strong>Local:</strong> Focuses on specific text chunks and entities.<br><br>
+                    <strong>Naive:</strong> Simple similarity-based retrieval.
+                </small>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const chatContainer = document.getElementById('chatContainer');
+    const chatForm = document.getElementById('chatForm');
+    const messageInput = document.getElementById('messageInput');
+    const queryMode = document.getElementById('queryMode');
+    const typingIndicator = document.getElementById('typingIndicator');
+    
+    // Load session status
+    loadSessionStatus();
+    
+    // Auto-scroll to bottom
+    scrollToBottom();
+    
+    // Chat form submission
+    chatForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const question = messageInput.value.trim();
+        const mode = queryMode.value;
+        
+        if (!question) return;
+        
+        // Add user message to chat
+        addMessage('user', question);
+        
+        // Clear input and show typing indicator
+        messageInput.value = '';
+        showTypingIndicator();
+        
+        try {
+            const response = await fetch('/api/query', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    question: question,
+                    mode: mode
+                })
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                addMessage('assistant', result.answer, mode);
+            } else {
+                addMessage('assistant', 'Error: ' + (result.error || 'Failed to get response'), mode, true);
+            }
+        } catch (error) {
+            addMessage('assistant', 'Error: ' + error.message, mode, true);
+        } finally {
+            hideTypingIndicator();
+        }
+    });
+    
+    // Allow Enter to submit (Shift+Enter for new line)
+    messageInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            chatForm.requestSubmit();
+        }
+    });
+    
+    function addMessage(sender, content, mode = null, isError = false) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${sender}`;
+        
+        const timestamp = new Date().toLocaleString();
+        const icon = sender === 'user' ? 'bi-person-fill' : 'bi-robot';
+        const iconColor = sender === 'user' ? 'text-secondary' : 'text-primary';
+        const name = sender === 'user' ? 'You' : 'Assistant';
+        
+        let modeBadge = '';
+        if (mode && sender === 'assistant') {
+            modeBadge = `<span class="badge bg-secondary">${mode}</span>`;
+        }
+        
+        messageDiv.innerHTML = `
+            <div class="d-flex align-items-start">
+                <i class="bi ${icon} me-2 ${iconColor} mt-1"></i>
+                <div>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <strong>${name}</strong>
+                        <div>
+                            ${modeBadge}
+                            <span class="message-time ms-2">${timestamp}</span>
+                        </div>
+                    </div>
+                    <div class="mt-2 ${isError ? 'text-danger' : ''}">${content}</div>
+                </div>
+            </div>
+        `;
+        
+        chatContainer.insertBefore(messageDiv, typingIndicator);
+        scrollToBottom();
+    }
+    
+    function showTypingIndicator() {
+        typingIndicator.style.display = 'block';
+        scrollToBottom();
+    }
+    
+    function hideTypingIndicator() {
+        typingIndicator.style.display = 'none';
+    }
+    
+    function scrollToBottom() {
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+    
+    async function loadSessionStatus() {
+        try {
+            const response = await fetch(`/api/sessions/{{ session_name }}/status`);
+            const data = await response.json();
+            
+            const statusElement = document.getElementById('sessionStatus');
+            
+            if (data.has_knowledge_graph) {
+                const docs = data.stats.documents || 0;
+                const chunks = data.stats.chunks || 0;
+                statusElement.innerHTML = `
+                    <div class="text-success mb-2">
+                        <i class="bi bi-check-circle"></i> Ready to chat
+                    </div>
+                    <small class="text-muted">
+                        ${docs} documents<br>
+                        ${chunks} text chunks
+                    </small>
+                `;
+            } else {
+                statusElement.innerHTML = `
+                    <div class="text-warning mb-2">
+                        <i class="bi bi-exclamation-triangle"></i> No documents
+                    </div>
+                    <small class="text-muted">
+                        Upload documents to start chatting
+                    </small>
+                `;
+            }
+        } catch (error) {
+            console.error('Error loading session status:', error);
+            const statusElement = document.getElementById('sessionStatus');
+            statusElement.innerHTML = `
+                <div class="text-muted">
+                    <i class="bi bi-question-circle"></i> Status unknown
+                </div>
+            `;
+        }
+    }
+});
+</script>
+{% endblock %}

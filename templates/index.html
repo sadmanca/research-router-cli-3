@@ -1,0 +1,237 @@
+{% extends "base.html" %}
+
+{% block title %}Research Router - Home{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 mx-auto">
+        <div class="text-center mb-4">
+            <h1 class="display-4">
+                <i class="bi bi-graph-up text-primary"></i>
+                Research Router
+            </h1>
+            <p class="lead text-muted">
+                Interactive document chat using nano-graphrag
+            </p>
+        </div>
+
+        <!-- Current Session Status -->
+        {% if current_session %}
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="bi bi-person-workspace text-success"></i>
+                    Current Session: <strong>{{ current_session }}</strong>
+                </h5>
+                <p class="card-text">You can start chatting or upload more documents.</p>
+                <div class="btn-group" role="group">
+                    <a href="{{ url_for('chat') }}" class="btn btn-primary">
+                        <i class="bi bi-chat-dots"></i> Start Chatting
+                    </a>
+                    <a href="{{ url_for('upload_page') }}" class="btn btn-outline-primary">
+                        <i class="bi bi-cloud-upload"></i> Upload Documents
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Session Management -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="bi bi-folder"></i> 
+                    Session Management
+                </h5>
+            </div>
+            <div class="card-body">
+                
+                <!-- Create New Session -->
+                <div class="mb-4">
+                    <h6>Create New Session</h6>
+                    <form id="createSessionForm" class="row g-3">
+                        <div class="col-md-8">
+                            <input type="text" class="form-control" id="sessionName" placeholder="Enter session name" required>
+                        </div>
+                        <div class="col-md-4">
+                            <button type="submit" class="btn btn-success w-100">
+                                <i class="bi bi-plus-circle"></i> Create
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Existing Sessions -->
+                {% if sessions %}
+                <div>
+                    <h6>Existing Sessions</h6>
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Session Name</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for session_name, path in sessions.items() %}
+                                <tr {% if session_name == current_session %}class="table-primary"{% endif %}>
+                                    <td>
+                                        <i class="bi bi-folder"></i>
+                                        {{ session_name }}
+                                        {% if session_name == current_session %}
+                                        <span class="badge bg-primary ms-2">Active</span>
+                                        {% endif %}
+                                    </td>
+                                    <td id="status-{{ session_name }}">
+                                        <span class="text-muted">Loading...</span>
+                                    </td>
+                                    <td>
+                                        {% if session_name != current_session %}
+                                        <button class="btn btn-sm btn-outline-primary switch-session" 
+                                                data-session="{{ session_name }}">
+                                            <i class="bi bi-arrow-right-circle"></i> Switch
+                                        </button>
+                                        {% else %}
+                                        <small class="text-muted">Current session</small>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                {% else %}
+                <div class="text-center text-muted">
+                    <i class="bi bi-folder-x" style="font-size: 3rem;"></i>
+                    <h6 class="mt-2">No sessions found</h6>
+                    <p>Create your first session to get started!</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Loading Modal -->
+<div class="modal fade" id="loadingModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body text-center">
+                <div class="spinner-border text-primary mb-3" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <h6 id="loadingText">Processing...</h6>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const loadingModal = new bootstrap.Modal(document.getElementById('loadingModal'));
+    const loadingText = document.getElementById('loadingText');
+
+    // Load session statuses
+    {% for session_name, path in sessions.items() %}
+    loadSessionStatus('{{ session_name }}');
+    {% endfor %}
+
+    // Create session form
+    document.getElementById('createSessionForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const sessionName = document.getElementById('sessionName').value.trim();
+        if (!sessionName) return;
+
+        loadingText.textContent = 'Creating session...';
+        loadingModal.show();
+
+        try {
+            const response = await fetch('/api/sessions', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ name: sessionName })
+            });
+
+            const result = await response.json();
+            
+            if (result.success) {
+                window.location.reload();
+            } else {
+                alert('Error: ' + (result.error || 'Failed to create session'));
+            }
+        } catch (error) {
+            alert('Error: ' + error.message);
+        } finally {
+            loadingModal.hide();
+        }
+    });
+
+    // Switch session buttons
+    document.querySelectorAll('.switch-session').forEach(button => {
+        button.addEventListener('click', async function() {
+            const sessionName = this.dataset.session;
+            
+            loadingText.textContent = 'Switching session...';
+            loadingModal.show();
+
+            try {
+                const response = await fetch(`/api/sessions/${sessionName}/switch`, {
+                    method: 'POST'
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    window.location.reload();
+                } else {
+                    alert('Error: ' + (result.error || 'Failed to switch session'));
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            } finally {
+                loadingModal.hide();
+            }
+        });
+    });
+
+    // Load session status
+    async function loadSessionStatus(sessionName) {
+        try {
+            const response = await fetch(`/api/sessions/${sessionName}/status`);
+            const data = await response.json();
+            
+            const statusElement = document.getElementById(`status-${sessionName}`);
+            if (data.has_knowledge_graph) {
+                const docs = data.stats.documents || 0;
+                const chunks = data.stats.chunks || 0;
+                statusElement.innerHTML = `
+                    <span class="text-success">
+                        <i class="bi bi-check-circle"></i> 
+                        Ready (${docs} docs, ${chunks} chunks)
+                    </span>
+                `;
+            } else {
+                statusElement.innerHTML = `
+                    <span class="text-warning">
+                        <i class="bi bi-exclamation-triangle"></i> 
+                        No documents
+                    </span>
+                `;
+            }
+        } catch (error) {
+            console.error('Error loading session status:', error);
+            const statusElement = document.getElementById(`status-${sessionName}`);
+            statusElement.innerHTML = '<span class="text-muted">Unknown</span>';
+        }
+    }
+});
+</script>
+{% endblock %}

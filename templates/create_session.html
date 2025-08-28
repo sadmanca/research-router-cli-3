@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block title %}Create Session - Research Router{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <div class="text-center mb-4">
+                    <i class="bi bi-plus-circle-fill text-primary" style="font-size: 3rem;"></i>
+                    <h3 class="mt-2">Create Your First Session</h3>
+                    <p class="text-muted">
+                        Sessions help organize your documents and chat history. 
+                        Each session has its own knowledge graph.
+                    </p>
+                </div>
+
+                <form id="createSessionForm">
+                    <div class="mb-3">
+                        <label for="sessionName" class="form-label">Session Name</label>
+                        <input type="text" class="form-control form-control-lg" 
+                               id="sessionName" placeholder="e.g., Research Project 1" 
+                               required autofocus>
+                        <div class="form-text">
+                            Choose a descriptive name for your research session.
+                        </div>
+                    </div>
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="bi bi-plus-circle"></i> Create Session
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="text-center mt-4">
+            <p class="text-muted">
+                <small>
+                    After creating a session, you'll be able to upload documents 
+                    and start chatting with your knowledge base.
+                </small>
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- Loading Modal -->
+<div class="modal fade" id="loadingModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body text-center">
+                <div class="spinner-border text-primary mb-3" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <h6>Creating your session...</h6>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const loadingModal = new bootstrap.Modal(document.getElementById('loadingModal'));
+
+    document.getElementById('createSessionForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const sessionName = document.getElementById('sessionName').value.trim();
+        if (!sessionName) return;
+
+        loadingModal.show();
+
+        try {
+            const response = await fetch('/api/sessions', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ name: sessionName })
+            });
+
+            const result = await response.json();
+            
+            if (result.success) {
+                // Redirect to main page or chat
+                window.location.href = '{{ url_for("index") }}';
+            } else {
+                alert('Error: ' + (result.error || 'Failed to create session'));
+            }
+        } catch (error) {
+            alert('Error: ' + error.message);
+        } finally {
+            loadingModal.hide();
+        }
+    });
+});
+</script>
+{% endblock %}
