@@ -227,6 +227,51 @@ const ResearchRouter = {
             return allowedTypes.includes(file.type) || 
                    allowedExtensions.some(ext => file.name.toLowerCase().endsWith(ext));
         }
+    },
+
+    // Chat streaming functionality for real-time chat integration
+    chatStream: {
+        // Poll for chat messages from an operation
+        pollChatMessages: function(operationId, onMessage, onComplete, onError) {
+            const pollInterval = 500; // Poll every 500ms
+            let lastMessageCount = 0;
+            
+            const poll = async () => {
+                try {
+                    const response = await fetch(`/api/chat/${operationId}`);
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}`);
+                    }
+                    
+                    const data = await response.json();
+                    
+                    // Process new messages
+                    if (data.messages.length > lastMessageCount) {
+                        const newMessages = data.messages.slice(lastMessageCount);
+                        newMessages.forEach(message => {
+                            if (onMessage) onMessage(message);
+                        });
+                        lastMessageCount = data.messages.length;
+                    }
+                    
+                    // Check if operation is complete
+                    if (data.complete) {
+                        if (onComplete) onComplete(data.messages);
+                        return; // Stop polling
+                    }
+                    
+                    // Continue polling
+                    setTimeout(poll, pollInterval);
+                    
+                } catch (error) {
+                    console.error('Error polling chat messages:', error);
+                    if (onError) onError(error.message);
+                }
+            };
+            
+            // Start polling
+            poll();
+        }
     }
 };
 

@@ -6,12 +6,16 @@ Research Router Web App - Simple web interface for nano-graphrag document chat
 import asyncio
 import json
 import os
+import logging
+import threading
+import queue
+from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Optional
 import tempfile
 import uuid
 
-from flask import Flask, render_template, request, jsonify, session, redirect, url_for, flash
+from flask import Flask, render_template, request, jsonify, session, redirect, url_for, flash, Response
 from werkzeug.utils import secure_filename
 
 # Import existing CLI components
@@ -29,6 +33,30 @@ session_manager = SessionManager()
 insert_command = InsertCommand(session_manager)
 query_command = QueryCommand(session_manager)
 config = Config()
+
+# Chat message streaming setup
+chat_streams = {}  # operation_id -> {'messages': [], 'complete': False}
+chat_handlers = {}  # operation_id -> handler
+
+class ChatLogHandler(logging.Handler):
+    """Custom log handler that formats logs as chat messages"""
+    def __init__(self, operation_id):
+        super().__init__()
+        self.operation_id = operation_id
+        
+    def emit(self, record):
+        try:
+            msg = self.format(record)
+            if self.operation_id in chat_streams:
+                message = {
+                    'type': 'log',
+                    'content': msg,
+                    'timestamp': datetime.fromtimestamp(record.created).isoformat(),
+                    'level': record.levelname
+                }
+                chat_streams[self.operation_id]['messages'].append(message)
+        except:
+            pass  # Ignore handler errors
 
 # Allowed file extensions
 ALLOWED_EXTENSIONS = {'pdf', 'txt', 'md', 'doc', 'docx'}
@@ -142,7 +170,7 @@ def upload_page():
 
 @app.route('/api/upload', methods=['POST'])
 def api_upload():
-    """API: Upload and process documents"""
+    """API: Upload and process documents (returns immediately with operation_id)"""
     current_session = WebSessionManager.get_current_session()
     
     if not current_session:
@@ -158,58 +186,76 @@ def api_upload():
     results = []
     temp_files = []
     
-    try:
-        # Save uploaded files temporarily
-        for file in files:
-            if file and allowed_file(file.filename):
-                filename = secure_filename(file.filename)
-                
-                # Create temp file with original extension
-                suffix = Path(filename).suffix
-                temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=suffix)
-                temp_file.close()
-                
-                file.save(temp_file.name)
-                temp_files.append((temp_file.name, filename))
-                results.append({'filename': filename, 'status': 'uploaded'})
-            else:
-                results.append({'filename': file.filename, 'status': 'invalid', 'error': 'File type not allowed'})
-        
-        if not temp_files:
-            return jsonify({'error': 'No valid files to process', 'results': results}), 400
-        
-        # Process files with insert command
-        async def process_files():
-            file_paths = [temp_path for temp_path, _ in temp_files]
-            await insert_command.insert_multiple_files(file_paths)
-        
-        # Run async processing
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
-        loop.run_until_complete(process_files())
-        loop.close()
-        
-        # Update results with success
-        for i, (_, filename) in enumerate(temp_files):
-            if i < len(results):
-                results[i]['status'] = 'processed'
-        
-        return jsonify({'success': True, 'results': results})
+    # Save uploaded files temporarily
+    for file in files:
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            
+            # Create temp file with original extension
+            suffix = Path(filename).suffix
+            temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=suffix)
+            temp_file.close()
+            
+            file.save(temp_file.name)
+            temp_files.append((temp_file.name, filename))
+            results.append({'filename': filename, 'status': 'uploaded'})
+        else:
+            results.append({'filename': file.filename, 'status': 'invalid', 'error': 'File type not allowed'})
     
-    except Exception as e:
-        return jsonify({'error': f'Processing failed: {str(e)}', 'results': results}), 500
+    if not temp_files:
+        return jsonify({'error': 'No valid files to process', 'results': results}), 400
     
-    finally:
-        # Clean up temp files
-        for temp_path, _ in temp_files:
-            try:
-                os.unlink(temp_path)
-            except:
-                pass
+    # Generate operation ID for this upload
+    operation_id = str(uuid.uuid4())
+    
+    # Setup chat streaming for this operation
+    setup_chat_streaming(operation_id)
+    
+    # Start background processing
+    def process_files_background():
+        try:
+            # Add initial message
+            add_chat_message(operation_id, 'system', f'📁 Starting upload of {len(temp_files)} files...')
+            
+            # Process files with insert command
+            async def process_files():
+                file_paths = [temp_path for temp_path, _ in temp_files]
+                await insert_command.insert_multiple_files(file_paths)
+            
+            # Run async processing
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+            loop.run_until_complete(process_files())
+            loop.close()
+            
+            # Signal completion
+            add_chat_message(operation_id, 'system', '✅ Upload completed successfully!')
+            mark_chat_complete(operation_id)
+                
+        except Exception as e:
+            add_chat_message(operation_id, 'error', f'Upload failed: {str(e)}')
+            mark_chat_complete(operation_id)
+        finally:
+            # Clean up temp files
+            for temp_path, _ in temp_files:
+                try:
+                    os.unlink(temp_path)
+                except:
+                    pass
+    
+    # Start processing in background thread
+    threading.Thread(target=process_files_background, daemon=True).start()
+    
+    return jsonify({
+        'success': True,
+        'operation_id': operation_id,
+        'results': results,
+        'chat_endpoint': f'/api/chat/{operation_id}'
+    })
 
 @app.route('/api/query', methods=['POST'])
 def api_query():
-    """API: Query the knowledge graph"""
+    """API: Query the knowledge graph (returns immediately with operation_id)"""
     current_session = WebSessionManager.get_current_session()
     
     if not current_session:
@@ -225,49 +271,69 @@ def api_query():
     if mode not in ['local', 'global', 'naive']:
         mode = 'global'
     
-    try:
-        # Run query asynchronously
-        async def run_query():
-            # Switch to the current session
-            session_manager.switch_session(current_session)
-            
-            # Get GraphRAG instance
-            graphrag = await query_command._get_graphrag_instance()
-            if not graphrag:
-                return None, "No knowledge graph found. Please upload documents first."
-            
-            # Import QueryParam
-            from nano_graphrag import QueryParam
-            
-            # Perform query
-            result = await graphrag.aquery(
-                question, 
-                param=QueryParam(mode=mode)
-            )
-            
-            # Save to history
-            query_command._save_to_history(question, result, mode)
-            
-            return result, None
-        
-        # Run async query
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
-        result, error = loop.run_until_complete(run_query())
-        loop.close()
-        
-        if error:
-            return jsonify({'error': error}), 400
-        
-        return jsonify({
-            'success': True,
-            'question': question,
-            'answer': result,
-            'mode': mode
-        })
+    # Generate operation ID for this query
+    operation_id = str(uuid.uuid4())
     
-    except Exception as e:
-        return jsonify({'error': f'Query failed: {str(e)}'}), 500
+    # Setup chat streaming for this operation
+    setup_chat_streaming(operation_id)
+    
+    # Start background processing
+    def run_query_background():
+        try:
+            # Add initial message
+            add_chat_message(operation_id, 'system', f'🔍 Searching knowledge graph ({mode} mode)...')
+            
+            # Run query asynchronously
+            async def run_query():
+                # Switch to the current session
+                session_manager.switch_session(current_session)
+                
+                # Get GraphRAG instance
+                graphrag = await query_command._get_graphrag_instance()
+                if not graphrag:
+                    return None, "No knowledge graph found. Please upload documents first."
+                
+                # Import QueryParam
+                from nano_graphrag import QueryParam
+                
+                # Perform query
+                result = await graphrag.aquery(
+                    question, 
+                    param=QueryParam(mode=mode)
+                )
+                
+                # Save to history
+                query_command._save_to_history(question, result, mode)
+                
+                return result, None
+            
+            # Run async query
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+            result, error = loop.run_until_complete(run_query())
+            loop.close()
+            
+            if error:
+                add_chat_message(operation_id, 'error', error)
+            else:
+                add_chat_message(operation_id, 'assistant', result, {'mode': mode})
+                add_chat_message(operation_id, 'system', '✅ Query completed successfully!')
+            mark_chat_complete(operation_id)
+                
+        except Exception as e:
+            add_chat_message(operation_id, 'error', f'Query failed: {str(e)}')
+            mark_chat_complete(operation_id)
+    
+    # Start processing in background thread
+    threading.Thread(target=run_query_background, daemon=True).start()
+    
+    return jsonify({
+        'success': True,
+        'operation_id': operation_id,
+        'question': question,
+        'mode': mode,
+        'chat_endpoint': f'/api/chat/{operation_id}'
+    })
 
 @app.route('/api/sessions/<session_name>/status')
 def api_session_status(session_name):
@@ -326,6 +392,80 @@ def api_session_history(session_name):
     history = history_manager.get_history(limit=limit)
     
     return jsonify({'history': history})
+
+def setup_chat_streaming(operation_id: str):
+    """Setup chat streaming for a specific operation"""
+    # Initialize chat stream for this operation
+    chat_streams[operation_id] = {'messages': [], 'complete': False}
+    
+    # Create and configure handler
+    handler = ChatLogHandler(operation_id)
+    handler.setLevel(logging.INFO)
+    formatter = logging.Formatter('[%(name)s] %(message)s')
+    handler.setFormatter(formatter)
+    chat_handlers[operation_id] = handler
+    
+    # Add handler to nano-graphrag loggers
+    loggers_to_capture = [
+        'nano-graphrag',
+        'nano-vectordb', 
+        'google_genai._api_client'
+    ]
+    
+    for logger_name in loggers_to_capture:
+        logger = logging.getLogger(logger_name)
+        logger.addHandler(handler)
+        logger.setLevel(logging.INFO)
+
+def add_chat_message(operation_id: str, message_type: str, content: str, metadata: dict = None):
+    """Add a message to the chat stream"""
+    if operation_id in chat_streams:
+        message = {
+            'type': message_type,
+            'content': content,
+            'timestamp': datetime.now().isoformat(),
+            'metadata': metadata or {}
+        }
+        chat_streams[operation_id]['messages'].append(message)
+
+def mark_chat_complete(operation_id: str):
+    """Mark chat stream as complete"""
+    if operation_id in chat_streams:
+        chat_streams[operation_id]['complete'] = True
+        cleanup_chat_streaming(operation_id)
+
+@app.route('/api/chat/<operation_id>')
+def get_chat_messages(operation_id: str):
+    """Get chat messages for an operation"""
+    if operation_id not in chat_streams:
+        return jsonify({'error': 'Operation not found'}), 404
+    
+    stream_data = chat_streams[operation_id]
+    return jsonify({
+        'messages': stream_data['messages'],
+        'complete': stream_data['complete']
+    })
+
+def cleanup_chat_streaming(operation_id: str):
+    """Clean up chat streaming resources"""
+    if operation_id in chat_handlers:
+        handler = chat_handlers[operation_id]
+        
+        # Remove handler from all loggers
+        loggers_to_cleanup = [
+            'nano-graphrag',
+            'nano-vectordb',
+            'google_genai._api_client'
+        ]
+        
+        for logger_name in loggers_to_cleanup:
+            logger = logging.getLogger(logger_name)
+            logger.removeHandler(handler)
+        
+        del chat_handlers[operation_id]
+    
+    # Keep chat_streams data for a while for retrieval
+    # It will be cleaned up naturally or by periodic cleanup
 
 if __name__ == '__main__':
     # Check config

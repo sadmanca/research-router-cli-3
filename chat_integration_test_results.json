@@ -1,0 +1,55 @@
+{
+  "messages": [
+    {
+      "type": "system",
+      "content": "Starting query operation...",
+      "timestamp": "2025-08-28T16:01:38.312678",
+      "metadata": {}
+    },
+    {
+      "type": "log",
+      "content": "[nano-graphrag] Using Gemini for LLM and embeddings",
+      "timestamp": 1756411298.3126779,
+      "level": "INFO"
+    },
+    {
+      "type": "log",
+      "content": "[nano-graphrag] Load KV full_docs with 6 data",
+      "timestamp": 1756411298.3126779,
+      "level": "INFO"
+    },
+    {
+      "type": "log",
+      "content": "[nano-graphrag] Load KV text_chunks with 101 data",
+      "timestamp": 1756411298.3126779,
+      "level": "INFO"
+    },
+    {
+      "type": "log",
+      "content": "[nano-vectordb] Load (142, 3072) data",
+      "timestamp": 1756411298.3126779,
+      "level": "INFO"
+    },
+    {
+      "type": "log",
+      "content": "[nano-vectordb] Init embedding_dim: 3072, metric: cosine",
+      "timestamp": 1756411298.3126779,
+      "level": "INFO"
+    },
+    {
+      "type": "assistant",
+      "content": "Based on the documents, GraphRAG is a retrieval-augmented generation approach that uses knowledge graphs...",
+      "timestamp": "2025-08-28T16:01:38.312678",
+      "metadata": {
+        "mode": "global"
+      }
+    },
+    {
+      "type": "system",
+      "content": "Query completed successfully!",
+      "timestamp": "2025-08-28T16:01:38.312678",
+      "metadata": {}
+    }
+  ],
+  "complete": true
+}

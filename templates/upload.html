@@ -209,53 +209,51 @@ document.addEventListener('DOMContentLoaded', function() {
             formData.append('files', file);
         });
 
-        // Show progress
-        overallProgress.style.display = 'block';
         uploadBtn.disabled = true;
         clearBtn.disabled = true;
 
         try {
-            // Simulate progress for user experience
-            let progress = 0;
-            const progressInterval = setInterval(() => {
-                if (progress < 90) {
-                    progress += Math.random() * 15;
-                    updateProgress(Math.min(progress, 90));
-                }
-            }, 500);
-
             const response = await fetch('/api/upload', {
                 method: 'POST',
                 body: formData
             });
 
-            clearInterval(progressInterval);
-
             const result = await response.json();
 
-            if (result.success) {
-                updateProgress(100);
-                setTimeout(() => {
-                    overallProgress.style.display = 'none';
-                    successMessage.style.display = 'block';
-                    
-                    // Update file items to show success
-                    fileItems.querySelectorAll('.file-preview').forEach(item => {
-                        item.classList.add('success');
-                        const statusSpan = item.querySelector('.file-status');
-                        if (statusSpan) {
-                            statusSpan.innerHTML = '<i class="bi bi-check-circle text-success"></i> Processed';
+            if (result.success && result.operation_id) {
+                // Hide progress and show log modal
+                overallProgress.style.display = 'none';
+                
+                // Show log streaming modal
+                ResearchRouter.logStream.showLogModal(
+                    'Processing Documents', 
+                    result.operation_id,
+                    function(success, error) {
+                        if (success) {
+                            successMessage.style.display = 'block';
+                            
+                            // Update file items to show success
+                            fileItems.querySelectorAll('.file-preview').forEach(item => {
+                                item.classList.add('success');
+                                const statusSpan = item.querySelector('.file-status');
+                                if (statusSpan) {
+                                    statusSpan.innerHTML = '<i class="bi bi-check-circle text-success"></i> Processed';
+                                }
+                            });
+                        } else {
+                            ResearchRouter.showToast('Upload failed: ' + (error || 'Unknown error'), 'danger');
                         }
-                    });
-                }, 500);
+                        
+                        uploadBtn.disabled = false;
+                        clearBtn.disabled = false;
+                    }
+                );
             } else {
                 throw new Error(result.error || 'Upload failed');
             }
 
         } catch (error) {
-            alert('Upload failed: ' + error.message);
-            overallProgress.style.display = 'none';
-        } finally {
+            ResearchRouter.showToast('Upload failed: ' + error.message, 'danger');
             uploadBtn.disabled = false;
             clearBtn.disabled = false;
         }
