@@ -213,27 +213,39 @@ def api_upload():
     
     # Start background processing
     def process_files_background():
+        success = False
         try:
             # Add initial message
             add_chat_message(operation_id, 'system', f'📁 Starting upload of {len(temp_files)} files...')
             
+            # Switch to the current session before processing
+            session_manager.switch_session(current_session)
+            
             # Process files with insert command
             async def process_files():
                 file_paths = [temp_path for temp_path, _ in temp_files]
-                await insert_command.insert_multiple_files(file_paths)
+                try:
+                    await insert_command.insert_multiple_files(file_paths, skip_confirmation=True)
+                    return True
+                except Exception as e:
+                    add_chat_message(operation_id, 'error', f'Insert operation failed: {str(e)}')
+                    return False
             
             # Run async processing
             loop = asyncio.new_event_loop()
             asyncio.set_event_loop(loop)
-            loop.run_until_complete(process_files())
+            success = loop.run_until_complete(process_files())
             loop.close()
             
-            # Signal completion
-            add_chat_message(operation_id, 'system', '✅ Upload completed successfully!')
+            if success:
+                # Signal successful completion
+                add_chat_message(operation_id, 'system', '✅ Upload completed successfully!')
+            else:
+                add_chat_message(operation_id, 'system', '❌ Upload completed with errors. Check logs above.')
             mark_chat_complete(operation_id)
                 
         except Exception as e:
-            add_chat_message(operation_id, 'error', f'Upload failed: {str(e)}')
+            add_chat_message(operation_id, 'error', f'Upload process failed: {str(e)}')
             mark_chat_complete(operation_id)
         finally:
             # Clean up temp files

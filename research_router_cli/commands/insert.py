@@ -39,7 +39,7 @@ class InsertCommand:
         else:
             console.print(error_msg(f"Error: {path} is not a supported file type or directory"))
             
-    async def insert_multiple_files(self, file_paths: List[Union[str, Path]]):
+    async def insert_multiple_files(self, file_paths: List[Union[str, Path]], skip_confirmation: bool = False):
         """Insert multiple PDF files at once"""
         if not self.session_manager.ensure_session():
             return
@@ -89,7 +89,7 @@ class InsertCommand:
             
         # Confirm insertion
         console.print(info_msg(f"Will insert {len(new_files)} new files"))
-        if not Confirm.ask("Continue with insertion?"):
+        if not skip_confirmation and not Confirm.ask("Continue with insertion?"):
             console.print(info_msg("Operation cancelled"))
             return
             

@@ -272,6 +272,130 @@ const ResearchRouter = {
             // Start polling
             poll();
         }
+    },
+
+    // Log streaming functionality for real-time operation monitoring
+    logStream: {
+        // Show a modal with log streaming for an operation
+        showLogModal: function(title, operationId, onComplete) {
+            // Create modal HTML
+            const modalId = 'logStreamModal';
+            let modal = document.getElementById(modalId);
+            
+            if (!modal) {
+                modal = document.createElement('div');
+                modal.id = modalId;
+                modal.className = 'modal fade';
+                modal.setAttribute('tabindex', '-1');
+                modal.setAttribute('aria-hidden', 'true');
+                modal.innerHTML = `
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">${title}</h5>
+                            </div>
+                            <div class="modal-body">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+                                    <span>Processing, please wait...</span>
+                                </div>
+                                <div id="logOutput" class="bg-dark text-light p-3 rounded" style="height: 400px; overflow-y: auto; font-family: monospace; font-size: 0.875rem;">
+                                    <div class="text-muted">Initializing...</div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" disabled>
+                                    Close
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+            } else {
+                // Update title and reset content
+                modal.querySelector('.modal-title').textContent = title;
+                modal.querySelector('#logOutput').innerHTML = '<div class="text-muted">Initializing...</div>';
+                modal.querySelector('.btn-secondary').disabled = true;
+            }
+            
+            const bsModal = new bootstrap.Modal(modal);
+            const logOutput = modal.querySelector('#logOutput');
+            const closeBtn = modal.querySelector('.btn-secondary');
+            
+            bsModal.show();
+            
+            // Track if there were any errors
+            let hasErrors = false;
+            
+            // Start polling for chat messages (which contain the log output)
+            ResearchRouter.chatStream.pollChatMessages(
+                operationId,
+                function(message) {
+                    // Add message to log output
+                    if (message.content) {
+                        const messageDiv = document.createElement('div');
+                        messageDiv.className = 'mb-1';
+                        
+                        // Check for error messages
+                        if (message.type === 'error' || message.content.includes('failed') || message.content.includes('Error:') || message.content.includes('❌')) {
+                            messageDiv.className += ' text-danger';
+                            hasErrors = true;
+                        } else if (message.content.includes('✅')) {
+                            messageDiv.className += ' text-success';
+                        }
+                        
+                        messageDiv.textContent = message.content;
+                        logOutput.appendChild(messageDiv);
+                        
+                        // Scroll to bottom
+                        logOutput.scrollTop = logOutput.scrollHeight;
+                    }
+                },
+                function(messages) {
+                    // Operation complete - check if there were errors
+                    const completeDiv = document.createElement('div');
+                    completeDiv.className = 'mt-2';
+                    
+                    if (hasErrors) {
+                        completeDiv.className += ' text-danger';
+                        completeDiv.innerHTML = '<i class="bi bi-x-circle"></i> Operation completed with errors!';
+                    } else {
+                        completeDiv.className += ' text-success';
+                        completeDiv.innerHTML = '<i class="bi bi-check-circle"></i> Operation completed successfully!';
+                    }
+                    
+                    logOutput.appendChild(completeDiv);
+                    
+                    // Enable close button
+                    closeBtn.disabled = false;
+                    
+                    // Auto-close after 3 seconds if successful, keep open if errors
+                    if (!hasErrors) {
+                        setTimeout(() => {
+                            bsModal.hide();
+                            if (onComplete) onComplete(true);
+                        }, 3000);
+                    } else {
+                        if (onComplete) onComplete(false, 'Operation completed with errors');
+                    }
+                },
+                function(error) {
+                    // Error occurred
+                    const errorDiv = document.createElement('div');
+                    errorDiv.className = 'text-danger mt-2';
+                    errorDiv.innerHTML = `<i class="bi bi-x-circle"></i> Error: ${error}`;
+                    logOutput.appendChild(errorDiv);
+                    
+                    // Enable close button
+                    closeBtn.disabled = false;
+                    
+                    if (onComplete) onComplete(false, error);
+                }
+            );
+            
+            return bsModal;
+        }
     }
 };
 

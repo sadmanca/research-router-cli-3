@@ -43,3 +43,7 @@ werkzeug>=2.3.0
 
 # nano-graphrag (local installation)
 -e ./nano-graphrag
+
+spacy
+keybert
+nltk
