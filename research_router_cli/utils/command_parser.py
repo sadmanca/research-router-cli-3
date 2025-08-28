@@ -83,17 +83,6 @@ class EnhancedCommandParser:
                 max_args=-1,
                 valid_flags=["-r", "--recursive"]
             ),
-            "enhanced-insert": CommandDef(
-                name="enhanced-insert",
-                aliases=["ei", "einsert", "advanced-insert"],
-                subcommands=["files", "folder", "browse"],
-                description="Insert files (PDFs, text files, markdown) with enhanced knowledge graph generation",
-                usage="enhanced-insert <path|files|folder|browse> [--nodes N] [--formats html,json]",
-                requires_session=True,
-                min_args=0,  # Allow no args to show options, or direct file paths
-                max_args=-1,
-                valid_flags=["--nodes", "--formats"]
-            ),
             "query": CommandDef(
                 name="query",
                 aliases=["q", "search"],
@@ -123,11 +112,13 @@ class EnhancedCommandParser:
             ),
             "history": CommandDef(
                 name="history",
-                aliases=["hist", "h"],
-                description="Show file insertion history",
-                usage="history [limit]",
+                aliases=["hist"],
+                subcommands=["files", "query"],
+                description="Show file insertion or query history",
+                usage="history [files|query] [options]",
                 requires_session=True,
-                max_args=1
+                max_args=-1,
+                valid_flags=["--limit", "--responses", "-r"]
             ),
             "duplicates": CommandDef(
                 name="duplicates",
@@ -274,7 +265,7 @@ class EnhancedCommandParser:
         i = 0
         
         # Define boolean flags that don't take values
-        boolean_flags = ["--local", "--global", "--naive"]
+        boolean_flags = ["--local", "--global", "--naive", "--responses", "-r"]
         
         while i < len(parts):
             part = parts[i]
@@ -319,8 +310,8 @@ class EnhancedCommandParser:
         if cmd_def.max_args >= 0 and arg_count > cmd_def.max_args:
             errors.append(f"Command '{parsed.command}' accepts at most {cmd_def.max_args} arguments. Usage: {cmd_def.usage}")
             
-        # Validate subcommands (but allow enhanced-insert to work without subcommands for direct file paths)
-        if cmd_def.subcommands and not parsed.subcommand and parsed.command != "enhanced-insert":
+        # Validate subcommands
+        if cmd_def.subcommands and not parsed.subcommand:
             errors.append(f"Command '{parsed.command}' requires a subcommand: {', '.join(cmd_def.subcommands)}")
             
         return errors
@@ -412,6 +403,19 @@ class EnhancedCommandParser:
             
         if cmd_def.subcommands:
             help_text.append(f"[dim]Subcommands: {', '.join(cmd_def.subcommands)}[/dim]")
+        
+        # Add specific examples for history command
+        if command == "history":
+            help_text.extend([
+                "",
+                "[bold]Examples:[/bold]",
+                "[dim]  history                      # Show file insertion history[/dim]",
+                "[dim]  history files 10            # Show last 10 file insertions[/dim]",
+                "[dim]  history query               # Show query/response history[/dim]",
+                "[dim]  history query --responses   # Show query history with response previews[/dim]",
+                "[dim]  history query show 5        # Show detailed view of query #5[/dim]",
+                "[dim]  history query search term   # Search through query history[/dim]"
+            ])
             
         if cmd_def.requires_session and not current_session:
             help_text.append("[yellow]⚠ Requires active session[/yellow]")

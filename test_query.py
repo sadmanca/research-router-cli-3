@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Test if query works after enhanced-insert using existing nano-graphrag files"""
+"""Test if query works after insert using existing nano-graphrag files"""
 
 import asyncio
 import sys

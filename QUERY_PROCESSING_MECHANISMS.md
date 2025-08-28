@@ -651,6 +651,260 @@ total_context_tokens = (
 )  # Total: ~27,000 tokens (well within GPT-4's 128k context)
 ```
 
+## Part 4: Context Limits and Response Formatting
+
+### LLM Context Window Management
+
+Nano-graphrag carefully manages token budgets across the entire pipeline:
+
+```python
+class ContextManager:
+    def __init__(self, model="gpt-4o"):
+        self.model_limits = {
+            "gpt-4o": 128000,      # 128K tokens
+            "claude-3": 200000,    # 200K tokens  
+            "gemini-pro": 1048576  # 1M tokens
+        }
+        
+        self.total_limit = self.model_limits[model]
+        self.output_reserve = 4000      # Reserve for LLM response
+        self.system_prompt = 2000       # System prompt overhead
+        self.query_overhead = 500       # User query tokens
+        
+        # Available for context data
+        self.context_budget = self.total_limit - self.output_reserve - self.system_prompt - self.query_overhead
+        # For GPT-4o: 128,000 - 4,000 - 2,000 - 500 = 121,500 tokens available
+```
+
+### Token Allocation by Query Type
+
+#### Local Query Allocation
+```python
+local_allocation = {
+    "community_reports": 30375,    # 25% of context budget
+    "entities_data": 24300,        # 20% of context budget  
+    "relationships": 30375,        # 25% of context budget
+    "text_sources": 36450,         # 30% of context budget
+    "total": 121500               # Full context budget
+}
+
+# Real example breakdown:
+context_usage = {
+    "system_prompt": 1842,         # "You are a helpful assistant..."
+    "user_query": 18,              # "How does TensorFlow work?"
+    "community_reports": 8500,     # CSV data about ML communities
+    "entities": 3200,              # TensorFlow, Keras, PyTorch entities
+    "relationships": 5100,         # TF→Keras, TF→ML edges
+    "text_sources": 12400,         # Original paper excerpts
+    "total_input": 31060,          # Well within 128K limit
+    "remaining_for_response": 96940 # Plenty of room for detailed answer
+}
+```
+
+#### Global Query Map-Reduce Allocation
+```python
+global_allocation = {
+    "per_analyst_group": 12000,    # Each analyst gets 12K tokens max
+    "synthesis_context": 18225,    # 15% for final synthesis
+    "metadata_overhead": 6075      # 5% for system prompts
+}
+
+# Example with 3 analysts:
+map_phase_usage = [
+    {"analyst_1": 11250, "communities": "ML Frameworks, Computer Vision"},
+    {"analyst_2": 10890, "communities": "NLP, Robotics, Ethics"},  
+    {"analyst_3": 9760,  "communities": "Healthcare AI, Quantum AI"}
+]
+
+reduce_phase_usage = {
+    "analyst_insights": 15200,     # Combined insights from all analysts
+    "synthesis_prompt": 2800,      # Research Director instructions
+    "total": 18000                 # Final synthesis input
+}
+```
+
+### Response Format Control
+
+The `response_type` parameter controls output formatting:
+
+```python
+RESPONSE_FORMATS = {
+    "single_paragraph": {
+        "instruction": "Provide a single, comprehensive paragraph (150-300 words)",
+        "example": "Machine learning encompasses various algorithmic approaches including supervised learning for prediction tasks, unsupervised learning for pattern discovery, and reinforcement learning for decision optimization, with applications spanning computer vision, natural language processing, and robotics across industries from healthcare to finance."
+    },
+    
+    "bullet_points": {
+        "instruction": "Present as organized bullet points with hierarchical structure",
+        "example": """
+• **Core ML Algorithms**
+  - Supervised learning (classification, regression)
+  - Unsupervised learning (clustering, dimensionality reduction)
+  - Reinforcement learning (policy optimization)
+
+• **Key Applications**  
+  - Computer vision and image processing
+  - Natural language processing and understanding
+  - Robotics and autonomous systems
+        """
+    },
+    
+    "detailed_analysis": {
+        "instruction": "Comprehensive analysis with sections and subsections (500-1000 words)",
+        "example": """
+## Machine Learning Overview
+
+### Algorithmic Foundations
+Machine learning algorithms fall into three primary categories based on their learning paradigms...
+
+### Application Domains  
+The practical applications of ML span numerous industries and use cases...
+
+### Technical Implementation
+Modern ML systems typically employ frameworks like TensorFlow and PyTorch...
+        """
+    }
+}
+```
+
+### Format-Specific System Prompt Templates
+
+```python
+def build_system_prompt(query_type, response_format, context_data):
+    base_prompt = f"""---Role---
+You are a helpful assistant responding to questions about data in the provided tables.
+
+---Goal---
+Generate a response that answers the user's question using information from the data tables.
+If you don't know the answer, say so. Do not make anything up.
+"""
+
+    format_instructions = {
+        "bullet_points": """
+---Target response length and format---
+Present information as organized bullet points:
+• Use clear, descriptive bullet points
+• Include sub-bullets with indentation where appropriate
+• Group related information logically
+• Aim for 5-10 main points maximum
+        """,
+        
+        "multiple_paragraphs": """
+---Target response length and format---  
+Structure as 3-5 well-organized paragraphs:
+• Each paragraph should focus on a distinct theme
+• Use topic sentences and smooth transitions
+• Maintain logical flow from general to specific
+• Target 300-600 words total
+        """,
+        
+        "executive_summary": """
+---Target response length and format---
+Format as professional executive summary:
+• Brief overview paragraph (2-3 sentences)
+• Key findings as bullet points (3-5 points)  
+• Implications or recommendations paragraph
+• Professional, concise tone throughout
+• Target 200-400 words total
+        """
+    }
+    
+    return f"{base_prompt}\n{format_instructions[response_format]}\n\n---Data tables---\n{context_data}"
+```
+
+### Real Response Examples by Format
+
+**Same Query, Different Formats:**
+**Query:** "What are the relationships between TensorFlow, Keras, and PyTorch?"
+
+#### Single Paragraph Format:
+```
+TensorFlow and PyTorch represent the two dominant deep learning frameworks, with TensorFlow being Google's comprehensive machine learning platform that originally used static computational graphs and PyTorch being Facebook's research-focused framework emphasizing dynamic graphs and pythonic interfaces. Keras serves as a high-level neural networks API that was initially independent but became tightly integrated into TensorFlow as its official high-level interface, providing simplified model building capabilities while TensorFlow handles the low-level computations. The relationship between these frameworks reflects the evolution of deep learning infrastructure, where TensorFlow targets production deployment and scalability, PyTorch excels in research flexibility and rapid prototyping, and Keras bridges the gap by making TensorFlow more accessible to practitioners who need powerful capabilities without complex implementations.
+```
+
+#### Bullet Points Format:
+```
+• **TensorFlow Ecosystem**
+  - Google's comprehensive ML platform for production deployment
+  - Originally static graph-based, now supports eager execution
+  - Integrates tightly with Keras as its high-level API
+  - Strong ecosystem with TensorFlow Serving, TensorFlow Lite
+
+• **PyTorch Framework**
+  - Facebook's research-oriented deep learning library
+  - Dynamic computational graphs enable flexible model architectures  
+  - Pythonic interface preferred by researchers and academics
+  - Growing production support through TorchServe and TorchScript
+
+• **Keras Integration**
+  - High-level neural networks API originally framework-agnostic
+  - Now officially integrated into TensorFlow as tf.keras
+  - Provides simplified interface for building and training models
+  - Supports both TensorFlow backend and limited PyTorch compatibility
+
+• **Competitive Relationship**
+  - TensorFlow vs PyTorch represents production vs research priorities
+  - Both frameworks increasingly adding each other's strengths
+  - Keras reduces TensorFlow complexity to compete with PyTorch's ease of use
+```
+
+#### Executive Summary Format:
+```
+**Executive Summary: Deep Learning Framework Relationships**
+
+TensorFlow, PyTorch, and Keras form the core ecosystem of modern deep learning development, each serving distinct but interconnected roles in the machine learning pipeline.
+
+**Key Findings:**
+• TensorFlow dominates production ML deployment with comprehensive tooling and Google's enterprise support
+• PyTorch leads in research environments due to its dynamic graphs and intuitive Python-first design philosophy  
+• Keras integration into TensorFlow creates a unified high-level interface that competes directly with PyTorch's usability
+• Framework competition drives rapid innovation, with TensorFlow adding dynamic capabilities and PyTorch improving production readiness
+
+**Strategic Implications:**
+Organizations should evaluate framework choice based on use case priorities: TensorFlow for production systems requiring scale and deployment infrastructure, PyTorch for research and rapid prototyping, with Keras providing an accessible entry point to TensorFlow's capabilities.
+```
+
+### Context-Aware Response Optimization
+
+```python
+def optimize_response_for_context(context_quality, query_complexity, response_format):
+    """
+    Adjust response strategy based on available context and query complexity
+    """
+    optimization_strategy = {
+        "high_context_simple_query": {
+            "approach": "concise_focused",
+            "length_modifier": 0.8,  # Shorter response
+            "detail_level": "essential_only"
+        },
+        
+        "high_context_complex_query": {
+            "approach": "comprehensive_analysis", 
+            "length_modifier": 1.3,  # Longer response
+            "detail_level": "full_depth"
+        },
+        
+        "low_context_simple_query": {
+            "approach": "direct_answer",
+            "length_modifier": 0.6,  # Very short response
+            "detail_level": "basic_only"  
+        },
+        
+        "low_context_complex_query": {
+            "approach": "acknowledge_limitations",
+            "length_modifier": 0.9,  # Standard length
+            "detail_level": "qualified_response"
+        }
+    }
+    
+    # Determine context-complexity combination
+    context_level = "high" if context_quality > 0.7 else "low"
+    complexity_level = "complex" if query_complexity > 5 else "simple"
+    strategy_key = f"{context_level}_context_{complexity_level}_query"
+    
+    return optimization_strategy[strategy_key]
+```
+
 ## Summary
 
 This ultra-detailed analysis reveals that nano-graphrag implements a sophisticated multi-stage information retrieval and synthesis system:
@@ -658,5 +912,7 @@ This ultra-detailed analysis reveals that nano-graphrag implements a sophisticat
 1. **Local Queries**: Entity-centric retrieval with multi-hop context expansion
 2. **Global Queries**: Map-reduce community analysis for comprehensive insights  
 3. **Naive Queries**: Direct chunk-based retrieval for simple cases
+4. **Context Management**: Intelligent token budgeting and overflow handling
+5. **Response Formatting**: Dynamic format control with quality optimization
 
-The spinning wheel messages indicate complex parallel processing of vector searches, graph traversals, and hierarchical community analysis, all carefully orchestrated to provide the most relevant context to the LLM for generating accurate, grounded responses.
+The spinning wheel messages indicate complex parallel processing of vector searches, graph traversals, and hierarchical community analysis, all carefully orchestrated within strict token limits to provide the most relevant context to the LLM for generating accurate, well-formatted responses optimized for the user's specified output format.

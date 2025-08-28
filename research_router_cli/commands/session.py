@@ -8,6 +8,8 @@ from typing import Dict, List, Optional
 from rich.console import Console
 from rich.table import Table
 
+from ..utils.session_history import SessionHistoryManager
+
 console = Console()
 
 class SessionManager:
@@ -65,6 +67,9 @@ class SessionManager:
         self.current_session = name
         self._save_sessions()
         console.print(f"[blue]Switched to session '{name}'[/blue]")
+        
+        # Show recent query history if available
+        self._show_recent_history(name)
         return True
         
     def list_sessions(self):
@@ -118,3 +123,84 @@ class SessionManager:
             console.print("Use: session create <name> or session switch <name>")
             return False
         return True
+    
+    def get_session_history_manager(self, session_name: Optional[str] = None) -> Optional[SessionHistoryManager]:
+        """Get the session history manager for a session"""
+        if not session_name:
+            session_name = self.current_session
+        
+        if not session_name or session_name not in self.sessions:
+            return None
+            
+        session_dir = Path(self.sessions[session_name])
+        return SessionHistoryManager(session_dir)
+    
+    def _show_recent_history(self, session_name: str):
+        """Show recent query history for a session with full responses"""
+        try:
+            history_manager = self.get_session_history_manager(session_name)
+            if history_manager and history_manager.has_history():
+                console.print()
+                recent_history = history_manager.get_history(limit=5)  # Show more entries
+                stats = history_manager.get_history_stats()
+                
+                console.print(f"[bold cyan]Session History ({stats['total_queries']} total queries)[/bold cyan]")
+                console.print("-" * 80)
+                console.print()
+                
+                # Display each query/response pair in full
+                for i, entry in enumerate(recent_history, 1):
+                    query = entry["query"]
+                    response = entry["response"]
+                    mode = entry.get("mode", "unknown")
+                    timestamp = entry["timestamp"][:16].replace('T', ' ')  # Format: 2025-08-25 15:40
+                    
+                    # Display query
+                    from rich.panel import Panel
+                    query_panel = Panel(
+                        query,
+                        title=f"[bold cyan]Query #{i} ({mode} mode)[/bold cyan]",
+                        subtitle=f"[dim]{timestamp}[/dim]",
+                        border_style="cyan",
+                        padding=(0, 1)
+                    )
+                    console.print(query_panel)
+                    console.print()
+                    
+                    # Display response  
+                    from rich.markdown import Markdown
+                    # Try to render as markdown if it contains formatting
+                    if any(marker in response for marker in ['**', '*', '#', '-', '1.', '2.']):
+                        try:
+                            markdown_response = Markdown(response)
+                            response_panel = Panel(
+                                markdown_response,
+                                title="[bold green]Response[/bold green]",
+                                border_style="green",
+                                padding=(1, 2)
+                            )
+                        except:
+                            response_panel = Panel(
+                                response,
+                                title="[bold green]Response[/bold green]",
+                                border_style="green",
+                                padding=(1, 2)
+                            )
+                    else:
+                        response_panel = Panel(
+                            response,
+                            title="[bold green]Response[/bold green]",
+                            border_style="green",
+                            padding=(1, 2)
+                        )
+                    
+                    console.print(response_panel)
+                    
+                    # Add separator between entries (except for the last one)
+                    if i < len(recent_history):
+                        console.print("\n" + "-" * 80 + "\n")
+                
+                console.print()
+        except Exception as e:
+            # Still show error for debugging but don't crash
+            console.print(f"[yellow]Note: Could not display session history: {e}[/yellow]")

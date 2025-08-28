@@ -468,7 +468,321 @@ async def _pack_single_community_describe(
     return full_describe
 ```
 
-## Part 3: LLM Information Flow Patterns
+## Part 3: Token-Based Community Grouping Strategy
+
+### The Challenge: Context Window Management
+
+When processing global queries, nano-graphrag faces a fundamental challenge: there may be hundreds of community reports, each containing thousands of tokens, but LLMs have finite context windows (e.g., GPT-4's 128k tokens).
+
+**Example Scenario:**
+```
+50 Community Reports × 3,000 tokens each = 150,000 tokens
+LLM Context Limit: 128,000 tokens
+Problem: Cannot fit all reports in a single query!
+```
+
+### The Solution: Intelligent Grouping Algorithm
+
+```python
+def _group_communities_by_tokens(self, communities, max_tokens_per_group=12000):
+    """
+    Group communities into token-constrained batches for parallel analysis
+    """
+    groups = []
+    current_group = []
+    current_group_tokens = 0
+    
+    # Sort communities by importance (occurrence count) first
+    communities = sorted(communities, key=lambda x: x["occurrence"], reverse=True)
+    
+    for community in communities:
+        # Calculate token count for this community's report
+        report_tokens = len(encode_string_by_tiktoken(community["report_string"]))
+        
+        # Check if adding this community would exceed the group limit
+        if current_group_tokens + report_tokens > max_tokens_per_group:
+            # Save current group and start new one
+            if current_group:
+                groups.append(current_group)
+                current_group = []
+                current_group_tokens = 0
+        
+        # Add community to current group
+        current_group.append(community)
+        current_group_tokens += report_tokens
+        
+        # Log the grouping decision
+        logger.debug(f"Added community {community['community_key']} ({report_tokens} tokens) to group {len(groups)}")
+    
+    # Don't forget the last group
+    if current_group:
+        groups.append(current_group)
+    
+    logger.info(f"Grouping to {len(groups)} groups for global search")  # This is the message you see!
+    return groups
+```
+
+**Real Example with Token Calculations:**
+
+Input: 8 communities with their token counts
+```
+Community A (ML Frameworks): 4,200 tokens
+Community B (Data Science): 2,800 tokens  
+Community C (Computer Vision): 3,600 tokens
+Community D (NLP): 3,100 tokens
+Community E (Robotics): 2,400 tokens
+Community F (Ethics): 1,900 tokens
+Community G (Healthcare AI): 3,800 tokens
+Community H (Quantum AI): 1,500 tokens
+```
+
+**Grouping Process (max 12,000 tokens per group):**
+
+**Group 1:**
+- Add Community A: 4,200 tokens (total: 4,200) ✓
+- Add Community B: 2,800 tokens (total: 7,000) ✓  
+- Add Community C: 3,600 tokens (total: 10,600) ✓
+- Try Community D: 3,100 tokens (total would be: 13,700) > 12,000 ✗
+- **Group 1 Final: [A, B, C] = 10,600 tokens**
+
+**Group 2:**
+- Add Community D: 3,100 tokens (total: 3,100) ✓
+- Add Community E: 2,400 tokens (total: 5,500) ✓
+- Add Community F: 1,900 tokens (total: 7,400) ✓
+- Add Community G: 3,800 tokens (total: 11,200) ✓
+- Try Community H: 1,500 tokens (total would be: 12,700) > 12,000 ✗
+- **Group 2 Final: [D, E, F, G] = 11,200 tokens**
+
+**Group 3:**
+- Add Community H: 1,500 tokens (total: 1,500) ✓
+- **Group 3 Final: [H] = 1,500 tokens**
+
+**Result:** `"Grouping to 3 groups for global search"`
+
+## Part 4: Map-Reduce Analysis Deep Dive
+
+### Map Phase: Distributed Community Analysis
+
+Each group becomes an independent "analyst" that receives its own LLM prompt:
+
+```python
+async def _analyze_community_group(self, query, community_group, analyst_id):
+    """
+    Process one group of communities as an independent analyst
+    """
+    # Format communities for this analyst
+    communities_csv = "-----Communities-----\nid,content,rating,importance\n"
+    for i, community in enumerate(community_group):
+        # Escape CSV special characters
+        content = community["report_string"].replace('"', '""').replace('\n', ' ')
+        rating = community["report_json"].get("rating", 0)
+        importance = community["occurrence"]  # Entity count
+        communities_csv += f'{i},"{content}",{rating},{importance}\n'
+    
+    # Analyst-specific prompt
+    analyst_prompt = f"""
+    ---Role---
+    You are Research Analyst #{analyst_id} in a team analyzing a large knowledge base.
+    You have been assigned {len(community_group)} communities to analyze for relevance to the user's query.
+    
+    ---Task---
+    Extract key insights from YOUR ASSIGNED communities that help answer the user's question.
+    Focus on the most important information and assign confidence scores.
+    
+    ---User Question---
+    {query}
+    
+    ---Your Assigned Communities---
+    {communities_csv}
+    
+    ---Output Format---
+    Return JSON with insights ranked by relevance:
+    {{
+        "points": [
+            {{"description": "Most relevant insight", "score": 95}},
+            {{"description": "Moderately relevant insight", "score": 78}},
+            {{"description": "Somewhat relevant insight", "score": 62}}
+        ]
+    }}
+    
+    Only include insights with score > 50. Higher scores = more relevant to the question.
+    """
+    
+    # Execute analysis
+    try:
+        response = await self.llm_func(query, system_prompt=analyst_prompt)
+        analyst_results = json.loads(response)
+        
+        # Add metadata for tracking
+        for point in analyst_results.get("points", []):
+            point["analyst_id"] = analyst_id
+            point["source_communities"] = len(community_group)
+            
+        logger.info(f"Analyst {analyst_id} found {len(analyst_results.get('points', []))} insights")
+        return analyst_results
+        
+    except Exception as e:
+        logger.error(f"Analyst {analyst_id} failed: {e}")
+        return {"points": []}
+```
+
+### Concrete Map Phase Example
+
+**Query:** "What are the biggest challenges in AI development today?"
+
+**Analyst 1** (Groups: ML Frameworks, Data Science, Computer Vision):
+```json
+{
+  "points": [
+    {
+      "description": "Framework fragmentation between TensorFlow, PyTorch, and other platforms creates integration challenges and vendor lock-in",
+      "score": 89,
+      "analyst_id": 1,
+      "source_communities": 3
+    },
+    {
+      "description": "Computer vision models exhibit significant bias in facial recognition and object detection across different demographics",
+      "score": 82,
+      "analyst_id": 1,
+      "source_communities": 3
+    },
+    {
+      "description": "Data preprocessing and feature engineering remain major bottlenecks in ML pipelines",
+      "score": 74,
+      "analyst_id": 1,
+      "source_communities": 3
+    }
+  ]
+}
+```
+
+**Analyst 2** (Groups: NLP, Robotics, Ethics, Healthcare AI):
+```json
+{
+  "points": [
+    {
+      "description": "Large language models face critical challenges with hallucination, misinformation, and factual accuracy",
+      "score": 94,
+      "analyst_id": 2,
+      "source_communities": 4
+    },
+    {
+      "description": "Healthcare AI deployment is severely constrained by HIPAA, FDA regulations, and liability concerns",
+      "score": 87,
+      "analyst_id": 2,
+      "source_communities": 4
+    },
+    {
+      "description": "Robotics AI struggles with real-world adaptability and safety certification requirements",
+      "score": 79,
+      "analyst_id": 2,
+      "source_communities": 4
+    }
+  ]
+}
+```
+
+**Analyst 3** (Groups: Quantum AI):
+```json
+{
+  "points": [
+    {
+      "description": "Quantum-AI hybrid approaches show promise but face fundamental scalability and error correction challenges",
+      "score": 68,
+      "analyst_id": 3,
+      "source_communities": 1
+    }
+  ]
+}
+```
+
+### Reduce Phase: Master Synthesis
+
+```python
+async def _reduce_global_insights(self, query, all_analyst_results, query_params):
+    """
+    Synthesize insights from all analysts into comprehensive final answer
+    """
+    # Collect and rank all insights
+    all_insights = []
+    for analyst_results in all_analyst_results:
+        for point in analyst_results.get("points", []):
+            all_insights.append(point)
+    
+    # Sort by relevance score and filter
+    high_quality_insights = [i for i in all_insights if i["score"] >= 65]  # Quality threshold
+    high_quality_insights.sort(key=lambda x: x["score"], reverse=True)
+    
+    # Group insights by theme for better organization
+    insights_by_theme = self._group_insights_by_theme(high_quality_insights)
+    
+    # Format for master synthesis
+    synthesis_context = "ANALYST INSIGHTS SUMMARY:\n\n"
+    for theme, insights in insights_by_theme.items():
+        synthesis_context += f"=== {theme.upper()} ===\n"
+        for insight in insights:
+            synthesis_context += f"[Score: {insight['score']}] [Analyst {insight['analyst_id']}] {insight['description']}\n"
+        synthesis_context += "\n"
+    
+    # Master synthesis prompt
+    master_prompt = f"""
+    ---Role---
+    You are the Research Director synthesizing analysis from multiple specialist analysts.
+    Each analyst examined different aspects of a large knowledge base and provided ranked insights.
+    
+    ---Task---
+    Create a comprehensive, well-structured answer that:
+    1. Directly addresses the user's question
+    2. Incorporates the highest-scoring insights
+    3. Identifies patterns across multiple analysts  
+    4. Organizes information logically
+    5. Provides balanced coverage of different aspects
+    
+    ---User Question---
+    {query}
+    
+    ---Analyst Insights (ranked by relevance score)---
+    {synthesis_context}
+    
+    ---Guidelines---
+    - Focus on insights with scores 80+ for main points
+    - Use scores 65-79 for supporting details
+    - Identify contradictions or complementary viewpoints
+    - Synthesize rather than just listing insights
+    - Aim for {query_params.response_type}
+    """
+    
+    final_response = await self.llm_func(query, system_prompt=master_prompt)
+    return final_response
+```
+
+### The Final Synthesis Example
+
+The Research Director sees the organized insights and produces:
+
+```
+The biggest challenges in AI development today span multiple critical dimensions:
+
+## Technical Integration Challenges (Score: 89-94)
+
+**Model Reliability and Accuracy**: Large language models face critical challenges with hallucination and misinformation, representing perhaps the most pressing technical issue in AI today. This is compounded by framework fragmentation between TensorFlow, PyTorch, and other platforms, creating integration challenges and vendor lock-in scenarios.
+
+**Bias and Fairness**: Computer vision models exhibit significant demographic bias, particularly in facial recognition and object detection, while data preprocessing bottlenecks continue to impede ML pipeline efficiency.
+
+## Regulatory and Deployment Barriers (Score: 87)
+
+**Healthcare and Regulated Industries**: AI deployment faces severe constraints from HIPAA, FDA regulations, and liability concerns. The intersection of AI capability and regulatory compliance remains largely unresolved, creating significant barriers to real-world implementation.
+
+**Safety Certification**: Robotics AI struggles with real-world adaptability and safety certification requirements, highlighting the gap between laboratory performance and production deployment.
+
+## Emerging Technology Challenges (Score: 68-79)
+
+**Quantum-AI Integration**: While quantum-AI hybrid approaches show promise, they face fundamental scalability and error correction challenges that limit near-term viability.
+
+The analysis reveals that technical reliability (particularly in LLMs) and regulatory compliance have emerged as the highest-priority challenges, scoring consistently above 85 across multiple analyst perspectives.
+```
+
+## Part 5: LLM Information Flow Patterns
 
 ### Query Processing Information Architecture
 

@@ -38,7 +38,15 @@
     "0953PM": "sessions\\0953PM",
     "1008PM": "sessions\\1008PM",
     "1106PM": "sessions\\1106PM",
-    "1147PM": "sessions\\1147PM"
+    "1147PM": "sessions\\1147PM",
+    "2025-08-25-0838AM": "sessions\\2025-08-25-0838AM",
+    "2025-08-25-1128AM": "sessions\\2025-08-25-1128AM",
+    "2025-08-25-1156AM": "sessions\\2025-08-25-1156AM",
+    "2025-08-25-0244PM": "sessions\\2025-08-25-0244PM",
+    "test-enhanced-insert": "sessions\\test-enhanced-insert",
+    "test-session": "sessions\\test-session",
+    "debug-session": "sessions\\debug-session",
+    "web-flow-test": "sessions\\web-flow-test"
   },
-  "current_session": "1147PM"
+  "current_session": "web-flow-test"
 }

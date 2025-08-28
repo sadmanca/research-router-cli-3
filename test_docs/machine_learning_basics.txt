@@ -1,0 +1,23 @@
+Machine Learning Fundamentals
+
+Machine learning is a subset of artificial intelligence (AI) that focuses on the development of algorithms and statistical models that enable computer systems to improve their performance on a specific task through experience without being explicitly programmed.
+
+Key Concepts:
+- Supervised Learning: Uses labeled training data to learn a mapping function from input to output
+- Unsupervised Learning: Finds hidden patterns or structures in data without labeled examples  
+- Reinforcement Learning: Learns through interaction with an environment using rewards and penalties
+
+Common Algorithms:
+- Linear Regression: Predicts continuous values
+- Decision Trees: Makes decisions through a tree-like model
+- Neural Networks: Mimics the structure and function of biological neural networks
+- Support Vector Machines: Finds optimal boundaries between different classes
+
+Applications:
+- Image recognition and computer vision
+- Natural language processing and text analysis
+- Recommendation systems
+- Predictive analytics and forecasting
+- Autonomous vehicles and robotics
+
+Machine learning has revolutionized many industries by enabling computers to automatically learn and make decisions from data, leading to more intelligent and adaptive systems.

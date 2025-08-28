@@ -55,6 +55,9 @@ class QueryCommand:
                     param=QueryParam(mode=mode.lower())
                 )
                 
+            # Save to history before displaying
+            self._save_to_history(question, result, mode)
+            
             # Display result
             self._display_query_result(question, result, mode)
             
@@ -238,3 +241,65 @@ class QueryCommand:
     def reset_instance(self):
         """Reset the GraphRAG instance (useful when switching sessions)"""
         self._graphrag_instance = None
+    
+    def _save_to_history(self, question: str, result: str, mode: str):
+        """Save query and result to session history"""
+        try:
+            history_manager = self.session_manager.get_session_history_manager()
+            if history_manager:
+                history_manager.add_entry(question, result, mode)
+        except Exception as e:
+            # Silently fail to avoid disrupting query flow
+            console.print(f"[yellow]Warning: Could not save to history: {e}[/yellow]")
+    
+    def show_session_history(self, limit: Optional[int] = None, show_responses: bool = False):
+        """Display session query history"""
+        if not self.session_manager.ensure_session():
+            return
+            
+        history_manager = self.session_manager.get_session_history_manager()
+        if not history_manager:
+            console.print("[red]Could not access session history[/red]")
+            return
+            
+        history_manager.display_history(limit, show_responses)
+    
+    def show_history_entry(self, entry_number: int):
+        """Display detailed view of a specific history entry"""
+        if not self.session_manager.ensure_session():
+            return
+            
+        history_manager = self.session_manager.get_session_history_manager()
+        if not history_manager:
+            console.print("[red]Could not access session history[/red]")
+            return
+            
+        history_manager.display_detailed_entry(entry_number)
+    
+    def search_history(self, search_term: str, limit: Optional[int] = None):
+        """Search through session history"""
+        if not self.session_manager.ensure_session():
+            return
+            
+        history_manager = self.session_manager.get_session_history_manager()
+        if not history_manager:
+            console.print("[red]Could not access session history[/red]")
+            return
+            
+        matches = history_manager.search_history(search_term, limit)
+        
+        if not matches:
+            console.print(f"[yellow]No matches found for '{search_term}'[/yellow]")
+            return
+        
+        console.print(f"[green]Found {len(matches)} matches for '{search_term}':[/green]")
+        console.print()
+        
+        for entry_number, entry in matches:
+            query = entry["query"]
+            if len(query) > 80:
+                query = query[:77] + "..."
+            console.print(f"[cyan]{entry_number}.[/cyan] [{entry.get('mode', 'unknown')}] {query}")
+        
+        console.print()
+        console.print("[dim]Use 'history query show <number>' to see full entry[/dim]")
