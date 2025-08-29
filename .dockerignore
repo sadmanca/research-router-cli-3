@@ -1,0 +1,109 @@
+# Python cache files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+venv/
+env/
+ENV/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+
+# Environment files
+.env
+.env.local
+
+# Session data (contains user data, not needed in container)
+sessions/
+
+# Temporary files
+temp_downloads/
+nul
+
+# Test files and data
+test_*.py
+test_docs/
+*_test.py
+debug_*.py
+analyze_*.py
+diagnose_*.py
+fix_*.py
+investigate_*.py
+manual_test.py
+simple_*.py
+verify_*.py
+examine_*.py
+final_*.py
+force_*.py
+repair_*.py
+regenerate_*.py
+clear_*.py
+
+# Documentation and markdown files (not needed for runtime)
+*.md
+FIXES.md
+COMMUNITY_DETECTION_AND_LLM_FLOW.md
+CONTEXT_LIMITS_AND_RESPONSE_FORMATTING.md
+GENKG_INTEGRATION_CHANGES.md
+GRAPH_BUILDING_DEEP_DIVE.md
+GraphRAG_Query_Mechanisms_Explained.md
+MAP_REDUCE_AND_COMMUNITY_LEVELS_EXPLAINED.md
+NANO_GRAPHRAG_DEEP_DIVE.md
+QUERY_PROCESSING_MECHANISMS.md
+README*.md
+document-insertion-flow.md
+
+# PDF samples (not needed for runtime)
+pdfs/
+*.pdf
+01-*.txt
+02-*.txt
+# Exclude other txt files but NOT requirements.txt
+test_sample.txt
+
+# JSON test results
+*_results.json
+chat_integration_test_results.json
+
+# Backup files
+*.backup*
+*.backup2
+
+# API directory (if not needed)
+api/
+
+# Local nano-graphrag directory (use PyPI version)
+nano-graphrag/
+
+# Empty directories
+empty/

@@ -365,29 +365,36 @@ def api_session_status(session_name):
     has_knowledge_graph = any((working_dir / filename).exists() for filename in graph_files)
     
     # Get basic stats
-    stats = {}
-    if has_knowledge_graph:
-        try:
-            # Count documents
-            docs_file = working_dir / "kv_store_full_docs.json"
-            if docs_file.exists():
-                with open(docs_file, 'r', encoding='utf-8') as f:
-                    docs = json.load(f)
-                    stats['documents'] = len(docs)
-            
-            # Count text chunks  
-            chunks_file = working_dir / "kv_store_text_chunks.json"
-            if chunks_file.exists():
-                with open(chunks_file, 'r', encoding='utf-8') as f:
-                    chunks = json.load(f)
-                    stats['chunks'] = len(chunks)
-        except:
-            pass
+    stats = {'documents': 0, 'chunks': 0}
+    debug_info = {'working_dir': str(working_dir), 'files_found': []}
+    
+    try:
+        # List all files in working directory for debugging
+        if working_dir.exists():
+            debug_info['files_found'] = [f.name for f in working_dir.iterdir() if f.is_file()]
+        
+        # Count documents
+        docs_file = working_dir / "kv_store_full_docs.json"
+        if docs_file.exists():
+            with open(docs_file, 'r', encoding='utf-8') as f:
+                docs = json.load(f)
+                stats['documents'] = len(docs)
+        
+        # Count text chunks  
+        chunks_file = working_dir / "kv_store_text_chunks.json"
+        if chunks_file.exists():
+            with open(chunks_file, 'r', encoding='utf-8') as f:
+                chunks = json.load(f)
+                stats['chunks'] = len(chunks)
+                
+    except Exception as e:
+        debug_info['error'] = str(e)
     
     return jsonify({
         'session': session_name,
         'has_knowledge_graph': has_knowledge_graph,
-        'stats': stats
+        'stats': stats,
+        'debug': debug_info  # Temporary debug info
     })
 
 @app.route('/api/sessions/<session_name>/history')
@@ -479,11 +486,21 @@ def cleanup_chat_streaming(operation_id: str):
     # Keep chat_streams data for a while for retrieval
     # It will be cleaned up naturally or by periodic cleanup
 
+# Health check endpoint for Cloud Run
+@app.route('/health')
+def health_check():
+    """Health check endpoint for Cloud Run"""
+    return jsonify({'status': 'healthy', 'timestamp': datetime.now().isoformat()})
+
 if __name__ == '__main__':
     # Check config
     if not config.has_openai_config and not config.has_azure_openai_config:
         print("Warning: No OpenAI API configuration found.")
         print("Please set OPENAI_API_KEY in your environment or .env file.")
     
+    # Configure port for Cloud Run (uses PORT env variable)
+    port = int(os.environ.get('PORT', 5000))
+    debug_mode = os.environ.get('FLASK_ENV', 'development') == 'development'
+    
     # Run the app
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    app.run(debug=debug_mode, host='0.0.0.0', port=port)

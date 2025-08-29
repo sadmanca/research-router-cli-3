@@ -58,7 +58,7 @@ def test_genkg_import():
         # Test GenKG import directly
         try:
             sys.path.insert(0, str(path.parent))
-            from genkg import GenerateKG
+            from nano_graphrag.genkg import GenerateKG
             print("[+] Successfully imported GenerateKG directly")
             
             genkg = GenerateKG(llm_provider="gemini", model_name="gemini-2.5-flash")

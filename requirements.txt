@@ -40,10 +40,15 @@ pydantic>=2.0.0
 # Web framework
 flask>=2.3.0
 werkzeug>=2.3.0
+gunicorn>=21.2.0
 
-# nano-graphrag (local installation)
--e ./nano-graphrag
+# nano-graphrag (custom fork with nano-to-genkg branch) - force refresh
+git+https://github.com/sadmanca/nano-graphrag.git@nano-to-genkg#egg=nano-graphrag
 
+# Additional dependencies that genkg needs
+transformers>=4.0.0
+torch>=1.9.0
 spacy
 keybert
 nltk
+PyMuPDF>=1.23.0
