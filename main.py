@@ -500,10 +500,27 @@ class ResearchRouterCLI:
             mode = 'global'  
         elif 'naive' in parsed_cmd.flags:
             mode = 'naive'
+        
+        # Determine text chunks setting from flags
+        include_text_chunks = None  # None means use config default
+        if 'text-chunks' in parsed_cmd.flags or 'text_chunks' in parsed_cmd.flags:
+            # Handle --text-chunks true/false
+            value = parsed_cmd.flags.get('text-chunks') or parsed_cmd.flags.get('text_chunks')
+            if isinstance(value, str):
+                include_text_chunks = value.lower() in ('true', '1', 'yes', 'on')
+            else:
+                include_text_chunks = bool(value)
+        elif 'chunks' in parsed_cmd.flags:
+            # Handle --chunks true/false
+            value = parsed_cmd.flags['chunks']
+            if isinstance(value, str):
+                include_text_chunks = value.lower() in ('true', '1', 'yes', 'on')
+            else:
+                include_text_chunks = bool(value)
             
         query_text = " ".join(parsed_cmd.args)
             
-        await self.query_command.query(query_text, mode)
+        await self.query_command.query(query_text, mode, include_text_chunks)
     
     async def _handle_arxiv_command(self, parsed_cmd: ParsedCommand):
         """Handle ArXiv commands with wizard support"""

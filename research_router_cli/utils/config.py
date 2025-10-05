@@ -21,6 +21,7 @@ class Config:
         self._azure_openai_endpoint: Optional[str] = None
         self._azure_openai_api_key: Optional[str] = None
         self._gemini_api_key: Optional[str] = None
+        self._include_text_chunks: bool = False  # Default to False for testing without text chunks
         self._load_config()
         
     def _load_config(self):
@@ -29,6 +30,10 @@ class Config:
         self._azure_openai_endpoint = os.getenv('AZURE_OPENAI_ENDPOINT')
         self._azure_openai_api_key = os.getenv('AZURE_OPENAI_API_KEY')
         self._gemini_api_key = os.getenv('GEMINI_API_KEY')
+        
+        # Load text chunks configuration (default False)
+        include_chunks_env = os.getenv('INCLUDE_TEXT_CHUNKS', 'false').lower()
+        self._include_text_chunks = include_chunks_env in ('true', '1', 'yes', 'on')
         
     @property
     def openai_api_key(self) -> Optional[str]:
@@ -50,6 +55,15 @@ class Config:
     @property
     def has_gemini_config(self) -> bool:
         return self._gemini_api_key is not None
+    
+    @property
+    def include_text_chunks(self) -> bool:
+        """Whether to include text chunks in query context"""
+        return self._include_text_chunks
+    
+    def set_include_text_chunks(self, value: bool):
+        """Set whether to include text chunks in query context"""
+        self._include_text_chunks = value
                 
     def show_config(self):
         """Display current configuration"""
@@ -77,6 +91,10 @@ class Config:
             table.add_row("Gemini API Key", "✓ Set", masked_key)
         else:
             table.add_row("Gemini API Key", "✗ Not Set", "")
+        
+        # Text chunks configuration
+        chunks_status = "✓ Enabled" if self._include_text_chunks else "✗ Disabled"
+        table.add_row("Include Text Chunks", chunks_status, str(self._include_text_chunks))
             
         console.print(table)
         

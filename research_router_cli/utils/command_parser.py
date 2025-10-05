@@ -98,11 +98,11 @@ class EnhancedCommandParser:
                 name="query",
                 aliases=["q", "search"],
                 description="Query the knowledge graph",
-                usage="query [--mode local|global|naive | --local | --global | --naive] <question>",
+                usage="query [--mode local|global|naive] [--text-chunks true|false] <question>",
                 requires_session=True,
                 min_args=1,
                 max_args=-1,
-                valid_flags=["--mode", "--local", "--global", "--naive"]
+                valid_flags=["--mode", "--local", "--global", "--naive", "--text-chunks", "--text_chunks", "--chunks"]
             ),
             "arxiv": CommandDef(
                 name="arxiv",
@@ -276,22 +276,36 @@ class EnhancedCommandParser:
         # Define boolean flags that don't take values
         boolean_flags = ["--local", "--global", "--naive"]
         
+        # Define flags that require values
+        value_flags = ["--mode", "--text-chunks", "--text_chunks", "--chunks", "--nodes", "--formats"]
+        
         while i < len(parts):
             part = parts[i]
             
-            if part.startswith('-') and valid_flags:
-                if part in valid_flags:
+            if part.startswith('-'):
+                if not valid_flags or part in valid_flags:
+                    # Normalize flag name
+                    flag_name = part.lstrip('-').replace('-', '_')
+                    
                     if part in boolean_flags:
                         # Boolean flags don't take values
-                        flags[part.lstrip('-')] = True
+                        flags[flag_name] = True
                         i += 1
-                    else:
-                        # Check if next part is the flag value
+                    elif part in value_flags:
+                        # These flags MUST have a value
                         if i + 1 < len(parts) and not parts[i + 1].startswith('-'):
-                            flags[part.lstrip('-')] = parts[i + 1]
+                            flags[flag_name] = parts[i + 1]
                             i += 2
                         else:
-                            flags[part.lstrip('-')] = True
+                            # Missing value, skip this flag
+                            i += 1
+                    else:
+                        # Other flags - check if next part is the flag value
+                        if i + 1 < len(parts) and not parts[i + 1].startswith('-'):
+                            flags[flag_name] = parts[i + 1]
+                            i += 2
+                        else:
+                            flags[flag_name] = True
                             i += 1
                 else:
                     # Unknown flag, treat as argument

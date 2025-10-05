@@ -15,7 +15,7 @@ class QueryCommand:
         self.session_manager = session_manager
         self._graphrag_instance = None
         
-    async def query(self, question: str, mode: str = "global"):
+    async def query(self, question: str, mode: str = "global", include_text_chunks: bool = None):
         """Query the knowledge graph with local or global mode"""
         if not self.session_manager.ensure_session():
             return
@@ -29,6 +29,18 @@ class QueryCommand:
         if mode.lower() not in valid_modes:
             console.print(f"[red]Error: Invalid mode '{mode}'. Valid modes: {', '.join(valid_modes)}[/red]")
             return
+        
+        # Get config to determine text chunks setting
+        from ..utils.config import Config
+        config = Config()
+        
+        # Use provided value, or fall back to config
+        if include_text_chunks is None:
+            include_text_chunks = config.include_text_chunks
+        
+        # Log the text chunks setting
+        chunks_status = "ENABLED" if include_text_chunks else "DISABLED"
+        console.print(f"[dim]Text chunks in context: {chunks_status}[/dim]")
             
         console.print(f"[blue]Querying knowledge graph ({mode} mode)...[/blue]")
         console.print(f"[cyan]Question: {question}[/cyan]")
@@ -49,10 +61,10 @@ class QueryCommand:
                 # Import QueryParam
                 from nano_graphrag import QueryParam
                 
-                # Perform query
+                # Perform query with text chunks configuration
                 result = await graphrag.aquery(
                     question, 
-                    param=QueryParam(mode=mode.lower())
+                    param=QueryParam(mode=mode.lower(), include_text_chunks=include_text_chunks)
                 )
                 
             # Display result
@@ -114,7 +126,7 @@ class QueryCommand:
         else:
             console.print("[yellow]No results found for your query.[/yellow]")
             
-    async def query_with_context(self, question: str, mode: str = "global") -> Optional[str]:
+    async def query_with_context(self, question: str, mode: str = "global", include_text_chunks: bool = None) -> Optional[str]:
         """Query and return only the context (for integration with other tools)"""
         if not self.session_manager.ensure_session():
             return None
@@ -122,6 +134,14 @@ class QueryCommand:
         graphrag = await self._get_graphrag_instance()
         if not graphrag:
             return None
+        
+        # Get config to determine text chunks setting
+        from ..utils.config import Config
+        config = Config()
+        
+        # Use provided value, or fall back to config
+        if include_text_chunks is None:
+            include_text_chunks = config.include_text_chunks
             
         try:
             from nano_graphrag import QueryParam
@@ -129,7 +149,7 @@ class QueryCommand:
             # Use only_need_context=True to get raw context
             result = await graphrag.aquery(
                 question, 
-                param=QueryParam(mode=mode.lower(), only_need_context=True)
+                param=QueryParam(mode=mode.lower(), only_need_context=True, include_text_chunks=include_text_chunks)
             )
             
             return result
@@ -142,9 +162,15 @@ class QueryCommand:
         """Start an interactive query session"""
         if not self.session_manager.ensure_session():
             return
+        
+        # Get config to show current text chunks setting
+        from ..utils.config import Config
+        config = Config()
+        chunks_status = "ENABLED" if config.include_text_chunks else "DISABLED"
             
         console.print("[blue]Starting interactive query session. Type 'exit' to return to main CLI.[/blue]")
         console.print("[dim]Available modes: local, global, naive[/dim]")
+        console.print(f"[dim]Text chunks in context: {chunks_status} (set via INCLUDE_TEXT_CHUNKS env var)[/dim]")
         console.print()
         
         while True:
