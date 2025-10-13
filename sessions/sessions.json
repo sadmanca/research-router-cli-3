@@ -38,7 +38,11 @@
     "0953PM": "sessions\\0953PM",
     "1008PM": "sessions\\1008PM",
     "1106PM": "sessions\\1106PM",
-    "1147PM": "sessions\\1147PM"
+    "1147PM": "sessions\\1147PM",
+    "2025-10-05 6pm": "sessions\\2025-10-05 6pm",
+    "2025-10-05 605pm": "sessions\\2025-10-05 605pm",
+    "2025-10-05 620pm": "sessions\\2025-10-05 620pm",
+    "2025-10-05 640pm": "sessions\\2025-10-05 640pm"
   },
-  "current_session": "1147PM"
+  "current_session": "2025-10-05 620pm"
 }
